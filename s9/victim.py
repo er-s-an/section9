@@ -45,8 +45,9 @@ def healthy_config() -> dict[str, Any]:
 
 
 class VictimApp:
-    def __init__(self, model: Any, get_config: Callable[[], dict[str, Any]], emit: Callable[..., Awaitable[dict | None]]):
+    def __init__(self, model: Any, get_config: Callable[[], dict[str, Any]], emit: Callable[..., Awaitable[dict | None]], *, asset_snapshot: dict[str, str] | None = None):
         self.model = model
+        self.asset_snapshot = dict(asset_snapshot) if asset_snapshot is not None else None
         self.get_config = get_config
         self.emit = emit
         self._active: dict[str, dict[str, Any]] = {}
@@ -57,6 +58,8 @@ class VictimApp:
         self._kb = self._read_kb()
 
     def _read_kb(self) -> str:
+        if self.asset_snapshot is not None:
+            return self.asset_snapshot.get("kb.yaml", "")
         try:
             return (_ASSET / "kb.yaml").read_text(encoding="utf-8")
         except OSError:
@@ -64,6 +67,8 @@ class VictimApp:
 
     def _prompt(self, version: str) -> str:
         name = "system.v1.4.2.md" if version in {"healthy", "1.4.2"} else "system.v1.4.3.b1.md"
+        if self.asset_snapshot is not None:
+            return self.asset_snapshot.get('prompts/' + name, '')
         try:
             return (_ASSET / "prompts" / name).read_text(encoding="utf-8")
         except OSError:
@@ -209,7 +214,7 @@ class VictimApp:
             if self._cancel_reason(request_id, epoch, generation):
                 raise asyncio.CancelledError("reset_or_cancelled")
             response = {"request_id": request_id, "answer": content, "structured": structured, "revision": str(cfg.get("revision", "1")), "usage": total_usage, "elapsed_s": elapsed, "trace_id": result.get("trace_id"), "status": "success", "model": result.get("model"), "tool_calls": attempts}
-            await self._progress("request.completed", {"request_id": request_id, "revision": response["revision"], "usage": total_usage, "elapsed_s": elapsed, "status": "success"}, run_id)
+            await self._progress("request.completed", {"request_id": request_id, "revision": response["revision"], "usage": total_usage, "elapsed_s": elapsed, "status": "success", "question": message, "answer": structured.get("answer", content), "structured": structured, "purpose": purpose}, run_id)
             self._remember({"request_id": request_id, "status": "success", "usage": total_usage, "elapsed_s": elapsed})
             return response
         except asyncio.CancelledError as exc:

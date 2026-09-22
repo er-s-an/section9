@@ -23,19 +23,37 @@ from s9.victim import VictimApp
 
 
 class Core:
-    def __init__(self):
-        self.identity = capture_identity()
+    def __init__(self, *, data_dir=None, store=None, model=None, scope=None,
+                 agent_port=None, worker_ids=None, telemetry=None, identity=None):
+        """Create one bounded Section9 runtime.
+
+        ``scope`` is deliberately carried by the runtime rather than a module
+        global so paired runs can share a process while keeping their stores,
+        memories, workers, and evidence namespaces distinct.
+        """
+        self.scope = dict(scope or {})
+        self.data_dir = Path(data_dir or config.DATA).resolve()
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        self.agent_port = int(agent_port if agent_port is not None else config.PORT + 2)
+        arm = self.scope.get("arm", "swarm")
+        default_workers = (["sentry", "diagnoser", "fixer-a", "fixer-b", "verifier", "single"] if not self.scope else
+                           ["sentry", "single"] if arm == "baseline" else ["sentry", "diagnoser", "fixer-a", "fixer-b", "verifier"])
+        self.worker_ids = list(worker_ids if worker_ids is not None else default_workers)
+        self.execution_enabled = True
+        self.identity = identity if identity is not None else capture_identity()
         self.implementation_hash = digest({p.name: p.read_text() for p in sorted((config.ROOT / "s9").glob("*.py"))})
-        self.store = Store(config.DATA / "section9.sqlite")
-        self.telemetry = Telemetry()
-        self.model = ModelClient(self.store, self.telemetry)
+        if store is None:
+            store = Store(self.data_dir / "section9.sqlite", scope=self.scope, baseline_config=DEFAULT_CONFIG)
+        self.store = store
+        self.telemetry = telemetry if telemetry is not None else Telemetry()
+        self.model = model if model is not None else ModelClient(self.store, self.telemetry)
         self.victim = VictimApp(self.model, self.store.current_config, self.emit)
         from s9.memory import MemoryStore
-        self.memory = MemoryStore(config.DATA / "memory")
-        self.evaluation_memory = MemoryStore(config.DATA / "evaluation-memory")
+        self.memory = MemoryStore(self.data_dir / "memory")
+        self.evaluation_memory = MemoryStore(self.data_dir / "evaluation-memory")
         # The evaluation retrieval snapshot stays frozen. Successful outcomes
         # are written to a separate real journal, never to the next trial's input.
-        self.evaluation_results = MemoryStore(config.DATA / "evaluation-results")
+        self.evaluation_results = MemoryStore(self.data_dir / "evaluation-results")
         self.memory_candidates = {}
         self.children: dict[str, subprocess.Popen] = {}
         self.jobs: set[asyncio.Task] = set()
@@ -52,8 +70,10 @@ class Core:
         self.attract_cycles = 0
         self.attract_active = False
         self.attract_status = {}
-        self.runtime = config.DATA / "runtime"
+        self.runtime = self.data_dir / "runtime"
         self.runtime.mkdir(parents=True, exist_ok=True)
+        self.activated_runs: set[str] = set()
+        self._stopped = False
 
     def job(self, coroutine, generation=None):
         task = asyncio.create_task(coroutine)
@@ -70,7 +90,7 @@ class Core:
         if current and self.store.run(current)["status"] in ACTIVE:
             self.store.fail_run(current, "SERVER_RESTARTED")
             self.store.reset()
-        for agent_id in ["sentry", "diagnoser", "fixer-a", "fixer-b", "verifier", "single"]:
+        for agent_id in self.worker_ids:
             self.spawn(agent_id)
         self.job(self.watchdog())
         self.job(self.dependencies_loop())
@@ -90,8 +110,8 @@ class Core:
                    PYTHONPATH=os.pathsep.join([str(config.ROOT), sysconfig.get_path("purelib")]))
         log = (self.runtime / f"{agent_id}.log").open("ab")
         from s9.sandbox import worker_command
-        command = worker_command(sys.executable, config.ROOT, config.PORT + 2,
-                                 ["--id", agent_id, "--base-url", f"http://127.0.0.1:{config.PORT + 2}"])
+        command = worker_command(sys.executable, config.ROOT, self.agent_port,
+                                 ["--id", agent_id, "--base-url", f"http://127.0.0.1:{self.agent_port}"])
         # Seatbelt execvp rejects the venv symlink; PYTHONPATH above keeps the
         # dependency runtime while the approved real interpreter is executed.
         command[3] = str(Path(sys.executable).resolve())
@@ -103,6 +123,9 @@ class Core:
         return {"id": agent_id, "pid": child.pid}
 
     async def stop(self):
+        if self._stopped:
+            return
+        self._stopped = True
         for job in list(self.jobs):
             job.cancel()
         await asyncio.gather(*list(self.jobs), return_exceptions=True)
@@ -110,15 +133,28 @@ class Core:
             if child.poll() is None:
                 child.send_signal(signal.SIGCONT)
                 child.terminate()
-        for child in self.children.values():
+        for aid, child in self.children.items():
             try:
                 child.wait(timeout=3)
             except subprocess.TimeoutExpired:
                 child.kill()
+                child.wait(timeout=3)
+            if self.scope:
+                with self.store.tx() as db:
+                    actor = self.store.get(db, 'agents', aid)
+                    if actor:
+                        actor.update(status='stopped', detail='本轮工作进程已停止；证据保留')
+                        self.store.save(db, 'agents', actor)
+                        self.store.event(db, 'agent.status', {'status': 'stopped', 'summary': actor['detail']},
+                                         run_id=self.scope['run_id'], producer=aid)
         if self.attract_process and self.attract_process.poll() is None:
             self.attract_process.terminate()
-        await self.model.close()
-        await asyncio.to_thread(self.telemetry.flush)
+        close = getattr(self.model, "close", None)
+        if close:
+            await close()
+        flush = getattr(self.telemetry, "flush", None)
+        if flush:
+            await asyncio.to_thread(flush)
 
     async def emit(self, event_type, payload, *, run_id=None, producer="victim"):
         # Late telemetry is retained as evidence but never promoted into a new incident.
@@ -135,8 +171,9 @@ class Core:
                     "evidence_id": event["event_id"]}, run_id=run_id, producer="liveness")
         return event
 
-    async def inject(self, scenario, condition="swarm", seed=42, fencing=False, environment=None):
-        run = self.store.inject(scenario, condition, config.MODEL, seed, config.RUN_TOKEN_BUDGET)
+    async def inject(self, scenario, condition="swarm", seed=42, fencing=False, environment=None,
+                     run_id=None, schedule=True):
+        run = self.store.inject(scenario, condition, config.MODEL, seed, config.RUN_TOKEN_BUDGET, run_id=run_id)
         with self.store.tx() as db:
             item = self.store.get(db, "runs", run["id"])
             item["manifest"]["environment"] = environment or os.getenv("S9_ENVIRONMENT", "demo")
@@ -147,17 +184,30 @@ class Core:
             item["manifest"]["source_identity_hash"] = digest(self.identity)
             item["manifest"]["probe_schedule"] = {"interval_s": 30, "max_detection_rounds": 3, "scope": "active_incident"}
             item["manifest"]["victim_config"] = self.store.current_config(db)
+            item["manifest"]["scope"] = dict(self.scope)
             memory_source = self.evaluation_memory if item["manifest"]["environment"] == "evaluation" else self.memory
             item["manifest"]["memory_snapshot_hash"] = digest(memory_source.list_playbooks()) if "memory" in condition else None
             if fencing:
                 item["fencing_demo"] = True
             self.store.save(db, "runs", item)
-        self.pending_detection.add(run["id"])
-        self.probe_schedule[run["id"]] = {"last_at": time.monotonic(), "rounds": 1}
-        if scenario in {"loop", "composite"}:
-            self.job(self.victim.chat("查询不存在订单 S9-MISSING 的物流", run_id=run["id"], purpose="loop-workload"), generation=run["generation"])
-        self.job(self.detect(run["id"]), generation=run["generation"])
+        if schedule:
+            self.activate_run(run["id"])
         return {"run_id": run["id"], "revision": run["injected_revision"]}
+
+    def activate_run(self, run_id):
+        """Schedule a run's workload and detection at most once."""
+        if run_id in self.activated_runs or not self.execution_enabled:
+            return False
+        run = self.store.run(run_id)
+        if not run:
+            raise Rejected("NOT_FOUND", "未找到运行记录", 404)
+        self.activated_runs.add(run_id)
+        self.pending_detection.add(run_id)
+        self.probe_schedule[run_id] = {"last_at": time.monotonic(), "rounds": 1}
+        if run["scenario"] in {"loop", "composite"}:
+            self.job(self.victim.chat("查询不存在订单 S9-MISSING 的物流", run_id=run_id, purpose="loop-workload"), generation=run["generation"])
+        self.job(self.detect(run_id), generation=run["generation"])
+        return True
 
     async def detect(self, run_id):
         try:
@@ -255,6 +305,7 @@ class Core:
         result["checks"]["model_requests_released"] = not result["model_cancellation"]["remaining"]
         self.pending_detection.clear()
         self.probe_schedule.clear()
+        getattr(self, "activated_runs", set()).clear()
         self.progress.clear()
         for child in self.children.values():
             if child.poll() is None:
@@ -262,6 +313,8 @@ class Core:
         return result
 
     def context(self, agent):
+        execution_enabled = getattr(self, "execution_enabled", True)
+        scope = getattr(self, "scope", {})
         with self.store.tx() as db:
             aid, role = agent["id"], agent["role"]
             agent = self.store.get(db, "agents", aid)
@@ -271,7 +324,7 @@ class Core:
             muted = self.store.meta(db, "muted")
             epoch = str(self.store.meta(db, "transport_epoch"))
             tasks, messages = [], []
-            if run and run["status"] in ACTIVE:
+            if execution_enabled and run and run["status"] in ACTIVE:
                 for row in db.execute("SELECT data FROM tasks WHERE run_id=?", (rid,)):
                     t = json.loads(row[0])
                     if t["kind"] not in agent["capabilities"]:
@@ -316,8 +369,11 @@ class Core:
         return {"id": aid, "role": role, "paused": agent["paused"], "generation": config_view["generation"],
                 "instance_id": agent["instance_id"], "transport_epoch": epoch,
                 "config": projected, "observations": observations, "muted": muted, "detection_pending": rid in self.pending_detection,
-                "incident": {k: run[k] for k in ["id", "run_id", "status", "opened_at", "condition"]} if run else None,
-                "tasks": tasks, "messages": messages[-30:], "plan": own_plan, "last_action": last_action, "memory": candidate}
+                "incident": {k: run[k] for k in ["id", "run_id", "status", "opened_at", "condition"]} if execution_enabled and run else None,
+                "tasks": tasks if execution_enabled else [], "messages": messages[-30:] if execution_enabled else [],
+                "plan": own_plan if execution_enabled else None, "last_action": last_action if execution_enabled else None,
+                "memory": candidate if execution_enabled else None, "scope": dict(scope),
+                "execution_enabled": execution_enabled}
 
     async def verify(self, agent, run_id):
         if agent["role"] not in {"verifier", "single"}:
@@ -329,7 +385,11 @@ class Core:
             raise Rejected("NO_APPLIED_ACTION", "尚无可验收的配置修改")
         self.verifying.add(run_id)
         try:
+            self.store.emit("verify.started", {"summary": "独立验收开始", "suite": "verify"}, run_id=run_id, producer=agent["id"])
+            tested_config = self.store.current_config()
             result = await self.victim.probe(suite="verify", run_id=run_id)
+            if getattr(self, "scope", {}):
+                result['tested_config_hash'] = digest({k: tested_config[k] for k in DEFAULT_CONFIG})
             result = self.store.verification(agent["id"], run_id, result)
             if result["passed"]:
                 run = self.store.run(run_id)
@@ -411,7 +471,7 @@ class Core:
     def run_detail(self, rid):
         run = self.store.run(rid)
         source = self.store
-        if not run and self.evaluation_store():
+        if not run and not getattr(self, "scope", {}).get("pair_id") and self.evaluation_store():
             source = self.evaluation_store()
             run = source.run(rid)
         if not run:

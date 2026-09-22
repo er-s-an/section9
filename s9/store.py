@@ -53,8 +53,10 @@ ACTIVE = {"injected", "diagnosing", "repairing", "awaiting_approval", "verifying
 class Store:
     """Single-machine transactional authority. Workers never open this database."""
 
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, *, scope=None, baseline_config=None):
         self.path = path
+        self.scope = dict(scope or {})
+        self.baseline_config = dict(baseline_config or DEFAULT_CONFIG)
         path.parent.mkdir(parents=True, exist_ok=True)
         with self.tx() as db:
             db.executescript("""
@@ -70,12 +72,20 @@ class Store:
             CREATE TABLE IF NOT EXISTS actions(id TEXT PRIMARY KEY,run_id TEXT NOT NULL,idem TEXT UNIQUE,data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS usage(id TEXT PRIMARY KEY,run_id TEXT,data TEXT NOT NULL);
             """)
+            saved_scope = self.meta(db, "runtime_scope")
+            if saved_scope is not None and saved_scope != self.scope:
+                raise Rejected("SCOPE_MISMATCH", "数据库属于另一个运行作用域", 403)
+            self.set_meta(db, "runtime_scope", self.scope)
+            saved_baseline = self.meta(db, "frozen_baseline")
+            if saved_baseline is not None and saved_baseline != self.baseline_config:
+                raise Rejected("BASELINE_MISMATCH", "冻结的健康配置不能被替换", 403)
+            self.set_meta(db, "frozen_baseline", self.baseline_config)
             if self.meta(db, "generation") is None:
                 for k, v in {"generation": 1, "revision": 1, "autonomy": "L2", "autonomy_revision": 1,
                              "muted": False, "current_run": None, "resource_fence": 0,
                              "transport_epoch": 1, "attract": False}.items():
                     self.set_meta(db, k, v)
-                db.execute("INSERT INTO configs VALUES(?,?)", (1, encode({**DEFAULT_CONFIG, "revision": "1", "generation": "1"})))
+                db.execute("INSERT INTO configs VALUES(?,?)", (1, encode({**self.baseline_config, "revision": "1", "generation": "1"})))
 
     @contextmanager
     def tx(self):
@@ -114,7 +124,21 @@ class Store:
         db.execute(f"UPDATE {table} SET data=? WHERE id=?", (encode(item), item["id"]))
 
     def event(self, db, event_type, payload, *, run_id=None, producer="system", generation=None):
-        event = {"event_id": uid("ev"), "sequence": "0", "event_type": event_type,
+        scope = getattr(self, "scope", {})
+        if scope and run_id and run_id != scope['run_id']:
+            # Preserve the attempted foreign ID as rejection evidence, never as
+            # a valid foreign-run event in this authority.
+            payload = {**payload, 'attempted_run_id': run_id}
+            run_id = scope['run_id']
+        if scope and run_id is None and (event_type.startswith('agent.') or event_type == 'system.reset'):
+            run_id = scope['run_id']
+        current = self.current_config(db)
+        actor = self.get(db, 'agents', producer)
+        event = {**scope, 'scope': 'run' if run_id else 'system',
+                 'config_revision': current['revision'],
+                 'config_hash': digest({k: current[k] for k in DEFAULT_CONFIG}),
+                 'agent_instance_id': actor.get('instance_id') if actor else None,
+                 "event_id": uid("ev"), "sequence": "0", "event_type": event_type,
                  "occurred_at": now(), "run_id": run_id, "incident_id": run_id,
                  "producer": producer, "generation": str(generation or self.meta(db, "generation")), "payload": payload}
         cur = db.execute("INSERT INTO events(id,data) VALUES(?,?)", (event["event_id"], encode(event)))
@@ -152,7 +176,7 @@ class Store:
         role, name, capabilities = ROLES[agent_id]
         token = secrets.token_urlsafe(32)
         with self.tx() as db:
-            record = {"id": agent_id, "role": role, "name": name, "capabilities": capabilities,
+            record = {**getattr(self, "scope", {}), "id": agent_id, "role": role, "name": name, "capabilities": capabilities,
                       "status": "starting", "detail": "进程启动中", "heartbeat_at": None,
                       "paused": False, "task_id": None, "instance_id": uid("instance")}
             db.execute("INSERT INTO agents VALUES(?,?,?) ON CONFLICT(id) DO UPDATE SET token_hash=excluded.token_hash,data=excluded.data", (agent_id, hashlib.sha256(token.encode()).hexdigest(), encode(record)))
@@ -192,7 +216,7 @@ class Store:
             self.event(db, "agent.paused" if paused else "agent.resumed", {"summary": a["detail"]}, producer=agent_id, run_id=self.meta(db, "current_run"))
             return a
 
-    def inject(self, scenario, condition, model, seed, token_budget):
+    def inject(self, scenario, condition, model, seed, token_budget, *, run_id=None):
         mutations = {"prompt": {"prompt_version": "degraded"},
                      "cost": {"context_multiplier": 8, "max_output_tokens": 4096},
                      "loop": {"retry_limit": 6, "retry_on_terminal": True},
@@ -201,19 +225,26 @@ class Store:
             old = self.get(db, "runs", self.meta(db, "current_run"))
             if old and old["status"] in ACTIVE:
                 raise Rejected("RUN_ACTIVE", "请先完成当前事故或重置")
-            config = self.set_config(db, {**DEFAULT_CONFIG, **mutations[scenario]})
-            run_id = uid("run")
+            scope = getattr(self, "scope", {})
+            run_id = run_id or scope.get('run_id') or uid("run")
+            if scope and run_id != scope['run_id']:
+                raise Rejected('SCOPE_MISMATCH', '不允许替换固定的 arm run', 403)
+            if self.get(db, 'runs', run_id):
+                raise Rejected('RUN_REUSE_FORBIDDEN', '旧 run 不能重新注入，重跑需创建新 Pair')
+            config = self.set_config(db, {**getattr(self, 'baseline_config', DEFAULT_CONFIG), **mutations[scenario]})
             contract = {"version": "2", "suite": "xiaozhi-heldout-v2",
                         "cost_limits": {"input": 2000, "output": 1536, "total": 3536},
                         "answer_consistency": True, "negative_boundary": True, "whole_run_budget": True, "semantic": True, "unaffected_product": True,
                         "no_stalled_requests": True, "same_revision": True, "bounded_cost": True}
-            run = {"id": run_id, "run_id": run_id, "scenario": scenario, "condition": condition, "seed": seed,
+            run = {**scope, "id": run_id, "run_id": run_id, "scenario": scenario, "condition": condition, "seed": seed,
                    "status": "injected", "generation": str(self.meta(db, "generation")), "injected_revision": config["revision"],
+                   "initial_config_revision": "1", "initial_config_hash": digest(getattr(self, 'baseline_config', DEFAULT_CONFIG)),
+                   "injected_config_hash": digest({k: config[k] for k in DEFAULT_CONFIG}),
                    "opened_at": now(), "closed_at": None, "start_mono": time.monotonic(), "elapsed_s": None,
                    "symptoms": [], "model": model, "plan": None, "verification": None, "last_action": None,
                    "contract": contract, "contract_hash": digest(contract), "usage_tokens": 0, "reserved_tokens": 0,
                    "token_budget": token_budget, "usage_unknown": False, "failure_reason": None,
-                   "manifest": {"model": model, "condition": condition, "scenario_seed": seed, "total_token_budget": token_budget,
+                   "manifest": {**scope, "model": model, "condition": condition, "scenario_seed": seed, "total_token_budget": token_budget,
                                 "request_concurrency_limit": 2, "cache_condition": "not_controlled_provider_cache", "memory_condition": "seeded" if "memory" in condition else "off",
                                 "transport_mode": "local", "jev_enabled": False, "fixture_version": "xiaozhi-s9-v1", "verification_suite_hash": digest(contract),
                                 "environment": "demo", "evidence_origin": "live", "hardware_isolation": False}}
@@ -255,7 +286,7 @@ class Store:
             return {"opened": first, "run_id": run["id"]}
 
     def _new_task(self, db, run_id, kind):
-        task = {"id": uid("task"), "run_id": run_id, "kind": kind, "status": "available", "epoch": "0", "holder": None, "lease_deadline": 0.0, "result_summary": None,
+        task = {**getattr(self, "scope", {}), "id": uid("task"), "run_id": run_id, "kind": kind, "status": "available", "epoch": "0", "holder": None, "lease_deadline": 0.0, "result_summary": None,
                 "generation": self.get(db, "runs", run_id)["generation"], "holder_instance_id": None}
         db.execute("INSERT INTO tasks VALUES(?,?,?)", (task["id"], run_id, encode(task)))
         return task
@@ -326,7 +357,7 @@ class Store:
                 task = self.get(db, "tasks", item.get("task_id"))
                 self._valid_task(db, agent, task, run, item.get("task_epoch"))
                 self._valid_context(db, agent, run, item)
-                msg = {**item, "id": uid("msg"), "sender": agent_id, "at": now()}
+                msg = {**item, **getattr(self, "scope", {}), "id": uid("msg"), "sender": agent_id, "at": now()}
                 if self.meta(db, "muted"):
                     self.event(db, "dialog.dropped", {"message_id": msg["id"], "kind": msg["kind"], "summary": "通信已禁言，消息未交付", "reason": "MUTED"}, run_id=run["id"], producer=agent_id)
                     return {"id": msg["id"], "delivered": False}
@@ -340,8 +371,8 @@ class Store:
 
     @staticmethod
     def _plan_hash(plan):
-        return digest({k: plan.get(k) for k in ["run_id", "holder", "instance_id", "actions", "expected_revision",
-                      "generation", "task_id", "task_epoch", "transport_epoch", "resource_fence"]})
+        return digest({k: plan.get(k) for k in ["pair_id", "arm", "spec_hash", "run_id", "holder", "instance_id", "actions", "expected_revision",
+                      "expected_config_hash", "generation", "task_id", "task_epoch", "transport_epoch", "resource_fence"]})
 
     def create_plan(self, agent_id, item):
         with self.tx() as db:
@@ -357,9 +388,10 @@ class Store:
             updates = self._action_updates(item["actions"])
             if not updates:
                 raise Rejected("EMPTY_PLAN", "方案未包含配置变更", 422)
-            plan = {**item, "id": uid("plan"), "holder": agent_id, "status": "proposed", "approved": False,
+            plan = {**item, **getattr(self, "scope", {}), "id": uid("plan"), "holder": agent_id, "status": "proposed", "approved": False,
                     "generation": run["generation"], "resource_fence": str(self.meta(db, "resource_fence")), "created_at": now(),
                     "autonomy_revision": str(self.meta(db, "autonomy_revision")), "transport_epoch": str(self.meta(db, "transport_epoch"))}
+            plan["expected_config_hash"] = digest({k: self.current_config(db)[k] for k in DEFAULT_CONFIG})
             plan["hash"] = self._plan_hash(plan)
             db.execute("INSERT INTO plans VALUES(?,?,?)", (plan["id"], run["id"], encode(plan)))
             run.update(plan=plan, status="awaiting_approval" if self.meta(db, "autonomy") != "L2" else "repairing")
@@ -389,7 +421,13 @@ class Store:
             updates.update(values)
         return updates
 
+    def _valid_scope(self, *items):
+        scope = getattr(self, 'scope', {})
+        if scope and any(item is not None and any(item.get(k) != v for k, v in scope.items()) for item in items):
+            raise Rejected('SCOPE_MISMATCH', '对象不属于此 Pair / arm / run 权威', 403)
+
     def _valid_task(self, db, agent, task, run, epoch):
+        self._valid_scope(agent, task, run)
         if not run or run["generation"] != str(self.meta(db, "generation")):
             raise Rejected("RESET_GENERATION_STALE", "上轮执行身份已被重置作废")
         if task and (task["run_id"] != run["id"] or task.get("generation") != run["generation"]):
@@ -431,10 +469,10 @@ class Store:
                 raise Rejected("GRANT_MISMATCH", "方案内容与审批哈希不符", 403)
             if p["expected_revision"] != self.current_config(db)["revision"]:
                 raise Rejected("PRECONDITION_FAILED", "授权时配置版本已变化")
-            g = {"id": uid("grant"), "plan_id": plan_id, "plan_hash": p["hash"], "holder": agent_id,
+            g = {**getattr(self, "scope", {}), "id": uid("grant"), "plan_id": plan_id, "plan_hash": p["hash"], "holder": agent_id,
                  "instance_id": a["instance_id"], "task_id": p["task_id"], "task_epoch": p["task_epoch"],
                  "resource_fence": p["resource_fence"], "generation": p["generation"], "run_id": run["id"],
-                 "expected_revision": p["expected_revision"], "autonomy_revision": str(self.meta(db, "autonomy_revision")),
+                 "expected_revision": p["expected_revision"], "expected_config_hash": p.get("expected_config_hash"), "autonomy_revision": str(self.meta(db, "autonomy_revision")),
                  "transport_epoch": str(self.meta(db, "transport_epoch")), "contract_hash": run["contract_hash"], "expires_at": time.time() + 60}
             db.execute("INSERT INTO grants VALUES(?,?)", (g["id"], encode(g)))
             self.event(db, "execution.granted", {"grant_id": g["id"], "plan_id": plan_id, "epoch": g["task_epoch"], "fence": g["resource_fence"], "summary": "确定性策略签发有限执行授权"}, run_id=run["id"], producer=agent_id)
@@ -473,6 +511,7 @@ class Store:
                     raise Rejected("RESET_GENERATION_STALE", "旧轮次令牌已失效")
                 if not task or g["task_epoch"] != task["epoch"] or g["resource_fence"] != str(self.meta(db, "resource_fence")):
                     raise Rejected("FENCE_STALE", "旧执行者被新的 epoch/fence 拒绝")
+                self._valid_scope(p, g)
                 self._valid_task(db, a, task, run, g["task_epoch"])
                 if g.get("revoked_at") or g["run_id"] != run["id"] or p["generation"] != run["generation"] or p["task_id"] != g["task_id"] or p["task_epoch"] != g["task_epoch"] or p.get("instance_id") != a["instance_id"] or g["plan_id"] != plan_id or g["plan_hash"] != p["hash"] or p["hash"] != self._plan_hash(p) or g["instance_id"] != a["instance_id"] or g["contract_hash"] != run["contract_hash"]:
                     raise Rejected("GRANT_MISMATCH", "授权绑定内容不符", 403)
@@ -489,11 +528,11 @@ class Store:
                         raise Rejected("IDEMPOTENCY_CONFLICT", "幂等键已被不同请求使用")
                     return {"action_id": data["id"], "revision": data["after_revision"], "status": "applied", "replayed_receipt": True}
                 before = self.current_config(db)
-                if before["revision"] != g["expected_revision"]:
+                if before["revision"] != g["expected_revision"] or (g.get("expected_config_hash") and digest({k: before[k] for k in DEFAULT_CONFIG}) != g["expected_config_hash"]):
                     raise Rejected("PRECONDITION_FAILED", "实际配置版本与授权不符")
                 updates = self._action_updates(p["actions"])
                 after = self.set_config(db, updates)
-                action = {"id": uid("act"), "run_id": run_id, "plan_id": plan_id, "holder": agent_id,
+                action = {**getattr(self, "scope", {}), "id": uid("act"), "run_id": run_id, "plan_id": plan_id, "holder": agent_id,
                           "before_revision": before["revision"], "after_revision": after["revision"],
                           "before": before, "after": after, "actions": p["actions"], "at": now(), "request_hash": request_hash}
                 db.execute("INSERT INTO actions VALUES(?,?,?,?)", (action["id"], run_id, idempotency_key, encode(action)))
@@ -526,6 +565,9 @@ class Store:
                 raise Rejected("NO_APPLIED_ACTION", "尚无可验收的动作")
             result = {**result, "id": uid("verify"), "contract_hash": run["contract_hash"], "at": now()}
             same = str(result.get("tested_revision")) == config["revision"] == run["last_action"]["after_revision"]
+            if getattr(self, 'scope', {}):
+                same = same and result.get('tested_config_hash') == digest({k: config[k] for k in DEFAULT_CONFIG})
+            result['current_config_hash'] = digest({k: config[k] for k in DEFAULT_CONFIG})
             result.setdefault("checks", []).append({"name": "revision_unchanged_at_close", "passed": same, "expected": result.get("tested_revision"), "actual": config["revision"]})
             budget_ok = not run.get("usage_unknown") and not run.get("reserved_tokens") and run["usage_tokens"] <= run["token_budget"]
             result["checks"].append({"name": "whole_run_budget", "passed": budget_ok,
@@ -606,7 +648,7 @@ class Store:
             self.set_meta(db, "transport_epoch", self.meta(db, "transport_epoch") + 1)
             self.set_meta(db, "current_run", None)
             self.set_meta(db, "muted", False)
-            config = self.set_config(db, DEFAULT_CONFIG)
+            config = self.set_config(db, getattr(self, "baseline_config", DEFAULT_CONFIG))
             for row in db.execute("SELECT data FROM agents").fetchall():
                 a = json.loads(row[0])
                 a.update(paused=False, status="idle", detail="重置完成，等待任务", task_id=None)
@@ -643,7 +685,7 @@ class Store:
                     raise Rejected("TOKEN_BUDGET_EXHAUSTED", "本轮总 token 预算不足", 429)
                 run["reserved_tokens"] += reservation
                 self.save(db, "runs", run)
-            usage = {"id": usage_id, "run_id": run_id, "reservation": reservation, "purpose": purpose, "status": "reserved", "at": now()}
+            usage = {**getattr(self, "scope", {}), "id": usage_id, "run_id": run_id, "reservation": reservation, "purpose": purpose, "status": "reserved", "at": now()}
             db.execute("INSERT INTO usage VALUES(?,?,?)", (usage_id, run_id, encode(usage)))
             return usage_id
 

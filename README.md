@@ -9,6 +9,8 @@ Section9 是一个固定小智业务 fixture 上的本地 Agent 故障响应实�
 当前入口（本机）：
 
 - 操作台：<http://127.0.0.1:9019>
+- 蜂群只读展屏：<http://127.0.0.1:9019/showcase/swarm>
+- 单 Agent 只读展屏：<http://127.0.0.1:9019/showcase/baseline>
 - Worker/Agent API：<http://127.0.0.1:9021>
 - 独立 evaluation 进程：<http://127.0.0.1:9024>
 - evaluation worker 进程：<http://127.0.0.1:9026>
@@ -18,6 +20,20 @@ Section9 是一个固定小智业务 fixture 上的本地 Agent 故障响应实�
 - Collector OTLP/HTTP：<http://127.0.0.1:9431/v1/traces>
 
 运行前需要在受保护位置配置远程模型 key。启动脚本会获取并校验固定版本的角色素材；LimeZu 原始图集不在此仓库再分发，详见素材归因。普通角色不读取操作台 SSE、全量日志、当前场景真值或其他角色的私有推理。Jev 当前 disabled；EvoMap Hub 发布与远端检索尚未实现，不是登录后即可启用；推理使用远程 EvoMap Luna API，并非本地或断网推理。
+
+## 双屏 Showcase
+
+两个展屏对应一个 Pair 的两套独立运行实例，分别保存配置、任务、权限、usage 与验收；并发准入共享，预算独立。页面只读，打开或刷新不启动模型请求。原 `/` 侧栏的 Pair showcase 可创建、开始或重置；创建后先打开 SWARM 和 BASELINE 固定链接，再点击“开始”。重跑必须创建新 Pair，旧失败和中断不会覆盖。
+
+七阶段、角色位置、日志和底部五个证据抽屉由真实事件投影。单 Agent 基线只显示一个推理角色。完整契约见 [Showcase 架构](docs/SHOWCASE_ARCHITECTURE.md)，版本、原始实测、截图和限制见 [本次双屏交付](docs/SHOWCASE_DELIVERY.md)。
+
+```sh
+./scripts/start.sh                            # 启动
+./scripts/showcase-acceptance.sh               # 完整复跑，会消耗远程模型预算
+.venv/bin/python scripts/reset-showcase.py     # 重置当前 Pair；保留历史
+```
+
+原控制台的 `scripts/reset.sh` 只重置原控制台，不会重置 Showcase 的 Pair。
 
 ## 启动与停止
 

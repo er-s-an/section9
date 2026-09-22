@@ -71,7 +71,7 @@ try {
   let before = await stateFrom(context.request)
   const oldGeneration = before?.generation
   await chatInput.fill('请说明已激活耳机是否仍可退货？')
-  await page.locator('.chat-dock button').click()
+  await page.locator('.chat-input button').click()
   const activeBeforeReset = await waitFor(async () => {
     const state = await stateFrom(context.request)
     return isActive(state) ? state : null
@@ -97,7 +97,7 @@ try {
   // A fresh UI chat must still be accepted after reset; await its real response/error state.
   await chatInput.fill('重置后请确认客服通道已经恢复。')
   const chatResponsePromise = page.waitForResponse(response => response.url().endsWith('/api/chat') && response.request().method() === 'POST', { timeout: 90000 }).catch(() => null)
-  await page.locator('.chat-dock button').click()
+  await page.locator('.chat-input button').click()
   const chatResponse = await chatResponsePromise
   const freshChat = chatResponse ? await chatResponse.json() : null
   check('post-reset chat returns real business answer', Boolean(chatResponse?.ok()) && freshChat?.status === 'success' && Boolean(freshChat?.answer), { status: freshChat?.status, elapsed_s: freshChat?.elapsed_s })

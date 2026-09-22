@@ -22,7 +22,16 @@ from s9.store import ACTIVE, Rejected, Store, now
 
 @asynccontextmanager
 async def lifespan(app):
+    from s9.model import ModelClient
+    from s9.model_scheduler import ProviderGateway
+    from s9.pairs.coordinator import PairCoordinator
     app.state.core = Core()
+    app.state.gateway = ProviderGateway()
+    await app.state.core.model.close()
+    app.state.core.model = ModelClient(app.state.core.store, app.state.core.telemetry, gateway=app.state.gateway)
+    app.state.core.victim.model = app.state.core.model
+    app.state.pairs = PairCoordinator(config.DATA / 'showcase', app.state.gateway, app.state.core.telemetry, app.state.core.identity)
+    await app.state.pairs.boot()
     # The same authority, a separate restricted ingress. No second database,
     # supervisor, model gateway or application lifespan is started here.
     agent_server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=config.PORT + 2,
@@ -33,22 +42,40 @@ async def lifespan(app):
     agent_task = asyncio.create_task(agent_server.serve())
     await app.state.core.start()
     yield
+    await app.state.pairs.close()
     await app.state.core.stop()
+    await app.state.gateway.close()
     agent_server.should_exit = True
     await agent_task
 
 
 app = FastAPI(title="Section9 local laboratory", lifespan=lifespan)
+from s9.pairs.api import router as pair_router  # noqa: E402
+app.include_router(pair_router)
 
 
 def core(request: Request) -> Core:
-    return request.app.state.core
+    primary = request.app.state.core
+    if request.url.path.startswith('/agent/'):
+        header = request.headers.get('authorization', '')
+        if header.startswith('Bearer '):
+            token = header[7:]
+            try:
+                primary.store.authenticate(token)
+            except Rejected:
+                pairs = getattr(request.app.state, 'pairs', None)
+                if pairs:
+                    bound, _ = pairs.authenticate(token)
+                    request.state.bound_core = bound
+                    return bound
+    request.state.bound_core = primary
+    return primary
 
 
 @app.exception_handler(Rejected)
 async def rejected(request, exc):
     if request.url.path.startswith("/agent/") and hasattr(request.state, "agent_id"):
-        request.app.state.core.store.emit("agent.request_rejected", {"path": request.url.path, "code": exc.code,
+        getattr(request.state, "bound_core", request.app.state.core).store.emit("agent.request_rejected", {"path": request.url.path, "code": exc.code,
             "summary": exc.message}, producer=request.state.agent_id)
     return JSONResponse({"error": {"code": exc.code, "message": exc.message}}, status_code=exc.status)
 
@@ -368,6 +395,13 @@ async def telemetry(request: Request, c: Core = Depends(core)):
                     if rid == "interactive":
                         rid = None
                     destination = c.store
+                    pair_id = attrs.get('langfuse.observation.metadata.pair_id')
+                    arm = attrs.get('langfuse.observation.metadata.arm')
+                    if pair_id and pair_id != 'console':
+                        pairs = getattr(request.app.state, 'pairs', None)
+                        destination = pairs.telemetry_store(pair_id, rid, arm) if pairs else None
+                        if destination is None:
+                            continue
                     if rid and not destination.run(rid):
                         destination = c.evaluation_store()
                         if not destination or not destination.run(rid):
@@ -398,6 +432,8 @@ if dist.exists():
 
 
 @app.get("/")
+@app.get("/showcase/swarm")
+@app.get("/showcase/baseline")
 async def index():
     if not (dist / "index.html").exists():
         return JSONResponse({"error": {"code": "FRONTEND_NOT_BUILT", "message": "请执行启动脚本构建前端"}}, status_code=503)

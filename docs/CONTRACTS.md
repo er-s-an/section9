@@ -98,3 +98,7 @@ Model calibration: GLM includes reasoning in completion budget. Healthy max_outp
 - Cost acceptance checks nonnegative integer input/output/total, input<=2000, output<=1536, total<=3536, total=input+output. Unknown usage fails. Closure also requires the entire run within budget, no unknown or pending reservation, and tested revision still current.
 - Scoreboard defaults to the current five-hash implementation group. `/api/scoreboard?version=...` selects historical groups, including `legacy` for records without full provenance. Unknown usage is shown beside known token subtotals.
 - `memory + muted` is unsupported and rejected at the console injection endpoint. A muted-only injection is valid and its manifest records condition `muted`.
+
+## Paired Showcase (schema 1)
+
+The single active run constraint above now applies per runtime, not to the entire backend. The original console is unchanged in scope. PairCoordinator owns two additional isolated stores for each explicit paired experiment. Pair/run/arm/spec scope is persisted and bound into agent identity, tasks, plan hashes and grants. Pair verification additionally binds tested_config_hash to the current arm configuration. See [SHOWCASE_ARCHITECTURE.md](SHOWCASE_ARCHITECTURE.md) for immutable specification, shared admission, reset, restart and read-only event contracts. Historical independent runs are never migrated into paired data.

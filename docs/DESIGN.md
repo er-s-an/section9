@@ -12,3 +12,7 @@
 ## 可访问性和退化
 
 焦点态、输入标签、禁用态和错误条均保留；`prefers-reduced-motion: reduce` 会停用循环动画。桌面目标宽度为 1280–1440px，窄屏仍保持主要操作可见。后端不可用时 UI 显示离线与错误，不假装在线。
+
+## Paired Showcase
+
+Two fixed URLs now use a separate read-only state hook. Each screen prioritizes Pair/run/spec identity, actual outcome, seven evidence-backed stages, a compact workspace, scrollable Logbook and five evidence drawers. Swarm reuses the attributed Star Office background and local character assets. Baseline shows one reasoning actor and labels deterministic verification separately. Displayed motion maps real actor activity; no timer advances experiment stages. The original `/` remains the control surface for create/start/reset and existing single-run operations.

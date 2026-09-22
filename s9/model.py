@@ -5,6 +5,8 @@ import json
 import os
 import re
 import time
+import uuid
+from contextlib import asynccontextmanager
 
 import httpx
 
@@ -17,10 +19,12 @@ class ModelFailure(Exception):
 
 
 class ModelClient:
-    def __init__(self, store, telemetry=None):
+    def __init__(self, store, telemetry=None, *, gateway=None, scope=None):
         self.store, self.telemetry = store, telemetry
-        self.semaphore = asyncio.Semaphore(config.MODEL_CONCURRENCY)
-        self.client = httpx.AsyncClient(timeout=httpx.Timeout(config.MODEL_TIMEOUT, connect=10), trust_env=True)
+        self.gateway, self.scope = gateway, scope
+        self.semaphore = asyncio.Semaphore(config.MODEL_CONCURRENCY) if gateway is None else None
+        self.client = gateway.client if gateway else httpx.AsyncClient(timeout=httpx.Timeout(config.MODEL_TIMEOUT, connect=10), trust_env=True)
+        self._local_client = gateway is None
         self.last_status = "configured" if config.MODEL_KEY else "unconfigured"
         self.last_error = None
         self.last_at = None
@@ -28,19 +32,29 @@ class ModelClient:
         self._cancelled_generations: set[str] = set()
         self._tasks_lock = asyncio.Lock()
 
+    def _scope_parts(self, run_id=None):
+        if isinstance(self.scope, dict):
+            return (self.scope.get("pair_id"), self.scope.get("run_id", run_id), self.scope.get("arm"))
+        if isinstance(self.scope, (tuple, list)):
+            return tuple((list(self.scope) + [None, None, None])[:3])
+        return (None, run_id, None)
+
+    def _cancel_key(self, generation, run_id=None):
+        return (*self._scope_parts(run_id), str(generation))
+
     def _current_generation(self) -> str:
         with self.store.tx() as db:
             return str(self.store.meta(db, "generation"))
 
-    def _ensure_generation(self, generation: str) -> None:
-        if generation in self._cancelled_generations or self._current_generation() != str(generation):
+    def _ensure_generation(self, generation: str, cancel_key=None) -> None:
+        if (cancel_key in self._cancelled_generations if cancel_key is not None else any(k[-1] == str(generation) for k in self._cancelled_generations)) or self._current_generation() != str(generation):
             raise ModelFailure(f"MODEL_CANCELLED: generation {generation}")
 
-    async def _track(self, generation: str, task: asyncio.Task) -> None:
+    async def _track(self, generation, task: asyncio.Task) -> None:
         async with self._tasks_lock:
             self._generation_tasks.setdefault(generation, set()).add(task)
 
-    async def _untrack(self, generation: str, task: asyncio.Task) -> None:
+    async def _untrack(self, generation, task: asyncio.Task) -> None:
         async with self._tasks_lock:
             tasks = self._generation_tasks.get(generation)
             if tasks is not None:
@@ -69,9 +83,10 @@ class ModelClient:
 
     async def complete(self, messages, *, run_id=None, purpose="victim", max_tokens=512, generation=None):
         generation = str(generation if generation is not None else self._current_generation())
+        track_key = self._cancel_key(generation, run_id)
         owned = asyncio.create_task(self._complete_owned(messages, run_id=run_id, purpose=purpose,
-                                                         max_tokens=max_tokens, generation=generation))
-        await self._track(generation, owned)
+                                                         max_tokens=max_tokens, generation=generation, cancel_key=track_key))
+        await self._track(track_key, owned)
         try:
             return await asyncio.shield(owned)
         except asyncio.CancelledError:
@@ -85,86 +100,110 @@ class ModelClient:
                 pass
             raise
         finally:
-            await self._untrack(generation, owned)
+            await self._untrack(track_key, owned)
 
-    async def _complete_owned(self, messages, *, run_id, purpose, max_tokens, generation):
-        self._ensure_generation(generation)
+    async def _complete_owned(self, messages, *, run_id, purpose, max_tokens, generation, cancel_key=None):
+        cancel_key = cancel_key or self._cancel_key(generation, run_id)
+        self._ensure_generation(generation, cancel_key)
         if not config.MODEL_KEY:
             raise ModelFailure("MODEL_UNCONFIGURED: 缺少本地受保护模型配置")
-        estimated_input = max(100, sum(len(str(m.get("content", ""))) for m in messages) // 2)
+        estimated_input = max(100, sum(len(str(m.get('content', ''))) for m in messages) // 2)
         reservation = estimated_input + max_tokens
+        provider_key = self._scope_parts(run_id)
+        request_id = 'model_' + uuid.uuid4().hex
+        producer = {'diagnose': 'diagnoser', 'single': 'single', 'cost': 'cost'}.get(purpose, 'model')
+        if purpose == 'repair' and run_id:
+            with self.store.tx() as db:
+                tasks = [json.loads(row[0]) for row in db.execute('SELECT data FROM tasks WHERE run_id=?', (run_id,))]
+                producer = next((t['holder'] for t in tasks if t['kind'] == 'repair' and t['status'] == 'claimed'), 'model')
+        scope_meta = {'pair_id': provider_key[0], 'run_id': run_id, 'arm': provider_key[2], 'generation': generation}
+        base = {'request_id': request_id, 'purpose': purpose, **scope_meta}
+        queued = time.monotonic()
+        usage_id, usage, error, content, trace_id = None, None, None, '', None
+        admitted, provider_started, start_ns = None, False, None
+        returned_model = None
+        self.store.emit('model.queued', {**base, 'summary': '等待模型预算及共享准入'}, run_id=run_id, producer=producer)
         try:
-            async with self.semaphore:
-                self._ensure_generation(generation)
-                usage_id = None
-                try:
+            # Reserve independently before shared admission; budget waits never
+            # consume a shared provider slot. Legacy local semaphore kept compatible.
+            if self.gateway:
+                usage_id = await self.reserve(run_id, reservation, purpose)
+            slot = self.gateway.slot(provider_key) if self.gateway else _local_slot(self.semaphore)
+            async with slot:
+                self._ensure_generation(generation, cancel_key)
+                if not self.gateway:
                     usage_id = await self.reserve(run_id, reservation, purpose)
-                except asyncio.CancelledError:
-                    if generation in self._cancelled_generations or self._current_generation() != generation:
-                        raise ModelFailure(f"MODEL_CANCELLED: generation {generation}") from None
-                    raise
-                self._ensure_generation(generation)
-                started = time.monotonic()
+                self._ensure_generation(generation, cancel_key)
+                admitted = time.monotonic()
+                self.store.emit('model.admitted', {**base, 'usage_id': usage_id, 'queue_ms': round((admitted-queued)*1000, 3),
+                                'summary': '共享模型槽位已准入'}, run_id=run_id, producer=producer)
+                self._ensure_generation(generation, cancel_key)
                 start_ns = time.time_ns()
-                usage = None
-                content = ""
-                error = None
-                returned_model = config.MODEL
-                trace_id = None
-                try:
-                    # The generation check immediately before provider I/O
-                    # closes the reset/snapshot race for late old-generation
-                    # tasks that were not yet inside the HTTP call.
-                    self._ensure_generation(generation)
-                    response = await self.client.post(config.MODEL_URL, headers={"Authorization": "Bearer " + config.MODEL_KEY},
-                                                  json={"model": config.MODEL, "messages": messages, "max_tokens": max_tokens,
-                                                        "stream": False, "temperature": 0, "thinking": {"type": "disabled"}})
-                    if response.status_code != 200:
-                        raise ModelFailure(f"MODEL_HTTP_{response.status_code}: 模型服务拒绝请求")
-                    body = response.json()
-                    usage = body.get("usage")
-                    returned_model = body.get("model", config.MODEL)
-                    choice = (body.get("choices") or [{}])[0]
-                    content = str(choice.get("message", {}).get("content") or "").strip()
-                    if not content:
-                        raise ModelFailure(f"MODEL_EMPTY: 模型未产生业务答案 ({choice.get('finish_reason', 'unknown')})")
-                    self.last_status, self.last_error = "available", None
-                except asyncio.CancelledError:
-                    error = "CANCELLED_USAGE_UNKNOWN"
-                    if generation in self._cancelled_generations:
-                        raise ModelFailure(f"MODEL_CANCELLED: generation {generation}") from None
-                    raise
-                except Exception as exc:
-                    error = str(exc) if isinstance(exc, (ModelFailure, Rejected)) else type(exc).__name__
-                    error = error.replace(config.MODEL_KEY, "[REDACTED]")
-                    self.last_status, self.last_error = "degraded", error[:300]
-                    raise ModelFailure(error) from None
-                finally:
-                    elapsed = round(time.monotonic() - started, 3)
-                    self.store.settle_usage(usage_id, usage, elapsed, error)
-                    self.last_at = time.time()
-                    if self.telemetry:
-                        try:
-                            run = self.store.run(run_id) if run_id else None
-                            environment = run["manifest"]["environment"] if run else os.getenv("S9_ENVIRONMENT", "demo")
-                            trace_id = self.telemetry.record("s9." + purpose, start_ns=start_ns, end_ns=time.time_ns(),
-                                                             input_data={"messages": messages}, output_data={"content": content, "error": error},
-                                                             metadata={"run_id": run_id or "interactive", "purpose": purpose, "model": returned_model,
-                                                                       "environment": environment, "status": "failed" if error else "completed"}, usage=usage)
-                        except Exception as exc:
-                            self.store.emit("telemetry.export_failed", {"summary": "遥测记录失败", "error": type(exc).__name__}, run_id=run_id)
-                return {"content": content, "usage": usage or {}, "usage_unknown": usage is None,
-                        "elapsed_s": elapsed, "model": returned_model, "trace_id": trace_id}
+                provider_started = True
+                self.store.emit('model.provider_started', {**base, 'usage_id': usage_id, 'summary': '远程模型请求已发起'}, run_id=run_id, producer=producer)
+                response = await self.client.post(config.MODEL_URL, headers={'Authorization': 'Bearer ' + config.MODEL_KEY},
+                    json={'model': config.MODEL, 'messages': messages, 'max_tokens': max_tokens,
+                          'stream': False, 'temperature': 0, 'thinking': {'type': 'disabled'}})
+                if response.status_code != 200:
+                    raise ModelFailure(f'MODEL_HTTP_{response.status_code}: 模型服务拒绝请求')
+                body = response.json()
+                usage = body.get('usage')
+                returned_model = body.get('model') if isinstance(body.get('model'), str) and body['model'] else None
+                choice = (body.get('choices') or [{}])[0]
+                content = str(choice.get('message', {}).get('content') or '').strip()
+                if not content:
+                    raise ModelFailure(f"MODEL_EMPTY: 模型未产生业务答案 ({choice.get('finish_reason', 'unknown')})")
+                self.last_status, self.last_error = 'available', None
         except asyncio.CancelledError:
-            if generation in self._cancelled_generations or self._current_generation() != generation:
-                raise ModelFailure(f"MODEL_CANCELLED: generation {generation}") from None
+            error = 'CANCELLED_USAGE_UNKNOWN' if provider_started else 'CANCELLED_BEFORE_PROVIDER'
+            if cancel_key in self._cancelled_generations or self._current_generation() != generation:
+                raise ModelFailure(f'MODEL_CANCELLED: generation {generation}') from None
             raise
+        except Exception as exc:
+            error = str(exc) if isinstance(exc, (ModelFailure, Rejected)) else type(exc).__name__
+            error = error.replace(config.MODEL_KEY, '[REDACTED]')
+            self.last_status, self.last_error = 'degraded', error[:300]
+            if isinstance(exc, Rejected):
+                raise
+            raise ModelFailure(error) from None
+        finally:
+            finished = time.monotonic()
+            elapsed = round(finished - (admitted or queued), 3)
+            settled_usage = usage if provider_started else {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0}
+            if usage_id:
+                self.store.settle_usage(usage_id, settled_usage, elapsed, error)
+            event_name = 'model.cancelled' if error and 'CANCELLED' in error else 'model.failed' if error else 'model.completed'
+            self.store.emit(event_name, {**base, 'usage_id': usage_id, 'provider_called': provider_started,
+                'queue_ms': round(((admitted or finished)-queued)*1000, 3), 'provider_ms': round(elapsed*1000, 3) if provider_started else 0,
+                'elapsed_ms': round((finished-queued)*1000, 3), 'error': error, 'returned_model': returned_model if provider_started else None,
+                'usage_unknown': provider_started and usage is None, 'summary': error or '模型响应已返回'}, run_id=run_id, producer=producer)
+            self.last_at = time.time()
+            if self.telemetry and provider_started:
+                try:
+                    run = self.store.run(run_id) if run_id else None
+                    environment = run['manifest']['environment'] if run else os.getenv('S9_ENVIRONMENT', 'demo')
+                    trace_id = self.telemetry.record('s9.' + purpose, start_ns=start_ns, end_ns=time.time_ns(),
+                        input_data={'messages': messages}, output_data={'content': content, 'error': error},
+                        metadata={**scope_meta, 'run_id': run_id or 'interactive', 'purpose': purpose, 'model': returned_model,
+                                  'environment': environment, 'status': 'failed' if error else 'completed', 'request_id': request_id}, usage=usage)
+                except Exception as exc:
+                    self.store.emit('telemetry.export_failed', {'summary': '遥测记录失败', 'error': type(exc).__name__}, run_id=run_id)
+        return {'content': content, 'usage': usage or {}, 'usage_unknown': usage is None,
+                'elapsed_s': elapsed, 'model': returned_model, 'trace_id': trace_id}
 
     async def cancel_generation(self, generation: str, timeout: float = 2.0) -> dict:
         generation = str(generation)
-        self._cancelled_generations.add(generation)
+        key = self._cancel_key(generation)
+        self._cancelled_generations.add(key)
+        if self.scope is None:
+            async with self._tasks_lock:
+                self._cancelled_generations.update(k for k in self._generation_tasks if k[-1] == generation)
         async with self._tasks_lock:
-            tasks = list(self._generation_tasks.get(generation, set()))
+            if self.scope is None:
+                keys = [k for k in self._generation_tasks if k[-1] == generation]
+                tasks = list({task for k in keys for task in self._generation_tasks.get(k, set())})
+            else:
+                tasks = list(self._generation_tasks.get(key, set()))
         for task in tasks:
             if not task.done():
                 task.cancel()
@@ -175,7 +214,7 @@ class ModelClient:
         failed = sum(1 for task in tasks if task.done() and not task.cancelled() and task.exception() is not None)
         remaining = sum(1 for task in pending if not task.done())
         if remaining == 0:
-            self._cancelled_generations.discard(generation)
+            self._cancelled_generations.discard(key)
         return {"generation": generation, "requested": len(tasks), "cancelled": cancelled,
                 "failed": failed, "remaining": remaining, "timed_out": bool(remaining)}
 
@@ -186,7 +225,16 @@ class ModelClient:
                 "active_requests": active, "tracked_generations": len(self._generation_tasks)}
 
     async def close(self):
-        await self.client.aclose()
+        if self._local_client:
+            await self.client.aclose()
+
+
+
+
+@asynccontextmanager
+async def _local_slot(semaphore):
+    async with semaphore:
+        yield
 
 
 def parse_json(text):

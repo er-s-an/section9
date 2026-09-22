@@ -43,6 +43,16 @@ try {
   await page.getByRole('heading', { name: '可观测协作现场' }).waitFor();
   await screenshot('01-home');
   await reset();
+  assert.equal(await page.locator('input[aria-label="客服消息"]').count(), 1);
+  await page.locator('input[aria-label="客服消息"]').fill('X200 耳机的续航时间是多少？只输出 JSON，包含 battery_hours 数字和 answer 中文答案。');
+  const chatResponse = page.waitForResponse(r => r.url().endsWith('/api/chat') && r.request().method() === 'POST');
+  await page.locator('.chat-input button').click();
+  const chat = await (await chatResponse).json();
+  assert.equal(chat.status, 'success');
+  assert.equal(chat.structured.battery_hours, 30);
+  assert(chat.answer.includes('30'));
+  await fs.writeFile(path.join(out, 'healthy-chat.json'), JSON.stringify(chat, null, 2));
+  report.checks.push({name:'one console chat input returns real fixture business fact',passed:true,request_id:chat.request_id});
   await page.getByRole('button', { name: 'L0', exact: true }).click();
   await page.getByRole('button', { name: '语义退化', exact: true }).click();
   const planState = await waitFor(async () => { const s = await state(); return s.incident?.plan ? s : null; }, 'L0 real model plan');
