@@ -1,0 +1,331 @@
+{
+  "checked_at": "2026-09-22T06:45:06.768491Z",
+  "pair_id": "pair_f29b0ee70e894cfe",
+  "status": "received",
+  "endpoint_status": {
+    "baseline": 200,
+    "swarm": 200
+  },
+  "arms": {
+    "baseline": {
+      "run_id": "run_266f50a4fcd14053",
+      "pair_id": "pair_f29b0ee70e894cfe",
+      "arm": "baseline",
+      "trace_ids": [
+        "4f4b55d316a480fecdf5dbc8b5e9a799",
+        "57471884e1abdbe8fa9b9ef63063f1f8",
+        "5f0505c0c1b135fffd130d9a95242dc8",
+        "60aed4319e457d9eebc0bf513ab36dfd",
+        "96420f22c4a0b805e65367045fab6e63",
+        "cf4274bc101b0c4a36f3ac2c7294caae",
+        "f560906dada300f184a57e6987f69f1a"
+      ],
+      "event_count": 108
+    },
+    "swarm": {
+      "run_id": "run_4cb41bcd82a84985",
+      "pair_id": "pair_f29b0ee70e894cfe",
+      "arm": "swarm",
+      "trace_ids": [
+        "07b8ac26bad43b5cf154f1d5806c7033",
+        "13bc5c9a73d070d9ae37efed41ce2b6d",
+        "33bfd90f71150ca4adbe3b06f06e5d72",
+        "50000ebc9288d90dfbafa11264630f2b",
+        "7b4fd7ef8f406ccb7693b3c322c58ae5",
+        "ac2a03714ec76cf151f9f1dc7bc61a2e",
+        "bbf5ef399a0113c7a33f9289b909d41f",
+        "d2e556859d8a85a42eea32953608b4b2"
+      ],
+      "event_count": 154
+    }
+  },
+  "langfuse_status": 200,
+  "catalog_status": 200,
+  "catalog_binding_valid": true,
+  "langfuse_observations": [
+    {
+      "trace_id": "33bfd90f71150ca4adbe3b06f06e5d72",
+      "run_id": "run_4cb41bcd82a84985",
+      "arm": "swarm",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_4cb41bcd82a84985",
+        "arm": "swarm"
+      },
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T06:43:18.396Z"
+    },
+    {
+      "trace_id": "50000ebc9288d90dfbafa11264630f2b",
+      "run_id": "run_4cb41bcd82a84985",
+      "arm": "swarm",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_4cb41bcd82a84985",
+        "arm": "swarm"
+      },
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T06:43:16.568Z"
+    },
+    {
+      "trace_id": "07b8ac26bad43b5cf154f1d5806c7033",
+      "run_id": "run_4cb41bcd82a84985",
+      "arm": "swarm",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_4cb41bcd82a84985",
+        "arm": "swarm"
+      },
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T06:43:13.776Z"
+    },
+    {
+      "trace_id": "bbf5ef399a0113c7a33f9289b909d41f",
+      "run_id": "run_4cb41bcd82a84985",
+      "arm": "swarm",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_4cb41bcd82a84985",
+        "arm": "swarm"
+      },
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T06:43:13.762Z"
+    },
+    {
+      "trace_id": "ac2a03714ec76cf151f9f1dc7bc61a2e",
+      "run_id": "run_4cb41bcd82a84985",
+      "arm": "swarm",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_4cb41bcd82a84985",
+        "arm": "swarm"
+      },
+      "name": "s9.loop-workload",
+      "timestamp": "2026-09-22T06:43:07.792Z"
+    },
+    {
+      "trace_id": "7b4fd7ef8f406ccb7693b3c322c58ae5",
+      "run_id": "run_4cb41bcd82a84985",
+      "arm": "swarm",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_4cb41bcd82a84985",
+        "arm": "swarm"
+      },
+      "name": "s9.repair",
+      "timestamp": "2026-09-22T06:43:06.257Z"
+    },
+    {
+      "trace_id": "4f4b55d316a480fecdf5dbc8b5e9a799",
+      "run_id": "run_266f50a4fcd14053",
+      "arm": "baseline",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_266f50a4fcd14053",
+        "arm": "baseline"
+      },
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T06:43:04.098Z"
+    },
+    {
+      "trace_id": "5f0505c0c1b135fffd130d9a95242dc8",
+      "run_id": "run_266f50a4fcd14053",
+      "arm": "baseline",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_266f50a4fcd14053",
+        "arm": "baseline"
+      },
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T06:43:03.859Z"
+    },
+    {
+      "trace_id": "f560906dada300f184a57e6987f69f1a",
+      "run_id": "run_266f50a4fcd14053",
+      "arm": "baseline",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_266f50a4fcd14053",
+        "arm": "baseline"
+      },
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T06:43:01.045Z"
+    },
+    {
+      "trace_id": "cf4274bc101b0c4a36f3ac2c7294caae",
+      "run_id": "run_266f50a4fcd14053",
+      "arm": "baseline",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_266f50a4fcd14053",
+        "arm": "baseline"
+      },
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T06:43:00.930Z"
+    },
+    {
+      "trace_id": "60aed4319e457d9eebc0bf513ab36dfd",
+      "run_id": "run_266f50a4fcd14053",
+      "arm": "baseline",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_266f50a4fcd14053",
+        "arm": "baseline"
+      },
+      "name": "s9.loop-workload",
+      "timestamp": "2026-09-22T06:42:58.584Z"
+    },
+    {
+      "trace_id": "d2e556859d8a85a42eea32953608b4b2",
+      "run_id": "run_4cb41bcd82a84985",
+      "arm": "swarm",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_4cb41bcd82a84985",
+        "arm": "swarm"
+      },
+      "name": "s9.diagnose",
+      "timestamp": "2026-09-22T06:42:53.331Z"
+    },
+    {
+      "trace_id": "57471884e1abdbe8fa9b9ef63063f1f8",
+      "run_id": "run_266f50a4fcd14053",
+      "arm": "baseline",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_266f50a4fcd14053",
+        "arm": "baseline"
+      },
+      "name": "s9.single",
+      "timestamp": "2026-09-22T06:42:53.019Z"
+    },
+    {
+      "trace_id": "96420f22c4a0b805e65367045fab6e63",
+      "run_id": "run_266f50a4fcd14053",
+      "arm": "baseline",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_266f50a4fcd14053",
+        "arm": "baseline"
+      },
+      "name": "s9.probe:detect",
+      "timestamp": "2026-09-22T06:42:48.044Z"
+    },
+    {
+      "trace_id": "13bc5c9a73d070d9ae37efed41ce2b6d",
+      "run_id": "run_4cb41bcd82a84985",
+      "arm": "swarm",
+      "metadata": {
+        "pair_id": "pair_f29b0ee70e894cfe",
+        "run_id": "run_4cb41bcd82a84985",
+        "arm": "swarm"
+      },
+      "name": "s9.probe:detect",
+      "timestamp": "2026-09-22T06:42:48.028Z"
+    }
+  ],
+  "both_path_matches": [
+    {
+      "arm": "baseline",
+      "run_id": "run_266f50a4fcd14053",
+      "trace_id": "4f4b55d316a480fecdf5dbc8b5e9a799",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "baseline",
+      "run_id": "run_266f50a4fcd14053",
+      "trace_id": "57471884e1abdbe8fa9b9ef63063f1f8",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "baseline",
+      "run_id": "run_266f50a4fcd14053",
+      "trace_id": "5f0505c0c1b135fffd130d9a95242dc8",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "baseline",
+      "run_id": "run_266f50a4fcd14053",
+      "trace_id": "60aed4319e457d9eebc0bf513ab36dfd",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "baseline",
+      "run_id": "run_266f50a4fcd14053",
+      "trace_id": "96420f22c4a0b805e65367045fab6e63",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "baseline",
+      "run_id": "run_266f50a4fcd14053",
+      "trace_id": "cf4274bc101b0c4a36f3ac2c7294caae",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "baseline",
+      "run_id": "run_266f50a4fcd14053",
+      "trace_id": "f560906dada300f184a57e6987f69f1a",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "swarm",
+      "run_id": "run_4cb41bcd82a84985",
+      "trace_id": "07b8ac26bad43b5cf154f1d5806c7033",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "swarm",
+      "run_id": "run_4cb41bcd82a84985",
+      "trace_id": "13bc5c9a73d070d9ae37efed41ce2b6d",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "swarm",
+      "run_id": "run_4cb41bcd82a84985",
+      "trace_id": "33bfd90f71150ca4adbe3b06f06e5d72",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "swarm",
+      "run_id": "run_4cb41bcd82a84985",
+      "trace_id": "50000ebc9288d90dfbafa11264630f2b",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "swarm",
+      "run_id": "run_4cb41bcd82a84985",
+      "trace_id": "7b4fd7ef8f406ccb7693b3c322c58ae5",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "swarm",
+      "run_id": "run_4cb41bcd82a84985",
+      "trace_id": "ac2a03714ec76cf151f9f1dc7bc61a2e",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "swarm",
+      "run_id": "run_4cb41bcd82a84985",
+      "trace_id": "bbf5ef399a0113c7a33f9289b909d41f",
+      "status": "both_paths_received"
+    },
+    {
+      "arm": "swarm",
+      "run_id": "run_4cb41bcd82a84985",
+      "trace_id": "d2e556859d8a85a42eea32953608b4b2",
+      "status": "both_paths_received"
+    }
+  ],
+  "matches_by_arm": {
+    "baseline": 7,
+    "swarm": 8
+  },
+  "limits": {
+    "timeout_seconds": 5,
+    "langfuse_limit": 100,
+    "coverage": "latest 100 Langfuse observations only; missing matches are degraded, not proof of absence",
+    "read_only": true,
+    "model_calls": 0
+  },
+  "criteria": "same full trace_id, pair_id, run_id, and arm in pair telemetry.span_received and local Langfuse metadata"
+}

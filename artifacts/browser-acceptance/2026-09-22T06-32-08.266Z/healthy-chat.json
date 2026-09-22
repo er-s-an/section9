@@ -1,0 +1,21 @@
+{
+  "request_id": "d7d7216c-3228-42b9-befa-729cef6e50f4",
+  "answer": "{\"battery_hours\":30,\"answer\":\"X200 蓝牙耳机总续航 30 小时（含充电盒）。\"}",
+  "structured": {
+    "battery_hours": 30,
+    "answer": "X200 蓝牙耳机总续航 30 小时（含充电盒）。"
+  },
+  "revision": "122",
+  "usage": {
+    "input_tokens": 912,
+    "output_tokens": 31,
+    "total_tokens": 943,
+    "token_quality": "provider",
+    "estimated_input_tokens": 410
+  },
+  "elapsed_s": 3.2317487079417333,
+  "trace_id": "2ed433b255960e0b0aff583f3bb7383c",
+  "status": "success",
+  "model": "gpt-5.6-luna",
+  "tool_calls": 1
+}

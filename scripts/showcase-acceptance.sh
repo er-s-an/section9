@@ -9,6 +9,7 @@ npm --prefix frontend run build
 .venv/bin/python scripts/service.py start
 .venv/bin/python scripts/verify-pair-reset.py
 node scripts/browser-acceptance.mjs
+.venv/bin/python scripts/run-pair-cases.py
 node scripts/browser-showcase.mjs
 .venv/bin/python - <<'PY'
 import httpx, subprocess

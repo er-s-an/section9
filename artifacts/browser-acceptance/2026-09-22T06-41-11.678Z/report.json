@@ -1,0 +1,77 @@
+{
+  "identity": {
+    "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+    "git_commit": "425c2f01d3f830c28ed08d5785880ccb5187b3d6",
+    "dirty": true,
+    "dirty_diff_sha256": "674481e33cbb31690acf338f9d9252dd06c53343ffae8148dde4eb78bab27c10",
+    "backend_source_hash": "c00a8ab6949fc198c8c035c8cdc55d7574fcde6c3e94ee45a6494b80ea4ba98d",
+    "frontend_build_hash": "5b57d93e69b097234bef5c5d35eb57d7ad4f28fcd2f0bf347a0c061d30e756f5",
+    "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+    "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+    "acceptance_contract_hash": "09b5f4bd0bdf0c8533eb7acf4b822e2452d7df8dcaebe988aab216125674b68d"
+  },
+  "started_at": "2026-09-22T06:41:12.837Z",
+  "base_url": "http://127.0.0.1:9019",
+  "checks": [
+    {
+      "name": "one console chat input returns real fixture business fact",
+      "passed": true,
+      "request_id": "c4e99e4c-a78a-4ef0-8016-485464ba7671"
+    },
+    {
+      "name": "L0 actual write denial",
+      "passed": true,
+      "run_id": "run_00b65a4cbf4848ae",
+      "revision": "126"
+    },
+    {
+      "name": "L1 approved exact plan and live business checks",
+      "passed": true,
+      "run_id": "run_00b65a4cbf4848ae"
+    },
+    {
+      "name": "actual OS pause, takeover and stale A rejection without write",
+      "passed": true,
+      "run_id": "run_514d11064a05467f",
+      "old_actor": "fixer-a",
+      "new_actor": "fixer-b"
+    },
+    {
+      "name": "reset invalidates in-flight grant and restores healthy configuration",
+      "passed": true,
+      "run_id": "run_588473eb312a4cda",
+      "reset_revision": "133"
+    },
+    {
+      "name": "communication control toggles server transport epoch",
+      "passed": true
+    },
+    {
+      "name": "run detail and actual evidence drawer open",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "L0-L1-exact-approval",
+      "id": "run_00b65a4cbf4848ae",
+      "status": "resolved",
+      "elapsed_s": 27.424
+    },
+    {
+      "label": "fencing",
+      "id": "run_514d11064a05467f",
+      "status": "resolved",
+      "elapsed_s": 32.825
+    },
+    {
+      "label": "reset-old-grant",
+      "id": "run_588473eb312a4cda",
+      "status": "reset",
+      "elapsed_s": 14.603
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "finished_at": "2026-09-22T06:42:41.696Z"
+}

@@ -1,0 +1,32 @@
+{
+  "kind": "root_record_of_executed_component_checks",
+  "identity": {
+    "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+    "git_commit": "4ae82eba6bf7959706e3cc43c10a98db44e7b5e2",
+    "dirty": true,
+    "dirty_diff_sha256": "4741666bc08a9c3aeb445bf936c741e8ce2f166b0225dc26721af27933e3fdf6",
+    "backend_source_hash": "b357f815a5073ba62fc5fa603608eaec24ebf5b7553bbc178576ad51d28b0119",
+    "frontend_build_hash": "5b57d93e69b097234bef5c5d35eb57d7ad4f28fcd2f0bf347a0c061d30e756f5",
+    "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+    "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+    "acceptance_contract_hash": "09b5f4bd0bdf0c8533eb7acf4b822e2452d7df8dcaebe988aab216125674b68d"
+  },
+  "commands": [
+    {
+      "command": ".venv/bin/python -m pytest -q",
+      "exit_code": 0,
+      "summary": "151 passed in 22.22s"
+    },
+    {
+      "command": ".venv/bin/ruff check s9 tests scripts/check-pair-telemetry.py scripts/verify-pair-reset.py scripts/reset-showcase.py",
+      "exit_code": 0,
+      "summary": "All checks passed"
+    },
+    {
+      "command": "npm --prefix frontend run build",
+      "exit_code": 0,
+      "summary": "tsc -b and vite build; 4581 modules transformed; 9.54s"
+    }
+  ],
+  "scope": "Component checks use temporary Stores and test transports where appropriate; these are not real-model acceptance evidence."
+}

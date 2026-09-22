@@ -1,0 +1,266 @@
+{
+  "base": "http://127.0.0.1:9019",
+  "started_at": "2026-09-22T06:14:37.320Z",
+  "checks": [
+    {
+      "name": "unknown_pair_and_api_not_swallowed",
+      "passed": true,
+      "evidence": true
+    },
+    {
+      "name": "create_freezes_two_run_ids_no_provider",
+      "passed": true,
+      "evidence": "941088da67e40c910de3d411bc3cd9f653ed2e60e096321a20cb59707ed36f6e"
+    },
+    {
+      "name": "two_active_arms_same_generation",
+      "passed": true,
+      "evidence": true
+    },
+    {
+      "name": "reconnect_no_duplicate_swarm",
+      "passed": true,
+      "evidence": {
+        "shown": 172,
+        "cursor": 538
+      }
+    },
+    {
+      "name": "layout_swarm_1280",
+      "passed": true,
+      "evidence": {
+        "width": 1280,
+        "scrollWidth": 1280,
+        "evidenceBottom": 776,
+        "height": 800,
+        "logHeight": 205
+      }
+    },
+    {
+      "name": "layout_swarm_1440",
+      "passed": true,
+      "evidence": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "evidenceBottom": 974,
+        "height": 1000,
+        "logHeight": 325
+      }
+    },
+    {
+      "name": "drawer_keyboard_swarm",
+      "passed": true,
+      "evidence": true
+    },
+    {
+      "name": "reconnect_no_duplicate_baseline",
+      "passed": true,
+      "evidence": {
+        "shown": 109,
+        "cursor": 538
+      }
+    },
+    {
+      "name": "layout_baseline_1280",
+      "passed": true,
+      "evidence": {
+        "width": 1280,
+        "scrollWidth": 1280,
+        "evidenceBottom": 776,
+        "height": 800,
+        "logHeight": 205
+      }
+    },
+    {
+      "name": "layout_baseline_1440",
+      "passed": true,
+      "evidence": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "evidenceBottom": 974,
+        "height": 1000,
+        "logHeight": 325
+      }
+    },
+    {
+      "name": "drawer_keyboard_baseline",
+      "passed": true,
+      "evidence": true
+    },
+    {
+      "name": "scope_and_single_reasoning_actor",
+      "passed": true,
+      "evidence": true
+    },
+    {
+      "name": "stage_evidence_swarm",
+      "passed": true,
+      "evidence": [
+        {
+          "id": "monitor",
+          "status": "passed",
+          "events": 3
+        },
+        {
+          "id": "detect",
+          "status": "passed",
+          "events": 19
+        },
+        {
+          "id": "diagnose",
+          "status": "passed",
+          "events": 5
+        },
+        {
+          "id": "plan",
+          "status": "passed",
+          "events": 7
+        },
+        {
+          "id": "execute",
+          "status": "passed",
+          "events": 2
+        },
+        {
+          "id": "verify",
+          "status": "passed",
+          "events": 26
+        },
+        {
+          "id": "close",
+          "status": "passed",
+          "events": 1
+        }
+      ]
+    },
+    {
+      "name": "stage_evidence_baseline",
+      "passed": true,
+      "evidence": [
+        {
+          "id": "monitor",
+          "status": "passed",
+          "events": 3
+        },
+        {
+          "id": "detect",
+          "status": "passed",
+          "events": 11
+        },
+        {
+          "id": "diagnose",
+          "status": "combined",
+          "events": 1
+        },
+        {
+          "id": "plan",
+          "status": "combined",
+          "events": 1
+        },
+        {
+          "id": "execute",
+          "status": "passed",
+          "events": 2
+        },
+        {
+          "id": "verify",
+          "status": "passed",
+          "events": 26
+        },
+        {
+          "id": "close",
+          "status": "passed",
+          "events": 1
+        }
+      ]
+    },
+    {
+      "name": "read_only_showcase_no_mutations",
+      "passed": true,
+      "evidence": true
+    },
+    {
+      "name": "real_model_business_outcomes",
+      "passed": true,
+      "evidence": {
+        "swarm": "resolved",
+        "baseline": "resolved"
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "pair_id": "pair_492144569b624bec",
+      "label": "01-ready",
+      "status": "ready",
+      "arms": {
+        "swarm": {
+          "run_id": "run_051e4fac0a794bb3",
+          "usage": 0,
+          "unknown": 0
+        },
+        "baseline": {
+          "run_id": "run_b1c132655d304943",
+          "usage": 0,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "pair_id": "pair_492144569b624bec",
+      "label": "03-running",
+      "status": "running",
+      "arms": {
+        "swarm": {
+          "run_id": "run_051e4fac0a794bb3",
+          "status": "injected",
+          "elapsed_s": null,
+          "usage": 0,
+          "unknown": 0
+        },
+        "baseline": {
+          "run_id": "run_b1c132655d304943",
+          "status": "injected",
+          "elapsed_s": null,
+          "usage": 0,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "pair_id": "pair_492144569b624bec",
+      "label": "05-terminal",
+      "status": "completed",
+      "arms": {
+        "swarm": {
+          "run_id": "run_051e4fac0a794bb3",
+          "status": "resolved",
+          "elapsed_s": 68.777,
+          "usage": 9651,
+          "unknown": 0
+        },
+        "baseline": {
+          "run_id": "run_b1c132655d304943",
+          "status": "resolved",
+          "elapsed_s": 37.519,
+          "usage": 5303,
+          "unknown": 0
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "mutations": [],
+  "identity": {
+    "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+    "git_commit": "4b79089461d8e788a3f4caa619a584380360cfd4",
+    "dirty": true,
+    "dirty_diff_sha256": "f7eedd294e6f4a2bbfc828ec8d2248fc106cff0a78ae85d8fabebdab3d62893c",
+    "backend_source_hash": "6c79549200b1acde12db330a6edbb43af1bcffc204af04fcc125f60855e608bd",
+    "frontend_build_hash": "c04e3d6d074e27cccb5137737ff93864f5eb1cb8b38c0020c717323a49035fff",
+    "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+    "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+    "acceptance_contract_hash": "09b5f4bd0bdf0c8533eb7acf4b822e2452d7df8dcaebe988aab216125674b68d"
+  },
+  "ended_at": "2026-09-22T06:15:55.965Z"
+}
