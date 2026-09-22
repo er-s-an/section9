@@ -46,7 +46,7 @@ def _spec(pair: dict[str, Any], key: str, fallback: Any = None) -> Any:
 def _stage_for(event_type: str, payload: dict[str, Any]) -> str | None:
     s = str(payload.get("stage") or payload.get("purpose") or "").lower()
     t = event_type.lower()
-    if t in {"arm.prepared", "chaos.injected", "arm.started"}:
+    if t in {"chaos.injected", "arm.started"}:
         return "monitor"
     for candidate in ("monitor", "detect", "diagnose", "plan", "execute", "verify", "close"):
         if candidate in s or candidate in t:
@@ -55,6 +55,8 @@ def _stage_for(event_type: str, payload: dict[str, Any]) -> str | None:
         return "detect"
     if t.startswith(("observation.", "probe.")):
         return "detect"
+    if t.startswith('model.') and s in {'single', 'repair'}:
+        return 'plan'
     if t.startswith("plan.") or t in {"model.decision", "model.completed"}:
         return "plan"
     if t.startswith(("action.", "execution.", "grant.")):
@@ -78,7 +80,7 @@ def _status_for(e: dict[str, Any], stage: str) -> str | None:
         return "passed" if p.get("passed") is True else "failed"
     if stage == "close":
         return "passed" if t == "incident.closed" else "failed" if t == "incident.failed" else None
-    if t in {"arm.started", "incident.opened"}:
+    if t in {"chaos.injected", "arm.started", "incident.opened"}:
         return "passed"
     if stage == "diagnose" and t == "model.completed" and str(p.get("purpose", "")).lower() == "diagnose":
         return "passed"
@@ -157,6 +159,11 @@ def project_arm(pair: dict, arm: str, run: dict | None, events: list[dict], *, c
         p = _payload(last) if last else {}
         purpose = str(p.get("purpose") or p.get("stage") or "").lower()
         stage = _stage_for(str(last.get("event_type", "")), p) if last else None
+        activity_position = POSITIONS.get(stage or purpose, 'idle')
+        if last and last.get('event_type') in {'dialog.sent', 'dialog.received'}:
+            activity_position = 'meeting'
+        elif last and str(last.get('event_type', '')).startswith('memory.'):
+            activity_position = 'archive'
         status_events = [e for e in own_all if str(e.get("event_type", "")).lower() in
                          {"agent.status", "agent.paused", "agent.resumed", "agent.offline"}]
         status_payload = _payload(status_events[-1]) if status_events else {}
@@ -171,7 +178,7 @@ def project_arm(pair: dict, arm: str, run: dict | None, events: list[dict], *, c
                                  "detail": p.get("summary") or p.get("detail"),
                                  "source_event_id": (status_events[-1] if status_events else last or {}).get("event_id"),
                                  "position_event_id": last.get("event_id") if last else None,
-                                 "position": "idle" if status in {"idle", "offline", "stopped", "paused"} else POSITIONS.get(stage or purpose, "idle"),
+                                 "position": "idle" if status in {"idle", "offline", "stopped", "paused"} else activity_position,
                                  "heartbeat_at": a.get("heartbeat_at") if isinstance(a, dict) else None})
 
     baseline_cfg = _spec(pair, "baseline_config", _spec(pair, "baseline", {})) or {}

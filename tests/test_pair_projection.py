@@ -47,7 +47,7 @@ def test_agent_activity_references_last_own_event_and_idle_has_no_source():
                           {"id": "verifier", "name": "复核员", "role": "verifier"}])
     by_id = {a["id"]: a for a in out["agents"]}
     assert by_id["diagnoser"]["source_event_id"] == "e1"
-    assert by_id["diagnoser"]["position"] == "analysis"
+    assert by_id["diagnoser"]["position"] == "meeting"
     assert by_id["verifier"]["status"] == "idle"
     assert by_id["verifier"]["source_event_id"] is None
 
@@ -75,3 +75,11 @@ def test_waiting_approval_and_verification_evidence_are_preserved():
                       ev(2, 'verification.completed', passed=False, checks=[{'passed': False}])])
     assert result['stages'][4]['status'] == 'waiting'
     assert result['rca'][-1]['checks'] == [{'passed': False}]
+
+
+def test_preparation_does_not_display_fault_injection_as_started():
+    prepared = project([ev(1, 'arm.prepared')])
+    assert prepared['stages'][0]['status'] == 'pending'
+    assert prepared['stages'][0]['source_event_ids'] == []
+    injected = project([ev(1, 'chaos.injected')])
+    assert injected['stages'][0]['status'] == 'passed'
