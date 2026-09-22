@@ -1,0 +1,9 @@
+{
+  "command": "./.venv/bin/python -m pytest -q",
+  "passed": 55,
+  "failed": 0,
+  "elapsed_s": 5.62,
+  "kind": "component_and_boundary_tests",
+  "provider_calls": false,
+  "recorded_at": "2026-09-21T21:11:57.275281+00:00"
+}

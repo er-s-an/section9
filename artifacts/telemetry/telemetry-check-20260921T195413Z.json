@@ -1,0 +1,10 @@
+{
+  "checked_at": "2026-09-21T19:54:13.415884Z",
+  "endpoint": "/api/public/v2/observations",
+  "window_start": "2026-09-20T19:54:13.415884Z",
+  "http_status": 200,
+  "status": "empty",
+  "matching_spans": [],
+  "returned_count": 2,
+  "criteria": "serviceName=section9 or name starts s9 or metadata contains run_id"
+}

@@ -1,0 +1,474 @@
+{
+  "started_at": "2026-09-21T20:10:10.257+00:00",
+  "finished_at": "2026-09-21T20:11:31.306+00:00",
+  "base_url": "http://127.0.0.1:9019",
+  "conditions": [
+    "single",
+    "muted",
+    "swarm",
+    "memory",
+    "memory_jev"
+  ],
+  "scenarios": [
+    "prompt",
+    "cost",
+    "loop",
+    "composite"
+  ],
+  "repeats": 1,
+  "max_runs": 4,
+  "executed_runs": 4,
+  "cells": [
+    {
+      "condition": "single",
+      "scenario": "prompt",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "single",
+      "scenario": "cost",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "single",
+      "scenario": "loop",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "single",
+      "scenario": "composite",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "muted",
+      "scenario": "prompt",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "muted",
+      "scenario": "cost",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "muted",
+      "scenario": "loop",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "muted",
+      "scenario": "composite",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "swarm",
+      "scenario": "prompt",
+      "n": 1,
+      "success": 1,
+      "failure": 0,
+      "time_seconds": 19.845,
+      "tokens": 4470,
+      "tokens_unknown": 0,
+      "run_ids": [
+        "run_e379fefc002544e3"
+      ],
+      "manifest_checks": [
+        {
+          "run_id": "run_e379fefc002544e3",
+          "environment": "evaluation",
+          "model": "evomap-gpt-5.6-luna",
+          "total_token_budget": 16000,
+          "concurrency": 2,
+          "fixture_version": "xiaozhi-s9-v1",
+          "memory_snapshot": "off",
+          "environment_ok": true,
+          "model_ok": true,
+          "budget_ok": true,
+          "concurrency_ok": true,
+          "fixture_ok": true,
+          "memory_snapshot_recorded": true,
+          "aligned": true
+        }
+      ],
+      "status": "measured"
+    },
+    {
+      "condition": "swarm",
+      "scenario": "cost",
+      "n": 1,
+      "success": 1,
+      "failure": 0,
+      "time_seconds": 19.438,
+      "tokens": 7417,
+      "tokens_unknown": 0,
+      "run_ids": [
+        "run_b4903db276624190"
+      ],
+      "manifest_checks": [
+        {
+          "run_id": "run_b4903db276624190",
+          "environment": "evaluation",
+          "model": "evomap-gpt-5.6-luna",
+          "total_token_budget": 16000,
+          "concurrency": 2,
+          "fixture_version": "xiaozhi-s9-v1",
+          "memory_snapshot": "off",
+          "environment_ok": true,
+          "model_ok": true,
+          "budget_ok": true,
+          "concurrency_ok": true,
+          "fixture_ok": true,
+          "memory_snapshot_recorded": true,
+          "aligned": true
+        }
+      ],
+      "status": "measured"
+    },
+    {
+      "condition": "swarm",
+      "scenario": "loop",
+      "n": 1,
+      "success": 1,
+      "failure": 0,
+      "time_seconds": 20.133,
+      "tokens": 5279,
+      "tokens_unknown": 0,
+      "run_ids": [
+        "run_bb40d2251cd14160"
+      ],
+      "manifest_checks": [
+        {
+          "run_id": "run_bb40d2251cd14160",
+          "environment": "evaluation",
+          "model": "evomap-gpt-5.6-luna",
+          "total_token_budget": 16000,
+          "concurrency": 2,
+          "fixture_version": "xiaozhi-s9-v1",
+          "memory_snapshot": "off",
+          "environment_ok": true,
+          "model_ok": true,
+          "budget_ok": true,
+          "concurrency_ok": true,
+          "fixture_ok": true,
+          "memory_snapshot_recorded": true,
+          "aligned": true
+        }
+      ],
+      "status": "measured"
+    },
+    {
+      "condition": "swarm",
+      "scenario": "composite",
+      "n": 1,
+      "success": 1,
+      "failure": 0,
+      "time_seconds": 19.975,
+      "tokens": 5824,
+      "tokens_unknown": 0,
+      "run_ids": [
+        "run_414f2999428e4909"
+      ],
+      "manifest_checks": [
+        {
+          "run_id": "run_414f2999428e4909",
+          "environment": "evaluation",
+          "model": "evomap-gpt-5.6-luna",
+          "total_token_budget": 16000,
+          "concurrency": 2,
+          "fixture_version": "xiaozhi-s9-v1",
+          "memory_snapshot": "off",
+          "environment_ok": true,
+          "model_ok": true,
+          "budget_ok": true,
+          "concurrency_ok": true,
+          "fixture_ok": true,
+          "memory_snapshot_recorded": true,
+          "aligned": true
+        }
+      ],
+      "status": "measured"
+    },
+    {
+      "condition": "memory",
+      "scenario": "prompt",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "memory",
+      "scenario": "cost",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "memory",
+      "scenario": "loop",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "memory",
+      "scenario": "composite",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "memory_jev",
+      "scenario": "prompt",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测",
+      "disabled_reason": "no_real_model_artifact_jev_p2_disabled"
+    },
+    {
+      "condition": "memory_jev",
+      "scenario": "cost",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测",
+      "disabled_reason": "no_real_model_artifact_jev_p2_disabled"
+    },
+    {
+      "condition": "memory_jev",
+      "scenario": "loop",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测",
+      "disabled_reason": "no_real_model_artifact_jev_p2_disabled"
+    },
+    {
+      "condition": "memory_jev",
+      "scenario": "composite",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测",
+      "disabled_reason": "no_real_model_artifact_jev_p2_disabled"
+    }
+  ],
+  "errors": [],
+  "manifest_alignment": {
+    "expected_by_scenario": {
+      "prompt": {
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off"
+      },
+      "cost": {
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off"
+      },
+      "loop": {
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off"
+      },
+      "composite": {
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off"
+      }
+    },
+    "checks": [
+      {
+        "run_id": "run_e379fefc002544e3",
+        "environment": "evaluation",
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off",
+        "environment_ok": true,
+        "model_ok": true,
+        "budget_ok": true,
+        "concurrency_ok": true,
+        "fixture_ok": true,
+        "memory_snapshot_recorded": true,
+        "aligned": true
+      },
+      {
+        "run_id": "run_b4903db276624190",
+        "environment": "evaluation",
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off",
+        "environment_ok": true,
+        "model_ok": true,
+        "budget_ok": true,
+        "concurrency_ok": true,
+        "fixture_ok": true,
+        "memory_snapshot_recorded": true,
+        "aligned": true
+      },
+      {
+        "run_id": "run_bb40d2251cd14160",
+        "environment": "evaluation",
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off",
+        "environment_ok": true,
+        "model_ok": true,
+        "budget_ok": true,
+        "concurrency_ok": true,
+        "fixture_ok": true,
+        "memory_snapshot_recorded": true,
+        "aligned": true
+      },
+      {
+        "run_id": "run_414f2999428e4909",
+        "environment": "evaluation",
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off",
+        "environment_ok": true,
+        "model_ok": true,
+        "budget_ok": true,
+        "concurrency_ok": true,
+        "fixture_ok": true,
+        "memory_snapshot_recorded": true,
+        "aligned": true
+      }
+    ],
+    "all_aligned": true
+  },
+  "comparability": {
+    "mixed_conditions_incomparable": true,
+    "note": "不同 condition 是不同协作/通信策略；不据此虚构优势。",
+    "manifest_grouping": "同一 scenario 内比较；忽略 condition 和 scenario 本身不跨组比较",
+    "memory_note": "memory 与非 memory 的 memory_snapshot 差异是被测处理条件，不单独视为不公平。"
+  },
+  "limitations": [
+    "未测矩阵格显示待测",
+    "unknown usage 不按零 token 计",
+    "失败运行和原始响应均保留"
+  ]
+}

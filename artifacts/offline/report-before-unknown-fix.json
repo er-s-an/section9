@@ -1,0 +1,23 @@
+{
+  "ports": {"http": 9034, "agent": 9036},
+  "sandbox": "macOS Seatbelt temporary profile",
+  "server_pid": 90336,
+  "state_initial_http": 200,
+  "chat": {
+    "http_status": 200,
+    "status": "error",
+    "error": {"code": "MODEL_ERROR", "message": "ConnectError"},
+    "usage": {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}
+  },
+  "state_after": {
+    "http_status": 200,
+    "model": {"status": "degraded", "detail": "ConnectError", "remote_inference": true},
+    "metrics": {"total": 0, "success": 0, "failures": 0, "usage_tokens": 0}
+  },
+  "memory_readable": true,
+  "remote_network_attempt": true,
+  "remote_network_blocked": true,
+  "usage_unknown": 1,
+  "notes": "Historical report before the unknown-usage response correction.",
+  "server_exit": -15
+}

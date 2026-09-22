@@ -1,0 +1,50 @@
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+    spike_limit_mib: 64
+  batch/backend:
+    send_batch_size: 32
+    timeout: 2s
+  batch/langfuse:
+    send_batch_size: 32
+    timeout: 2s
+
+exporters:
+  otlphttp/backend:
+    endpoint: http://host.docker.internal:9019/api/telemetry
+    sending_queue:
+      enabled: true
+      num_consumers: 1
+      queue_size: 256
+  otlphttp/langfuse:
+    endpoint: http://langfuse-web:3000/api/public/otel
+    headers:
+      Authorization: "Basic ${LANGFUSE_AUTH}"
+      x-langfuse-ingestion-version: "4"
+    sending_queue:
+      enabled: true
+      num_consumers: 1
+      queue_size: 256
+
+service:
+  extensions: [health_check]
+  pipelines:
+    traces/backend:
+      receivers: [otlp]
+      processors: [memory_limiter, batch/backend]
+      exporters: [otlphttp/backend]
+    traces/langfuse:
+      receivers: [otlp]
+      processors: [memory_limiter, batch/langfuse]
+      exporters: [otlphttp/langfuse]

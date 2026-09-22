@@ -1,0 +1,32 @@
+{
+  "started_at": "2026-09-21T21:01:41.609434+00:00",
+  "measurement": "cached_images_dependencies_stopped_containers_to_healthy",
+  "fresh_image_download_measured": false,
+  "volumes_preserved": true,
+  "operator_ready_s": 15.003,
+  "dependencies_healthy_s": 34.672,
+  "business_request": {
+    "request_id": "038dbe41-3263-407f-b894-3c916c87f499",
+    "answer": "{\"eligible\":true}",
+    "structured": {
+      "eligible": true
+    },
+    "revision": "72",
+    "usage": {
+      "input_tokens": 463,
+      "output_tokens": 8,
+      "total_tokens": 471,
+      "token_quality": "provider",
+      "estimated_input_tokens": 175
+    },
+    "elapsed_s": 3.3564129589358345,
+    "trace_id": "2f2cdcb61fff9d8462c9ec323ac18df6",
+    "status": "success",
+    "model": "gpt-5.6-luna",
+    "tool_calls": 1
+  },
+  "business_ready_s": 38.035,
+  "passed": true,
+  "final_url": "http://127.0.0.1:9019",
+  "finished_at": "2026-09-21T21:02:23.484762+00:00"
+}

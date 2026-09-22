@@ -1,0 +1,45 @@
+{
+  "ports": {
+    "http": 9034,
+    "agent": 9036
+  },
+  "sandbox": "macOS Seatbelt temporary profile",
+  "server_pid": 92798,
+  "state_initial_http": 200,
+  "chat": {
+    "http_status": 200,
+    "status": "error",
+    "error": {
+      "code": "MODEL_ERROR",
+      "message": "ConnectError"
+    },
+    "usage": {
+      "input_tokens": null,
+      "output_tokens": null,
+      "total_tokens": null,
+      "token_quality": "unknown"
+    }
+  },
+  "state_after": {
+    "http_status": 200,
+    "model": {
+      "status": "degraded",
+      "detail": "ConnectError",
+      "remote_inference": true
+    },
+    "metrics": {
+      "total": 0,
+      "success": 0,
+      "failures": 0,
+      "usage_tokens": 0
+    }
+  },
+  "memory_readable": true,
+  "remote_network_attempt": true,
+  "remote_network_blocked": true,
+  "usage_unknown": 3,
+  "usage_unknown_before": 2,
+  "usage_unknown_delta": 1,
+  "notes": "The real configured model URL was retained; this is an OS network-boundary proof, not offline inference support.",
+  "server_exit": -15
+}

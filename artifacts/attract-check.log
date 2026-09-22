@@ -1,0 +1,4 @@
+{"id": "run_c91e323976724227", "scenario": "prompt", "status": "resolved", "elapsed_s": 19.867}
+{"id": "run_64471955e72b44ba", "scenario": "loop", "status": "resolved", "elapsed_s": 21.611}
+{"id": "run_1291d2df065b49ee", "scenario": "cost", "status": "resolved", "elapsed_s": 20.71}
+{"report": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/artifacts/attract/20260921T205623Z/report.json", "checks": [{"name": "three_actual_cycles", "passed": true}, {"name": "all_business_results_verified", "passed": true}, {"name": "main_config_unchanged", "passed": true}, {"name": "main_incident_unchanged", "passed": true}, {"name": "evaluation_score_unchanged", "passed": true}, {"name": "main_and_evaluation_memory_unchanged", "passed": true}, {"name": "automatic_calls_stopped", "passed": true}]}

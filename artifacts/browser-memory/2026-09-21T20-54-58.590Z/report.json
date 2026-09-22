@@ -1,0 +1,53 @@
+{
+  "started_at": "2026-09-21T20:54:58.884Z",
+  "runs": [
+    {
+      "id": "run_be259f771f3c45a5",
+      "elapsed_s": 19.157,
+      "selected_id": "seed_quality_prompt",
+      "passed": true
+    },
+    {
+      "id": "run_6a26c4bfb7bf4f4a",
+      "elapsed_s": 18.481,
+      "selected_id": "seed_quality_prompt",
+      "passed": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "round 1 real match, model decision, execution, external verification and GEP write",
+      "passed": true
+    },
+    {
+      "name": "round 2 real match, model decision, execution, external verification and GEP write",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "reset_s": 0.063,
+  "playbook": {
+    "actions": [
+      {
+        "type": "set_prompt_revision",
+        "values": {
+          "prompt_version": "healthy"
+        }
+      }
+    ],
+    "id": "seed_quality_prompt",
+    "publish_state": "local_only",
+    "reuse_count": 2,
+    "source": "seeded",
+    "symptoms": [
+      "quality_mismatch"
+    ],
+    "title": "恢复提示词质量",
+    "success_count": 2,
+    "gene_asset_id": "sha256:acda18f46a89dc26da4fea1fb845b3dde464816213b02f7c3c6dd9c3b94a92d3",
+    "capsule_asset_id": "sha256:2afb2288bf0c9ca53447b3f9288cc68a875d6e7be2184fa06184f3b368197665",
+    "hit_count": 2
+  },
+  "passed": true,
+  "finished_at": "2026-09-21T20:55:39.779Z"
+}

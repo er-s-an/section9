@@ -1,0 +1,73 @@
+Section9 stopped
+ Container section9-observe-langfuse-web-1 Stopping 
+ Container section9-observe-langfuse-worker-1 Stopping 
+ Container section9-observe-otel-collector-1 Stopping 
+ Container section9-observe-otel-collector-1 Stopped 
+ Container section9-observe-langfuse-worker-1 Stopped 
+ Container section9-observe-langfuse-web-1 Stopped 
+ Container section9-observe-clickhouse-1 Stopping 
+ Container section9-observe-redis-1 Stopping 
+ Container section9-observe-minio-1 Stopping 
+ Container section9-observe-postgres-1 Stopping 
+ Container section9-observe-postgres-1 Stopped 
+ Container section9-observe-minio-1 Stopped 
+ Container section9-observe-redis-1 Stopped 
+ Container section9-observe-clickhouse-1 Stopped 
+Resolved 46 packages in 15ms
+Checked 44 packages in 8ms
+
+> section9-laboratory@0.1.0 build
+> tsc -b && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 4575 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.46 kB │ gzip:  0.34 kB
+dist/assets/index-DQp8OmS3.css   22.71 kB │ gzip:  6.14 kB
+dist/assets/index-CF_SKoz4.js   306.09 kB │ gzip: 92.20 kB
+✓ built in 2.43s
+ Container section9-observe-redis-1 Recreate 
+ Container section9-observe-minio-1 Recreate 
+ Container section9-observe-postgres-1 Recreate 
+ Container section9-observe-clickhouse-1 Recreate 
+ Container section9-observe-minio-1 Recreated 
+ Container section9-observe-redis-1 Recreated 
+ Container section9-observe-postgres-1 Recreated 
+ Container section9-observe-clickhouse-1 Recreated 
+ Container section9-observe-langfuse-worker-1 Recreate 
+ Container section9-observe-langfuse-web-1 Recreate 
+ Container section9-observe-langfuse-worker-1 Recreated 
+ Container section9-observe-langfuse-web-1 Recreated 
+ Container section9-observe-otel-collector-1 Starting 
+ Container section9-observe-clickhouse-1 Starting 
+ Container section9-observe-redis-1 Starting 
+ Container section9-observe-minio-1 Starting 
+ Container section9-observe-postgres-1 Starting 
+ Container section9-observe-minio-1 Started 
+ Container section9-observe-otel-collector-1 Started 
+ Container section9-observe-redis-1 Started 
+ Container section9-observe-postgres-1 Started 
+ Container section9-observe-clickhouse-1 Started 
+ Container section9-observe-postgres-1 Waiting 
+ Container section9-observe-minio-1 Waiting 
+ Container section9-observe-redis-1 Waiting 
+ Container section9-observe-clickhouse-1 Waiting 
+ Container section9-observe-clickhouse-1 Waiting 
+ Container section9-observe-postgres-1 Waiting 
+ Container section9-observe-minio-1 Waiting 
+ Container section9-observe-redis-1 Waiting 
+ Container section9-observe-minio-1 Healthy 
+ Container section9-observe-minio-1 Healthy 
+ Container section9-observe-redis-1 Healthy 
+ Container section9-observe-redis-1 Healthy 
+ Container section9-observe-postgres-1 Healthy 
+ Container section9-observe-postgres-1 Healthy 
+ Container section9-observe-clickhouse-1 Healthy 
+ Container section9-observe-clickhouse-1 Healthy 
+ Container section9-observe-langfuse-web-1 Starting 
+ Container section9-observe-langfuse-worker-1 Starting 
+ Container section9-observe-langfuse-worker-1 Started 
+ Container section9-observe-langfuse-web-1 Started 
+Ready: http://127.0.0.1:9019

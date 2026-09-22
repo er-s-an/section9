@@ -1,0 +1,58 @@
+{
+  "checked_at": "2026-09-21T21:06:47.289210Z",
+  "endpoint": "/api/public/v2/observations?fields=core,basic,metadata,time",
+  "window_start": "2026-09-20T21:06:47.289210Z",
+  "http_status": 200,
+  "status": "degraded",
+  "matching_spans": [
+    {
+      "trace_id": "2f2cdcb6…8df6",
+      "name": "s9.user",
+      "run_id": "interactive",
+      "timestamp": "2026-09-21T21:02:20.392Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "cbe7463d…aa12",
+      "name": "s9.probe:verify",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:48.212Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9e3249f6…8c68",
+      "name": "s9.probe:verify",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:45.616Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "d8daf5d0…fdf7",
+      "name": "s9.probe:verify",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:45.613Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "b5da790d…04db",
+      "name": "s9.repair",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:40.999Z",
+      "metadata_complete": true,
+      "status": "received"
+    }
+  ],
+  "database_events": [],
+  "both_path_matches": [],
+  "database_status": {
+    "main": "ok",
+    "evaluation": "ok",
+    "attract": "ok"
+  },
+  "returned_count": 100,
+  "criteria": "same full trace_id in Langfuse metadata observation and telemetry.span_received in main/evaluation/attract DB; metadata_complete must be true"
+}

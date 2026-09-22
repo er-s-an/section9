@@ -1,0 +1,140 @@
+{
+  "checked_at": "2026-09-21T21:07:38.764027Z",
+  "endpoint": "/api/public/v2/observations?fields=core,basic,metadata,time",
+  "window_start": "2026-09-20T21:07:38.764027Z",
+  "http_status": 200,
+  "status": "received",
+  "matching_spans": [
+    {
+      "trace_id": "f12b5a1a…adb4",
+      "name": "s9.probe:verify",
+      "run_id": "run_cb36320d2a494374",
+      "timestamp": "2026-09-21T21:07:20.328Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "93302e59…b3c4",
+      "name": "s9.probe:verify",
+      "run_id": "run_cb36320d2a494374",
+      "timestamp": "2026-09-21T21:07:19.004Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "be458042…ebca",
+      "name": "s9.probe:verify",
+      "run_id": "run_cb36320d2a494374",
+      "timestamp": "2026-09-21T21:07:17.281Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "0a390cf1…c754",
+      "name": "s9.loop-workload",
+      "run_id": "run_cb36320d2a494374",
+      "timestamp": "2026-09-21T21:07:16.634Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "82b37b6e…3f5a",
+      "name": "s9.repair",
+      "run_id": "run_cb36320d2a494374",
+      "timestamp": "2026-09-21T21:07:11.920Z",
+      "metadata_complete": true,
+      "status": "received"
+    }
+  ],
+  "database_events": [
+    {
+      "trace_id": "ecb2a553…f062",
+      "run_id": null,
+      "name": "s9.user",
+      "timestamp": "2026-09-21T21:07:05.781+00:00",
+      "database": "main"
+    },
+    {
+      "trace_id": "8625a98a…ad12",
+      "run_id": "run_cb36320d2a494374",
+      "name": "s9.probe:detect",
+      "timestamp": "2026-09-21T21:07:11.783+00:00",
+      "database": "main"
+    },
+    {
+      "trace_id": "934cb5ab…a989",
+      "run_id": "run_cb36320d2a494374",
+      "name": "s9.diagnose",
+      "timestamp": "2026-09-21T21:07:15.791+00:00",
+      "database": "main"
+    },
+    {
+      "trace_id": "82b37b6e…3f5a",
+      "run_id": "run_cb36320d2a494374",
+      "name": "s9.repair",
+      "timestamp": "2026-09-21T21:07:21.802+00:00",
+      "database": "main"
+    },
+    {
+      "trace_id": "0a390cf1…c754",
+      "run_id": "run_cb36320d2a494374",
+      "name": "s9.loop-workload",
+      "timestamp": "2026-09-21T21:07:21.804+00:00",
+      "database": "main"
+    }
+  ],
+  "both_path_matches": [
+    {
+      "trace_id": "f12b5a1a…adb4",
+      "name": "s9.probe:verify",
+      "run_id": "run_cb36320d2a494374",
+      "langfuse_timestamp": "2026-09-21T21:07:20.328Z",
+      "database_timestamp": "2026-09-21T21:07:25.808+00:00",
+      "database": "main",
+      "status": "both_paths_received"
+    },
+    {
+      "trace_id": "93302e59…b3c4",
+      "name": "s9.probe:verify",
+      "run_id": "run_cb36320d2a494374",
+      "langfuse_timestamp": "2026-09-21T21:07:19.004Z",
+      "database_timestamp": "2026-09-21T21:07:25.806+00:00",
+      "database": "main",
+      "status": "both_paths_received"
+    },
+    {
+      "trace_id": "be458042…ebca",
+      "name": "s9.probe:verify",
+      "run_id": "run_cb36320d2a494374",
+      "langfuse_timestamp": "2026-09-21T21:07:17.281Z",
+      "database_timestamp": "2026-09-21T21:07:21.807+00:00",
+      "database": "main",
+      "status": "both_paths_received"
+    },
+    {
+      "trace_id": "0a390cf1…c754",
+      "name": "s9.loop-workload",
+      "run_id": "run_cb36320d2a494374",
+      "langfuse_timestamp": "2026-09-21T21:07:16.634Z",
+      "database_timestamp": "2026-09-21T21:07:21.804+00:00",
+      "database": "main",
+      "status": "both_paths_received"
+    },
+    {
+      "trace_id": "82b37b6e…3f5a",
+      "name": "s9.repair",
+      "run_id": "run_cb36320d2a494374",
+      "langfuse_timestamp": "2026-09-21T21:07:11.920Z",
+      "database_timestamp": "2026-09-21T21:07:21.802+00:00",
+      "database": "main",
+      "status": "both_paths_received"
+    }
+  ],
+  "database_status": {
+    "main": "ok",
+    "evaluation": "ok",
+    "attract": "ok"
+  },
+  "returned_count": 100,
+  "criteria": "same full trace_id in Langfuse metadata observation and telemetry.span_received in main/evaluation/attract DB; metadata_complete must be true"
+}

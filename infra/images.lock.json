@@ -1,0 +1,37 @@
+[
+  {
+    "tag_at_verification": "langfuse/langfuse:4",
+    "pinned": "langfuse/langfuse@sha256:14230110d654b6460d4be32fb883b947ae906eecfceb1febe105165a62b9b899",
+    "image_id": "sha256:14230110d654b6460d4be32fb883b947ae906eecfceb1febe105165a62b9b899"
+  },
+  {
+    "tag_at_verification": "langfuse/langfuse-worker:4",
+    "pinned": "langfuse/langfuse-worker@sha256:49c43809fcc6670375b7cc4a66204812e48a4a92601d2633df7d3251248f8c26",
+    "image_id": "sha256:49c43809fcc6670375b7cc4a66204812e48a4a92601d2633df7d3251248f8c26"
+  },
+  {
+    "tag_at_verification": "docker.io/clickhouse/clickhouse-server:25.12",
+    "pinned": "clickhouse/clickhouse-server@sha256:8a790dd3468db22b1d4e7b18a176f378ff5ff6053b9c48dd4ea1fa71a24c5ba6",
+    "image_id": "sha256:8a790dd3468db22b1d4e7b18a176f378ff5ff6053b9c48dd4ea1fa71a24c5ba6"
+  },
+  {
+    "tag_at_verification": "cgr.dev/chainguard/minio",
+    "pinned": "cgr.dev/chainguard/minio@sha256:f8c6ae70518160f5f9f54e7c0884f5878a888881ee50e0e9ccf11a9add94e9a3",
+    "image_id": "sha256:f8c6ae70518160f5f9f54e7c0884f5878a888881ee50e0e9ccf11a9add94e9a3"
+  },
+  {
+    "tag_at_verification": "docker.io/redis:7",
+    "pinned": "redis@sha256:e9b2e45ecd47fbb69b877cf8d045d5cccaaaed52524b6e098b4abe8212994f73",
+    "image_id": "sha256:e9b2e45ecd47fbb69b877cf8d045d5cccaaaed52524b6e098b4abe8212994f73"
+  },
+  {
+    "tag_at_verification": "docker.io/postgres:17",
+    "pinned": "postgres@sha256:7958605b474b3d264a969cb3a123d6aa00ad1e1fe9da8a69984dabb704d93317",
+    "image_id": "sha256:7958605b474b3d264a969cb3a123d6aa00ad1e1fe9da8a69984dabb704d93317"
+  },
+  {
+    "collector_version": "0.136.0",
+    "base_pinned": "ros@sha256:75dd3aba34a3838dadbb31a9f7bef769bdfa8713e6cec686fc868db2981b0987",
+    "architecture": "linux/arm64"
+  }
+]

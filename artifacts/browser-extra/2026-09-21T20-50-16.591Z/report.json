@@ -1,0 +1,26 @@
+{
+  "started_at": "2026-09-21T20:50:17.119Z",
+  "checks": [
+    {
+      "name": "cost specialist discovered, autonomously claimed, real model message",
+      "passed": true,
+      "run_id": "run_3c640fd1f40c4e3b"
+    },
+    {
+      "name": "reset cancels old tool loop and late model result cannot change configuration",
+      "passed": true,
+      "revision": "64"
+    },
+    {
+      "name": "actual collector shutdown shows degraded dependency",
+      "passed": true
+    },
+    {
+      "name": "collector restored without resetting application or deleting volumes",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "finished_at": "2026-09-21T20:51:07.991Z"
+}

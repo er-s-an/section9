@@ -1,0 +1,811 @@
+{
+  "checked_at": "2026-09-21T21:02:54.871196Z",
+  "endpoint": "/api/public/v2/observations?fields=core,basic,metadata,time",
+  "window_start": "2026-09-20T21:02:54.871196Z",
+  "http_status": 200,
+  "status": "received",
+  "matching_spans": [
+    {
+      "trace_id": "2f2cdcb6…8df6",
+      "name": "s9.user",
+      "run_id": "interactive",
+      "timestamp": "2026-09-21T21:02:20.392Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "cbe7463d…aa12",
+      "name": "s9.probe:verify",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:48.212Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9e3249f6…8c68",
+      "name": "s9.probe:verify",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:45.616Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "d8daf5d0…fdf7",
+      "name": "s9.probe:verify",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:45.613Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "b5da790d…04db",
+      "name": "s9.repair",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:40.999Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "a0d717b2…0c52",
+      "name": "s9.diagnose",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:34.911Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9bc7364e…7dfc",
+      "name": "s9.probe:detect",
+      "run_id": "run_1291d2df065b49ee",
+      "timestamp": "2026-09-21T20:59:30.633Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "dc053401…7379",
+      "name": "s9.probe:verify",
+      "run_id": "run_64471955e72b44ba",
+      "timestamp": "2026-09-21T20:58:18.637Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "8afc408c…6798",
+      "name": "s9.probe:verify",
+      "run_id": "run_64471955e72b44ba",
+      "timestamp": "2026-09-21T20:58:17.063Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "60e8de84…5dfa",
+      "name": "s9.probe:verify",
+      "run_id": "run_64471955e72b44ba",
+      "timestamp": "2026-09-21T20:58:15.160Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "039ac3c6…3cff",
+      "name": "s9.loop-workload",
+      "run_id": "run_64471955e72b44ba",
+      "timestamp": "2026-09-21T20:58:15.073Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9226f62c…09f5",
+      "name": "s9.repair",
+      "run_id": "run_64471955e72b44ba",
+      "timestamp": "2026-09-21T20:58:10.355Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "8331ca04…1155",
+      "name": "s9.diagnose",
+      "run_id": "run_64471955e72b44ba",
+      "timestamp": "2026-09-21T20:58:04.218Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "eab1e2b6…0c65",
+      "name": "s9.probe:detect",
+      "run_id": "run_64471955e72b44ba",
+      "timestamp": "2026-09-21T20:58:00.516Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "6b6af5b2…02b2",
+      "name": "s9.probe:verify",
+      "run_id": "run_c91e323976724227",
+      "timestamp": "2026-09-21T20:56:47.698Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "155b4361…de2d",
+      "name": "s9.probe:verify",
+      "run_id": "run_c91e323976724227",
+      "timestamp": "2026-09-21T20:56:45.236Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "1da13f99…b019",
+      "name": "s9.probe:verify",
+      "run_id": "run_c91e323976724227",
+      "timestamp": "2026-09-21T20:56:45.233Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "d10b08ca…732b",
+      "name": "s9.repair",
+      "run_id": "run_c91e323976724227",
+      "timestamp": "2026-09-21T20:56:40.197Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "ab2042b2…59bf",
+      "name": "s9.diagnose",
+      "run_id": "run_c91e323976724227",
+      "timestamp": "2026-09-21T20:56:35.151Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "ea41ceca…0efc",
+      "name": "s9.probe:detect",
+      "run_id": "run_c91e323976724227",
+      "timestamp": "2026-09-21T20:56:30.476Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "36da3843…9dbd",
+      "name": "s9.probe:verify",
+      "run_id": "run_6a26c4bfb7bf4f4a",
+      "timestamp": "2026-09-21T20:55:36.692Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9736674c…d638",
+      "name": "s9.probe:verify",
+      "run_id": "run_6a26c4bfb7bf4f4a",
+      "timestamp": "2026-09-21T20:55:34.008Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "fe381396…9554",
+      "name": "s9.probe:verify",
+      "run_id": "run_6a26c4bfb7bf4f4a",
+      "timestamp": "2026-09-21T20:55:34.003Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "bfa85d9f…2c3e",
+      "name": "s9.repair",
+      "run_id": "run_6a26c4bfb7bf4f4a",
+      "timestamp": "2026-09-21T20:55:29.937Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9133b5c2…0d50",
+      "name": "s9.diagnose",
+      "run_id": "run_6a26c4bfb7bf4f4a",
+      "timestamp": "2026-09-21T20:55:24.531Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "cf45fbf2…59a7",
+      "name": "s9.probe:detect",
+      "run_id": "run_6a26c4bfb7bf4f4a",
+      "timestamp": "2026-09-21T20:55:21.098Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "ee548a04…d6dc",
+      "name": "s9.probe:verify",
+      "run_id": "run_be259f771f3c45a5",
+      "timestamp": "2026-09-21T20:55:18.212Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "b40d4404…62a5",
+      "name": "s9.probe:verify",
+      "run_id": "run_be259f771f3c45a5",
+      "timestamp": "2026-09-21T20:55:15.539Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "c69d4957…c21e",
+      "name": "s9.probe:verify",
+      "run_id": "run_be259f771f3c45a5",
+      "timestamp": "2026-09-21T20:55:15.536Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "dd2024e8…f731",
+      "name": "s9.repair",
+      "run_id": "run_be259f771f3c45a5",
+      "timestamp": "2026-09-21T20:55:10.844Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "98596cc5…0581",
+      "name": "s9.diagnose",
+      "run_id": "run_be259f771f3c45a5",
+      "timestamp": "2026-09-21T20:55:05.804Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "4476215e…3a67",
+      "name": "s9.probe:detect",
+      "run_id": "run_be259f771f3c45a5",
+      "timestamp": "2026-09-21T20:55:01.342Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "ea7fbd07…481f",
+      "name": "s9.probe:verify",
+      "run_id": "run_399758e29e154ce3",
+      "timestamp": "2026-09-21T20:53:02.186Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "bdb0ddd4…9881",
+      "name": "s9.probe:verify",
+      "run_id": "run_399758e29e154ce3",
+      "timestamp": "2026-09-21T20:53:01.280Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "b5430198…cea7",
+      "name": "s9.probe:verify",
+      "run_id": "run_399758e29e154ce3",
+      "timestamp": "2026-09-21T20:52:59.169Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "cfc6602a…8723",
+      "name": "s9.loop-workload",
+      "run_id": "run_399758e29e154ce3",
+      "timestamp": "2026-09-21T20:52:58.840Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "2f456023…963a",
+      "name": "s9.repair",
+      "run_id": "run_399758e29e154ce3",
+      "timestamp": "2026-09-21T20:52:54.310Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "59701bea…2620",
+      "name": "s9.diagnose",
+      "run_id": "run_399758e29e154ce3",
+      "timestamp": "2026-09-21T20:52:48.173Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "16e13247…2a90",
+      "name": "s9.probe:detect",
+      "run_id": "run_399758e29e154ce3",
+      "timestamp": "2026-09-21T20:52:43.887Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9b420695…ec5c",
+      "name": "s9.probe:verify",
+      "run_id": "run_fdfad4d7b34b408e",
+      "timestamp": "2026-09-21T20:52:39.726Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "e9c80da8…8c63",
+      "name": "s9.probe:verify",
+      "run_id": "run_fdfad4d7b34b408e",
+      "timestamp": "2026-09-21T20:52:38.781Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "51551678…bad0",
+      "name": "s9.probe:verify",
+      "run_id": "run_fdfad4d7b34b408e",
+      "timestamp": "2026-09-21T20:52:36.421Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "12587e78…d4d2",
+      "name": "s9.loop-workload",
+      "run_id": "run_fdfad4d7b34b408e",
+      "timestamp": "2026-09-21T20:52:36.301Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "4205fcf0…2ab1",
+      "name": "s9.repair",
+      "run_id": "run_fdfad4d7b34b408e",
+      "timestamp": "2026-09-21T20:52:30.567Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "6a3ed927…3b08",
+      "name": "s9.diagnose",
+      "run_id": "run_fdfad4d7b34b408e",
+      "timestamp": "2026-09-21T20:52:25.259Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9ada8a10…a157",
+      "name": "s9.probe:detect",
+      "run_id": "run_fdfad4d7b34b408e",
+      "timestamp": "2026-09-21T20:52:22.555Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "7ab6708e…75b1",
+      "name": "s9.probe:verify",
+      "run_id": "run_f6b3b07d769a4c9c",
+      "timestamp": "2026-09-21T20:52:19.682Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "d3b3b5f7…5556",
+      "name": "s9.probe:verify",
+      "run_id": "run_f6b3b07d769a4c9c",
+      "timestamp": "2026-09-21T20:52:17.247Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "818601d5…97fe",
+      "name": "s9.probe:verify",
+      "run_id": "run_f6b3b07d769a4c9c",
+      "timestamp": "2026-09-21T20:52:17.243Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "c2b88923…6c65",
+      "name": "s9.repair",
+      "run_id": "run_f6b3b07d769a4c9c",
+      "timestamp": "2026-09-21T20:52:11.808Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "ea5d69f8…2770",
+      "name": "s9.diagnose",
+      "run_id": "run_f6b3b07d769a4c9c",
+      "timestamp": "2026-09-21T20:52:06.256Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "c3d3b531…ae31",
+      "name": "s9.probe:detect",
+      "run_id": "run_f6b3b07d769a4c9c",
+      "timestamp": "2026-09-21T20:52:02.213Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "1ed0da03…f9c0",
+      "name": "s9.probe:verify",
+      "run_id": "run_71af90b04fbe4ba4",
+      "timestamp": "2026-09-21T20:51:59.163Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "2271fcbd…65c6",
+      "name": "s9.probe:verify",
+      "run_id": "run_71af90b04fbe4ba4",
+      "timestamp": "2026-09-21T20:51:57.087Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "19e48bc7…9e15",
+      "name": "s9.probe:verify",
+      "run_id": "run_71af90b04fbe4ba4",
+      "timestamp": "2026-09-21T20:51:57.083Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9dd8a38b…0464",
+      "name": "s9.repair",
+      "run_id": "run_71af90b04fbe4ba4",
+      "timestamp": "2026-09-21T20:51:52.907Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "a6e82ebf…d39d",
+      "name": "s9.diagnose",
+      "run_id": "run_71af90b04fbe4ba4",
+      "timestamp": "2026-09-21T20:51:47.353Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "263bc7c7…1870",
+      "name": "s9.probe:detect",
+      "run_id": "run_71af90b04fbe4ba4",
+      "timestamp": "2026-09-21T20:51:42.917Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "4f283cc0…41e6",
+      "name": "s9.probe:detect",
+      "run_id": "run_5b85c5504f114786",
+      "timestamp": "2026-09-21T20:50:39.999Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "cba5ce98…fa11",
+      "name": "s9.probe:verify",
+      "run_id": "run_3c640fd1f40c4e3b",
+      "timestamp": "2026-09-21T20:50:37.416Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "2e78dc4f…c635",
+      "name": "s9.probe:verify",
+      "run_id": "run_3c640fd1f40c4e3b",
+      "timestamp": "2026-09-21T20:50:35.479Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "61443254…c805",
+      "name": "s9.probe:verify",
+      "run_id": "run_3c640fd1f40c4e3b",
+      "timestamp": "2026-09-21T20:50:35.474Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "91680228…5cc5",
+      "name": "s9.repair",
+      "run_id": "run_3c640fd1f40c4e3b",
+      "timestamp": "2026-09-21T20:50:30.272Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "f238005e…3d19",
+      "name": "s9.cost",
+      "run_id": "run_3c640fd1f40c4e3b",
+      "timestamp": "2026-09-21T20:50:25.543Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "d954eb9e…6f14",
+      "name": "s9.diagnose",
+      "run_id": "run_3c640fd1f40c4e3b",
+      "timestamp": "2026-09-21T20:50:24.303Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "4e64e9c2…c46f",
+      "name": "s9.probe:detect",
+      "run_id": "run_3c640fd1f40c4e3b",
+      "timestamp": "2026-09-21T20:50:19.264Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "377157a8…d10b",
+      "name": "s9.repair",
+      "run_id": "run_bb1404c8cdcf4b8a",
+      "timestamp": "2026-09-21T20:50:06.016Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "29fd0ced…3be6",
+      "name": "s9.diagnose",
+      "run_id": "run_bb1404c8cdcf4b8a",
+      "timestamp": "2026-09-21T20:50:01.095Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "908e1da4…7e75",
+      "name": "s9.probe:detect",
+      "run_id": "run_bb1404c8cdcf4b8a",
+      "timestamp": "2026-09-21T20:49:57.731Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "0c94db70…c6ff",
+      "name": "s9.probe:verify",
+      "run_id": "run_3671d6b8b3ae47a5",
+      "timestamp": "2026-09-21T20:49:54.045Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "0bfeef02…bf15",
+      "name": "s9.probe:verify",
+      "run_id": "run_3671d6b8b3ae47a5",
+      "timestamp": "2026-09-21T20:49:51.338Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "93340d50…91e9",
+      "name": "s9.probe:verify",
+      "run_id": "run_3671d6b8b3ae47a5",
+      "timestamp": "2026-09-21T20:49:51.329Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "315eeb37…5a2e",
+      "name": "s9.repair",
+      "run_id": "run_3671d6b8b3ae47a5",
+      "timestamp": "2026-09-21T20:49:47.406Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "aa06ea41…599f",
+      "name": "s9.repair",
+      "run_id": "run_3671d6b8b3ae47a5",
+      "timestamp": "2026-09-21T20:49:34.774Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "18cc3432…3d10",
+      "name": "s9.diagnose",
+      "run_id": "run_3671d6b8b3ae47a5",
+      "timestamp": "2026-09-21T20:49:30.601Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "e184f970…c6fe",
+      "name": "s9.probe:detect",
+      "run_id": "run_3671d6b8b3ae47a5",
+      "timestamp": "2026-09-21T20:49:27.004Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "b4f6a9d2…9c81",
+      "name": "s9.probe:verify",
+      "run_id": "run_53fcd673f0b64ff8",
+      "timestamp": "2026-09-21T20:49:23.433Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "441a83ec…fba0",
+      "name": "s9.probe:verify",
+      "run_id": "run_53fcd673f0b64ff8",
+      "timestamp": "2026-09-21T20:49:21.446Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "4ef70471…fd5c",
+      "name": "s9.probe:verify",
+      "run_id": "run_53fcd673f0b64ff8",
+      "timestamp": "2026-09-21T20:49:21.443Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "643fa060…7784",
+      "name": "s9.repair",
+      "run_id": "run_53fcd673f0b64ff8",
+      "timestamp": "2026-09-21T20:49:15.439Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "fcf9f0d6…c333",
+      "name": "s9.diagnose",
+      "run_id": "run_53fcd673f0b64ff8",
+      "timestamp": "2026-09-21T20:49:08.911Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "86265537…9d1d",
+      "name": "s9.probe:detect",
+      "run_id": "run_53fcd673f0b64ff8",
+      "timestamp": "2026-09-21T20:49:03.306Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "8d37919b…4c42",
+      "name": "s9.probe:verify",
+      "run_id": "run_1052ecb4dd964d75",
+      "timestamp": "2026-09-21T20:44:44.139Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "b93c3705…523d",
+      "name": "s9.probe:verify",
+      "run_id": "run_1052ecb4dd964d75",
+      "timestamp": "2026-09-21T20:44:44.134Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "758e362d…f459",
+      "name": "s9.repair",
+      "run_id": "run_1052ecb4dd964d75",
+      "timestamp": "2026-09-21T20:44:38.420Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "3f58447a…0831",
+      "name": "s9.diagnose",
+      "run_id": "run_1052ecb4dd964d75",
+      "timestamp": "2026-09-21T20:44:31.686Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "3dc555fe…5331",
+      "name": "s9.cost",
+      "run_id": "run_1052ecb4dd964d75",
+      "timestamp": "2026-09-21T20:44:31.532Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "33c6f45b…d1f3",
+      "name": "s9.probe:detect",
+      "run_id": "run_1052ecb4dd964d75",
+      "timestamp": "2026-09-21T20:44:27.504Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "51c253c8…1bb6",
+      "name": "s9.repair",
+      "run_id": "run_55cf218b900b4cdf",
+      "timestamp": "2026-09-21T20:44:19.066Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "1d8f6f3d…93d0",
+      "name": "s9.diagnose",
+      "run_id": "run_55cf218b900b4cdf",
+      "timestamp": "2026-09-21T20:44:11.739Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "3233b9b5…b5b4",
+      "name": "s9.probe:detect",
+      "run_id": "run_55cf218b900b4cdf",
+      "timestamp": "2026-09-21T20:44:07.524Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "35496376…209d",
+      "name": "s9.probe:verify",
+      "run_id": "run_69eb94948f044545",
+      "timestamp": "2026-09-21T20:44:03.568Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "e8f21786…3fee",
+      "name": "s9.probe:verify",
+      "run_id": "run_69eb94948f044545",
+      "timestamp": "2026-09-21T20:44:01.012Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "baf704ac…0413",
+      "name": "s9.probe:verify",
+      "run_id": "run_69eb94948f044545",
+      "timestamp": "2026-09-21T20:44:01.003Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "d9493124…2b51",
+      "name": "s9.repair",
+      "run_id": "run_69eb94948f044545",
+      "timestamp": "2026-09-21T20:43:56.527Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "850bd0f7…60a8",
+      "name": "s9.repair",
+      "run_id": "run_69eb94948f044545",
+      "timestamp": "2026-09-21T20:43:45.256Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "26d620a8…9a55",
+      "name": "s9.diagnose",
+      "run_id": "run_69eb94948f044545",
+      "timestamp": "2026-09-21T20:43:40.461Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "b4b461e9…3adf",
+      "name": "s9.probe:detect",
+      "run_id": "run_69eb94948f044545",
+      "timestamp": "2026-09-21T20:43:36.713Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "f73d877b…a038",
+      "name": "s9.probe:verify",
+      "run_id": "run_98546a5976494975",
+      "timestamp": "2026-09-21T20:43:32.825Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "9eefcbfe…0d6e",
+      "name": "s9.probe:verify",
+      "run_id": "run_98546a5976494975",
+      "timestamp": "2026-09-21T20:43:29.905Z",
+      "metadata_complete": true,
+      "status": "received"
+    }
+  ],
+  "returned_count": 100,
+  "criteria": "local projectId, excluding local probe names; metadata_complete must be true"
+}

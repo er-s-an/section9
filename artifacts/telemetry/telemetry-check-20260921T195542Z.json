@@ -1,0 +1,10 @@
+{
+  "checked_at": "2026-09-21T19:55:42.354366Z",
+  "endpoint": "/api/public/v2/observations",
+  "window_start": "2026-09-20T19:55:42.354366Z",
+  "http_status": 200,
+  "status": "empty",
+  "matching_spans": [],
+  "returned_count": 2,
+  "criteria": "local projectId, excluding local probe names; metadata_complete must be true"
+}

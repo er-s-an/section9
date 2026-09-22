@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+node_modules/
+frontend/dist/
+.runtime/
+data/
+artifacts/raw/
+.DS_Store
+
+# LimeZu character sheets are acquired locally; do not redistribute raw assets.
+frontend/public/vendor/star-office/guest_anim_*.webp

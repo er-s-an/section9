@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-09-21T20:00:53.675140Z",
+  "endpoint": "/api/public/v2/observations",
+  "window_start": "2026-09-20T20:00:53.675140Z",
+  "http_status": 200,
+  "status": "metadata_incomplete",
+  "matching_spans": [
+    {
+      "trace_id": "e74aaeeb…5c9f",
+      "name": "s9.probe:detect",
+      "run_id": null,
+      "timestamp": "2026-09-21T19:59:58.153Z",
+      "metadata_complete": false,
+      "status": "received"
+    },
+    {
+      "trace_id": "649461ee…7865",
+      "name": "s9.user",
+      "run_id": null,
+      "timestamp": "2026-09-21T19:59:54.011Z",
+      "metadata_complete": false,
+      "status": "received"
+    }
+  ],
+  "returned_count": 4,
+  "criteria": "local projectId, excluding local probe names; metadata_complete must be true"
+}

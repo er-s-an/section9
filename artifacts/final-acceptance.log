@@ -1,0 +1,37 @@
+................................................                         [100%]
+48 passed in 6.74s
+
+> section9-laboratory@0.1.0 build
+> tsc -b && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 4574 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.46 kB │ gzip:  0.33 kB
+dist/assets/index-CRiWlChF.css   22.14 kB │ gzip:  6.02 kB
+dist/assets/index-Noxze7mX.js   305.42 kB │ gzip: 92.02 kB
+✓ built in 3.27s
+PASS: 215 prospective repository files checked; no configured secrets found
+{"generation":"23","revision":"49","checks":{"old_grants_invalidated":true,"healthy_config_restored":true,"history_preserved":true,"message_epoch_advanced":true,"cancelled_requests":0}}
+Section9 stopped
+Ready: http://127.0.0.1:9019
+{"output":"/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/artifacts/browser-acceptance/2026-09-21T20-48-59.445Z","passed":true,"checks":[{"name":"L0 actual write denial","passed":true,"run_id":"run_53fcd673f0b64ff8","revision":"51"},{"name":"L1 approved exact plan and live business checks","passed":true,"run_id":"run_53fcd673f0b64ff8"},{"name":"actual OS pause, takeover and stale A rejection without write","passed":true,"run_id":"run_3671d6b8b3ae47a5","old_actor":"fixer-a","new_actor":"fixer-b"},{"name":"reset invalidates in-flight grant and restores healthy configuration","passed":true,"run_id":"run_bb1404c8cdcf4b8a","reset_revision":"58"},{"name":"communication control toggles server transport epoch","passed":true},{"name":"run detail and actual evidence drawer open","passed":true}]}
+{"output":"/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/artifacts/browser-extra/2026-09-21T20-50-16.591Z","started_at":"2026-09-21T20:50:17.119Z","checks":[{"name":"cost specialist discovered, autonomously claimed, real model message","passed":true,"run_id":"run_3c640fd1f40c4e3b"},{"name":"reset cancels old tool loop and late model result cannot change configuration","passed":true,"revision":"64"},{"name":"actual collector shutdown shows degraded dependency","passed":true},{"name":"collector restored without resetting application or deleting volumes","passed":true}],"errors":[],"passed":true,"finished_at":"2026-09-21T20:51:07.991Z"}
+{"case": "composite-partial-repair", "test_passed": true, "run_id": "run_fa39c2b6f8e2414a", "file": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/artifacts/live-safety/composite-partial-repair.json"}
+{"case": "verification-revision-race", "test_passed": true, "run_id": "run_8fbf843f8a0641ba", "file": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/artifacts/live-safety/verification-revision-race.json"}
+Evaluation environment: http://127.0.0.1:9024
+{"condition": "swarm", "scenario": "prompt", "run_id": "run_71af90b04fbe4ba4", "status": "resolved", "elapsed_s": 18.963, "usage_tokens": 4380}
+{"condition": "swarm", "scenario": "cost", "run_id": "run_f6b3b07d769a4c9c", "status": "resolved", "elapsed_s": 19.932, "usage_tokens": 7463}
+{"condition": "swarm", "scenario": "loop", "run_id": "run_fdfad4d7b34b408e", "status": "resolved", "elapsed_s": 21.215, "usage_tokens": 5169}
+{"condition": "swarm", "scenario": "composite", "run_id": "run_399758e29e154ce3", "status": "resolved", "elapsed_s": 21.221, "usage_tokens": 5981}
+{"summary": "artifacts/acceptance-20260922-045142/summary.json", "executed_runs": 4, "errors": 0}
+status=received matching_spans=100 http_status=200 record=/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/artifacts/telemetry/telemetry-check-20260921T205304Z.json
+{"trace_id":"cfc6602a…8723","name":"s9.loop-workload","run_id":"run_399758e29e154ce3","timestamp":"2026-09-21T20:52:58.840Z","metadata_complete":true,"status":"received"}
+{"trace_id":"2f456023…963a","name":"s9.repair","run_id":"run_399758e29e154ce3","timestamp":"2026-09-21T20:52:54.310Z","metadata_complete":true,"status":"received"}
+{"trace_id":"59701bea…2620","name":"s9.diagnose","run_id":"run_399758e29e154ce3","timestamp":"2026-09-21T20:52:48.173Z","metadata_complete":true,"status":"received"}
+{"trace_id":"16e13247…2a90","name":"s9.probe:detect","run_id":"run_399758e29e154ce3","timestamp":"2026-09-21T20:52:43.887Z","metadata_complete":true,"status":"received"}
+{"trace_id":"9b420695…ec5c","name":"s9.probe:verify","run_id":"run_fdfad4d7b34b408e","timestamp":"2026-09-21T20:52:39.726Z","metadata_complete":true,"status":"received"}
+{"generation":"31","revision":"65","checks":{"old_grants_invalidated":true,"healthy_config_restored":true,"history_preserved":true,"message_epoch_advanced":true,"cancelled_requests":0}}
+Live acceptance complete. Section9 remains running at http://127.0.0.1:9019

@@ -1,0 +1,444 @@
+{
+  "generation": "1",
+  "autonomy": "L2",
+  "muted": false,
+  "attract": {
+    "enabled": true,
+    "cycle": 0,
+    "auto_running": true,
+    "url": "http://127.0.0.1:9020",
+    "isolation": "separate_process_database_memory"
+  },
+  "memory_enabled": false,
+  "monitoring": true,
+  "config": {
+    "context_multiplier": 1,
+    "generation": "1",
+    "max_output_tokens": 1536,
+    "prompt_version": "healthy",
+    "retry_limit": 3,
+    "retry_on_terminal": false,
+    "revision": "1"
+  },
+  "agents": [
+    {
+      "capabilities": [
+        "detect"
+      ],
+      "detail": "进程启动中",
+      "heartbeat_at": null,
+      "id": "sentry",
+      "name": "哨兵",
+      "paused": false,
+      "role": "sentry",
+      "status": "starting",
+      "task_id": null
+    },
+    {
+      "capabilities": [
+        "diagnose"
+      ],
+      "detail": "进程启动中",
+      "heartbeat_at": null,
+      "id": "diagnoser",
+      "name": "诊断员",
+      "paused": false,
+      "role": "diagnoser",
+      "status": "starting",
+      "task_id": null
+    },
+    {
+      "capabilities": [
+        "repair"
+      ],
+      "detail": "进程启动中",
+      "heartbeat_at": null,
+      "id": "fixer-a",
+      "name": "修复员 A",
+      "paused": false,
+      "role": "fixer",
+      "status": "starting",
+      "task_id": null
+    },
+    {
+      "capabilities": [
+        "repair"
+      ],
+      "detail": "进程启动中",
+      "heartbeat_at": null,
+      "id": "fixer-b",
+      "name": "修复员 B",
+      "paused": false,
+      "role": "fixer",
+      "status": "starting",
+      "task_id": null
+    },
+    {
+      "capabilities": [
+        "verify"
+      ],
+      "detail": "进程启动中",
+      "heartbeat_at": null,
+      "id": "verifier",
+      "name": "复核员",
+      "paused": false,
+      "role": "verifier",
+      "status": "starting",
+      "task_id": null
+    },
+    {
+      "capabilities": [
+        "single"
+      ],
+      "detail": "进程启动中",
+      "heartbeat_at": null,
+      "id": "single",
+      "name": "单 Agent 基线",
+      "paused": false,
+      "role": "single",
+      "status": "starting",
+      "task_id": null
+    }
+  ],
+  "incident": null,
+  "runs": [],
+  "victim": {
+    "active_requests": 0,
+    "stalled_requests": 0,
+    "total_tool_calls": 0,
+    "last_requests": []
+  },
+  "probe_policy": {
+    "interval_s": 30,
+    "max_rounds_per_incident": 3,
+    "idle_calls": 0
+  },
+  "metrics": {
+    "total": 0,
+    "success": 0,
+    "failures": 0,
+    "usage_tokens": 0
+  },
+  "dependencies": {
+    "model": {
+      "status": "configured",
+      "model": "evomap-gpt-5.6-luna",
+      "detail": "远程 EvoMap API",
+      "remote_inference": true,
+      "max_concurrency": 2
+    },
+    "langfuse": {
+      "status": "available",
+      "detail": "HTTP 200",
+      "checked_at": "2026-09-21T20:56:25.157+00:00",
+      "url": "http://127.0.0.1:9030"
+    },
+    "collector": {
+      "status": "available",
+      "detail": "HTTP 200",
+      "checked_at": "2026-09-21T20:56:25.180+00:00",
+      "last_received_at": null
+    },
+    "evomap": {
+      "status": "local",
+      "detail": "Section9 自建本地协作；官方 GEP SDK 资产",
+      "memory": {
+        "playbooks": 4,
+        "learned": 0,
+        "events": 0,
+        "publish_state": "local_only",
+        "hub_status": "pending_auth",
+        "pending_auth": false,
+        "validator_error": null
+      }
+    },
+    "jev": {
+      "status": "disabled",
+      "detail": "P2：无真实压缩产物，未启用"
+    }
+  },
+  "playbooks": [
+    {
+      "id": "seed_quality_prompt",
+      "title": "恢复提示词质量",
+      "symptoms": [
+        "quality_mismatch"
+      ],
+      "actions": [
+        {
+          "type": "set_prompt_revision",
+          "values": {
+            "prompt_version": "healthy"
+          }
+        }
+      ],
+      "reuse_count": 0,
+      "success_count": 0,
+      "source": "seeded",
+      "publish_state": "local_only"
+    },
+    {
+      "id": "seed_cost_budget",
+      "title": "收紧成本预算",
+      "symptoms": [
+        "cost_high"
+      ],
+      "actions": [
+        {
+          "type": "apply_context_budget",
+          "values": {
+            "context_multiplier": 1,
+            "max_output_tokens": 1536
+          }
+        }
+      ],
+      "reuse_count": 0,
+      "success_count": 0,
+      "source": "seeded",
+      "publish_state": "local_only"
+    },
+    {
+      "id": "seed_stalled_retry",
+      "title": "停止终端重试",
+      "symptoms": [
+        "tool_stalled"
+      ],
+      "actions": [
+        {
+          "type": "apply_retry_policy",
+          "values": {
+            "retry_limit": 3,
+            "retry_on_terminal": false
+          }
+        }
+      ],
+      "reuse_count": 0,
+      "success_count": 0,
+      "source": "seeded",
+      "publish_state": "local_only"
+    },
+    {
+      "id": "seed_composite_repair",
+      "title": "联合质量停滞修复",
+      "symptoms": [
+        "quality_mismatch",
+        "tool_stalled"
+      ],
+      "actions": [
+        {
+          "type": "apply_config_bundle",
+          "values": {
+            "prompt_version": "healthy",
+            "context_multiplier": 1,
+            "max_output_tokens": 1536,
+            "retry_limit": 3,
+            "retry_on_terminal": false
+          }
+        }
+      ],
+      "reuse_count": 0,
+      "success_count": 0,
+      "source": "seeded",
+      "publish_state": "local_only"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "ev_a57fddb7ed8842f6",
+      "event_type": "agent.joined",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:23.707+00:00",
+      "payload": {
+        "capabilities": [
+          "detect"
+        ],
+        "summary": "哨兵已加入能力目录"
+      },
+      "producer": "sentry",
+      "run_id": null,
+      "sequence": "1"
+    },
+    {
+      "event_id": "ev_0427ccb0d1fd4265",
+      "event_type": "agent.process_started",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:23.784+00:00",
+      "payload": {
+        "pid": 593,
+        "summary": "独立工作进程启动"
+      },
+      "producer": "sentry",
+      "run_id": null,
+      "sequence": "2"
+    },
+    {
+      "event_id": "ev_8353b799daa8449c",
+      "event_type": "agent.joined",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:23.786+00:00",
+      "payload": {
+        "capabilities": [
+          "diagnose"
+        ],
+        "summary": "诊断员已加入能力目录"
+      },
+      "producer": "diagnoser",
+      "run_id": null,
+      "sequence": "3"
+    },
+    {
+      "event_id": "ev_9547a299ae1949fc",
+      "event_type": "agent.process_started",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:23.874+00:00",
+      "payload": {
+        "pid": 597,
+        "summary": "独立工作进程启动"
+      },
+      "producer": "diagnoser",
+      "run_id": null,
+      "sequence": "4"
+    },
+    {
+      "event_id": "ev_ec000c9b6c07485e",
+      "event_type": "agent.joined",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:23.875+00:00",
+      "payload": {
+        "capabilities": [
+          "repair"
+        ],
+        "summary": "修复员 A已加入能力目录"
+      },
+      "producer": "fixer-a",
+      "run_id": null,
+      "sequence": "5"
+    },
+    {
+      "event_id": "ev_8cdb1016d335454f",
+      "event_type": "agent.process_started",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:23.979+00:00",
+      "payload": {
+        "pid": 602,
+        "summary": "独立工作进程启动"
+      },
+      "producer": "fixer-a",
+      "run_id": null,
+      "sequence": "6"
+    },
+    {
+      "event_id": "ev_b7e0e508564b488e",
+      "event_type": "agent.joined",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:23.981+00:00",
+      "payload": {
+        "capabilities": [
+          "repair"
+        ],
+        "summary": "修复员 B已加入能力目录"
+      },
+      "producer": "fixer-b",
+      "run_id": null,
+      "sequence": "7"
+    },
+    {
+      "event_id": "ev_553c4726fe76443c",
+      "event_type": "agent.process_started",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:24.136+00:00",
+      "payload": {
+        "pid": 606,
+        "summary": "独立工作进程启动"
+      },
+      "producer": "fixer-b",
+      "run_id": null,
+      "sequence": "8"
+    },
+    {
+      "event_id": "ev_a2e3c82f372d4784",
+      "event_type": "agent.joined",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:24.140+00:00",
+      "payload": {
+        "capabilities": [
+          "verify"
+        ],
+        "summary": "复核员已加入能力目录"
+      },
+      "producer": "verifier",
+      "run_id": null,
+      "sequence": "9"
+    },
+    {
+      "event_id": "ev_7b4fc84140044ff2",
+      "event_type": "agent.process_started",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:24.380+00:00",
+      "payload": {
+        "pid": 613,
+        "summary": "独立工作进程启动"
+      },
+      "producer": "verifier",
+      "run_id": null,
+      "sequence": "10"
+    },
+    {
+      "event_id": "ev_1b42de1a8e9247e2",
+      "event_type": "agent.joined",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:24.395+00:00",
+      "payload": {
+        "capabilities": [
+          "single"
+        ],
+        "summary": "单 Agent 基线已加入能力目录"
+      },
+      "producer": "single",
+      "run_id": null,
+      "sequence": "11"
+    },
+    {
+      "event_id": "ev_f8d96bf879bb4e07",
+      "event_type": "agent.process_started",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:24.912+00:00",
+      "payload": {
+        "pid": 632,
+        "summary": "独立工作进程启动"
+      },
+      "producer": "single",
+      "run_id": null,
+      "sequence": "12"
+    },
+    {
+      "event_id": "ev_a2dbc6549b5d4115",
+      "event_type": "system.started",
+      "generation": "1",
+      "incident_id": null,
+      "occurred_at": "2026-09-21T20:56:24.917+00:00",
+      "payload": {
+        "model": "evomap-gpt-5.6-luna",
+        "summary": "Section9 服务与独立角色进程已启动"
+      },
+      "producer": "system",
+      "run_id": null,
+      "sequence": "13"
+    }
+  ],
+  "model": "evomap-gpt-5.6-luna",
+  "version": "0.1.0",
+  "environment": "attract"
+}

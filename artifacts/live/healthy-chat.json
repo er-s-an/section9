@@ -1,0 +1,21 @@
+{
+  "request_id": "2ed4c9ff-6d83-478a-bf75-3f2219d53674",
+  "answer": "{\"eligible\": true, \"merchant_pays_shipping\": true}",
+  "structured": {
+    "eligible": true,
+    "merchant_pays_shipping": true
+  },
+  "revision": "2",
+  "usage": {
+    "input_tokens": 436,
+    "output_tokens": 138,
+    "total_tokens": 574,
+    "token_quality": "provider",
+    "estimated_input_tokens": 187
+  },
+  "elapsed_s": 4.135297333006747,
+  "trace_id": "649461eee50c060c77e32fa2b0427865",
+  "status": "success",
+  "model": "glm-5.2",
+  "tool_calls": 1
+}

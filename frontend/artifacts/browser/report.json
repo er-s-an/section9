@@ -1,0 +1,210 @@
+{
+  "url": "http://127.0.0.1:5173/",
+  "generatedAt": "2026-09-21T19:56:11.460Z",
+  "results": [
+    {
+      "viewport": {
+        "name": "1440x1000",
+        "width": 1440,
+        "height": 1000
+      },
+      "loadMs": 2236,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failed": [],
+      "overflow": {
+        "width": 1440,
+        "height": 1252,
+        "viewport": 1440,
+        "body": 1440
+      },
+      "tabs": [
+        "办公室",
+        "运行记录",
+        "Playbook",
+        "五行计分"
+      ],
+      "focus": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "办公室",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "运行记录",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Playbook",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "五行计分",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "重置实验室",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "语义退化",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "成本膨胀",
+          "aria": null
+        }
+      ],
+      "runCount": 0,
+      "drawer": 0,
+      "scoreRows": 5
+    },
+    {
+      "viewport": {
+        "name": "1280x800",
+        "width": 1280,
+        "height": 800
+      },
+      "loadMs": 1722,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failed": [],
+      "overflow": {
+        "width": 1280,
+        "height": 1252,
+        "viewport": 1280,
+        "body": 1280
+      },
+      "tabs": [
+        "办公室",
+        "运行记录",
+        "Playbook",
+        "五行计分"
+      ],
+      "focus": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "办公室",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "运行记录",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Playbook",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "五行计分",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "重置实验室",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "语义退化",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "成本膨胀",
+          "aria": null
+        }
+      ],
+      "runCount": 0,
+      "drawer": 0,
+      "scoreRows": 5
+    },
+    {
+      "viewport": {
+        "name": "768x800",
+        "width": 768,
+        "height": 800
+      },
+      "loadMs": 1655,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failed": [],
+      "overflow": {
+        "width": 1040,
+        "height": 1252,
+        "viewport": 768,
+        "body": 1040
+      },
+      "tabs": [
+        "办公室",
+        "运行记录",
+        "Playbook",
+        "五行计分"
+      ],
+      "focus": [
+        {
+          "tag": "BUTTON",
+          "text": "",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "办公室",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "运行记录",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Playbook",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "五行计分",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "重置实验室",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "语义退化",
+          "aria": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "成本膨胀",
+          "aria": null
+        }
+      ],
+      "runCount": 0,
+      "drawer": 0,
+      "scoreRows": 5
+    }
+  ]
+}

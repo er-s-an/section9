@@ -1,0 +1,61 @@
+{
+  "started_at": "2026-09-21T20:43:06.885Z",
+  "base_url": "http://127.0.0.1:9019",
+  "checks": [
+    {
+      "name": "L0 actual write denial",
+      "passed": true,
+      "run_id": "run_98546a5976494975",
+      "revision": "38"
+    },
+    {
+      "name": "L1 approved exact plan and live business checks",
+      "passed": true,
+      "run_id": "run_98546a5976494975"
+    },
+    {
+      "name": "actual OS pause, takeover and stale A rejection without write",
+      "passed": true,
+      "run_id": "run_69eb94948f044545",
+      "old_actor": "fixer-a",
+      "new_actor": "fixer-b"
+    },
+    {
+      "name": "reset invalidates in-flight grant and restores healthy configuration",
+      "passed": true,
+      "run_id": "run_55cf218b900b4cdf",
+      "reset_revision": "45"
+    },
+    {
+      "name": "communication control toggles server transport epoch",
+      "passed": true
+    },
+    {
+      "name": "run detail and actual evidence drawer open",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "L0-L1-exact-approval",
+      "id": "run_98546a5976494975",
+      "status": "resolved",
+      "elapsed_s": 25.528
+    },
+    {
+      "label": "fencing",
+      "id": "run_69eb94948f044545",
+      "status": "resolved",
+      "elapsed_s": 30.384
+    },
+    {
+      "label": "reset-old-grant",
+      "id": "run_55cf218b900b4cdf",
+      "status": "reset",
+      "elapsed_s": 15.817
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "finished_at": "2026-09-21T20:44:24.828Z"
+}

@@ -1,0 +1,1852 @@
+{
+  "checked_at": "2026-09-21T21:12:39.258513+00:00",
+  "local_url": "http://127.0.0.1:9019",
+  "running": true,
+  "autonomy": "L2",
+  "muted": false,
+  "memory_enabled": false,
+  "config": {
+    "context_multiplier": 1,
+    "generation": "35",
+    "max_output_tokens": 1536,
+    "prompt_version": "healthy",
+    "retry_limit": 3,
+    "retry_on_terminal": false,
+    "revision": "75"
+  },
+  "dependencies": {
+    "model": {
+      "status": "available",
+      "model": "evomap-gpt-5.6-luna",
+      "detail": "远程 EvoMap API",
+      "remote_inference": true,
+      "max_concurrency": 2
+    },
+    "langfuse": {
+      "status": "available",
+      "detail": "HTTP 200",
+      "checked_at": "2026-09-21T21:12:37.242+00:00",
+      "url": "http://127.0.0.1:9030"
+    },
+    "collector": {
+      "status": "available",
+      "detail": "HTTP 200",
+      "checked_at": "2026-09-21T21:12:37.245+00:00",
+      "last_received_at": "2026-09-21T21:07:25.808+00:00"
+    },
+    "evomap": {
+      "status": "local",
+      "detail": "Section9 自建本地协作；官方 GEP SDK 资产",
+      "memory": {
+        "playbooks": 8,
+        "learned": 4,
+        "events": 48,
+        "publish_state": "local_only",
+        "hub_status": "pending_auth",
+        "pending_auth": true,
+        "validator_error": null
+      }
+    },
+    "jev": {
+      "status": "disabled",
+      "detail": "P2：无真实压缩产物，未启用"
+    }
+  },
+  "conditions": [
+    {
+      "condition": "single",
+      "n": 8,
+      "passed": 8,
+      "failures": 0,
+      "median_s": 12.828,
+      "range_s": [
+        11.669,
+        14.152
+      ],
+      "provider_tokens": 35427,
+      "unknown_usage_runs": 0,
+      "run_ids": [
+        "run_9bfd9edefd2e45c7",
+        "run_4647d3ac20694095",
+        "run_6b054c051216459a",
+        "run_4c5f90ceb7274854",
+        "run_afb3a9ff95ae485b",
+        "run_49e6dc3c181444d4",
+        "run_ace4774ebb654d86",
+        "run_371c8de615f7454b"
+      ]
+    },
+    {
+      "condition": "muted",
+      "n": 8,
+      "passed": 7,
+      "failures": 1,
+      "median_s": 13.739,
+      "range_s": [
+        11.857,
+        17.054
+      ],
+      "provider_tokens": 42077,
+      "unknown_usage_runs": 0,
+      "run_ids": [
+        "run_9ecf6aecff794511",
+        "run_e5ce0058f24f410d",
+        "run_98e0636623324f9a",
+        "run_e7d936f929aa436f",
+        "run_fe4904adbf304cc8",
+        "run_cd3199772bb94636",
+        "run_78a36f2607e64989",
+        "run_7d7375c56b8847f8"
+      ]
+    },
+    {
+      "condition": "swarm",
+      "n": 12,
+      "passed": 12,
+      "failures": 0,
+      "median_s": 19.16,
+      "range_s": [
+        17.328,
+        21.221
+      ],
+      "provider_tokens": 68847,
+      "unknown_usage_runs": 0,
+      "run_ids": [
+        "run_150c25ba1c7544f5",
+        "run_9a757ed056334c17",
+        "run_877fcd72d57c4f0f",
+        "run_86f21728217743ef",
+        "run_b9c1056b2bb9483d",
+        "run_b203f2c372ed4556",
+        "run_f229d25feed14d28",
+        "run_5b037d55d6c14c95",
+        "run_71af90b04fbe4ba4",
+        "run_f6b3b07d769a4c9c",
+        "run_fdfad4d7b34b408e",
+        "run_399758e29e154ce3"
+      ]
+    },
+    {
+      "condition": "memory",
+      "n": 8,
+      "passed": 8,
+      "failures": 0,
+      "median_s": 19.237,
+      "range_s": [
+        15.908,
+        21.29
+      ],
+      "provider_tokens": 46739,
+      "unknown_usage_runs": 0,
+      "run_ids": [
+        "run_905fd8572429458b",
+        "run_84ebe3e23972413e",
+        "run_47ae5427c038413f",
+        "run_e4726aa50d7548a5",
+        "run_03f5feaf7cac4b32",
+        "run_a414c134e5be41b8",
+        "run_bb6a376a06ea46c7",
+        "run_f51372f68e5e45cb"
+      ]
+    }
+  ],
+  "total_formal_runs": 36,
+  "formal_passed": 35,
+  "formal_failures": [
+    {
+      "id": "run_7d7375c56b8847f8",
+      "condition": "muted",
+      "scenario": "composite",
+      "reason": "VERIFICATION_FAILED"
+    }
+  ],
+  "scoreboard": {
+    "rows": [
+      {
+        "id": "single",
+        "label": "单 Agent",
+        "n": 8,
+        "failures": 0,
+        "success_rate": 1.0,
+        "median_s": 12.828,
+        "usage_tokens": 35427,
+        "unknown_usage_runs": 0,
+        "conditions": [
+          {
+            "run_id": "run_371c8de615f7454b",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "single",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "22",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "61"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_ace4774ebb654d86",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "single",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "21",
+                "max_output_tokens": 1536,
+                "prompt_version": "healthy",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "58"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_49e6dc3c181444d4",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "single",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 8,
+                "generation": "20",
+                "max_output_tokens": 4096,
+                "prompt_version": "healthy",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "55"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_afb3a9ff95ae485b",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "single",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "19",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "52"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_4c5f90ceb7274854",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "single",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "5",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "12"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_6b054c051216459a",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "single",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "4",
+                "max_output_tokens": 1536,
+                "prompt_version": "healthy",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "9"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_4647d3ac20694095",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "single",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 8,
+                "generation": "3",
+                "max_output_tokens": 4096,
+                "prompt_version": "healthy",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "6"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_9bfd9edefd2e45c7",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "single",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "2",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "3"
+              },
+              "worker_completion_cap": 1600
+            }
+          }
+        ],
+        "run_ids": [
+          "run_371c8de615f7454b",
+          "run_ace4774ebb654d86",
+          "run_49e6dc3c181444d4",
+          "run_afb3a9ff95ae485b",
+          "run_4c5f90ceb7274854",
+          "run_6b054c051216459a",
+          "run_4647d3ac20694095",
+          "run_9bfd9edefd2e45c7"
+        ],
+        "cells": [
+          {
+            "scenario": "prompt",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 13.758,
+            "usage_tokens": 6806,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_afb3a9ff95ae485b",
+              "run_9bfd9edefd2e45c7"
+            ]
+          },
+          {
+            "scenario": "cost",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 13.075,
+            "usage_tokens": 12807,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_49e6dc3c181444d4",
+              "run_4647d3ac20694095"
+            ]
+          },
+          {
+            "scenario": "loop",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 11.84,
+            "usage_tokens": 7501,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_ace4774ebb654d86",
+              "run_6b054c051216459a"
+            ]
+          },
+          {
+            "scenario": "composite",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 12.772,
+            "usage_tokens": 8313,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_371c8de615f7454b",
+              "run_4c5f90ceb7274854"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "muted",
+        "label": "蜂群禁言 · 通信依赖测试",
+        "n": 8,
+        "failures": 1,
+        "success_rate": 0.875,
+        "median_s": 13.7395,
+        "usage_tokens": 42077,
+        "unknown_usage_runs": 0,
+        "conditions": [
+          {
+            "run_id": "run_7d7375c56b8847f8",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "muted",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "26",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "73"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_78a36f2607e64989",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "muted",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "25",
+                "max_output_tokens": 1536,
+                "prompt_version": "healthy",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "70"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_cd3199772bb94636",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "muted",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 8,
+                "generation": "24",
+                "max_output_tokens": 4096,
+                "prompt_version": "healthy",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "67"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_fe4904adbf304cc8",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "muted",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "23",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "64"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_e7d936f929aa436f",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "muted",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "9",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "24"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_98e0636623324f9a",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "muted",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "8",
+                "max_output_tokens": 1536,
+                "prompt_version": "healthy",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "21"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_e5ce0058f24f410d",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "muted",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 8,
+                "generation": "7",
+                "max_output_tokens": 4096,
+                "prompt_version": "healthy",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "18"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_9ecf6aecff794511",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "muted",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "6",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "15"
+              },
+              "worker_completion_cap": 1600
+            }
+          }
+        ],
+        "run_ids": [
+          "run_7d7375c56b8847f8",
+          "run_78a36f2607e64989",
+          "run_cd3199772bb94636",
+          "run_fe4904adbf304cc8",
+          "run_e7d936f929aa436f",
+          "run_98e0636623324f9a",
+          "run_e5ce0058f24f410d",
+          "run_9ecf6aecff794511"
+        ],
+        "cells": [
+          {
+            "scenario": "prompt",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 13.242,
+            "usage_tokens": 7884,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_fe4904adbf304cc8",
+              "run_9ecf6aecff794511"
+            ]
+          },
+          {
+            "scenario": "cost",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 12.925,
+            "usage_tokens": 13726,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_cd3199772bb94636",
+              "run_e5ce0058f24f410d"
+            ]
+          },
+          {
+            "scenario": "loop",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 13.047,
+            "usage_tokens": 9268,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_78a36f2607e64989",
+              "run_98e0636623324f9a"
+            ]
+          },
+          {
+            "scenario": "composite",
+            "n": 2,
+            "failures": 1,
+            "success_rate": 0.5,
+            "median_s": 16.2,
+            "usage_tokens": 11199,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_7d7375c56b8847f8",
+              "run_e7d936f929aa436f"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "swarm",
+        "label": "蜂群 · LLM 协作",
+        "n": 12,
+        "failures": 0,
+        "success_rate": 1.0,
+        "median_s": 19.16,
+        "usage_tokens": 68847,
+        "unknown_usage_runs": 0,
+        "conditions": [
+          {
+            "run_id": "run_399758e29e154ce3",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "implementation_hash": "116129d29cbf68c6f570990b8fcbb34508b8cdf2dd210b2c2722911eed8061f7",
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "39",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "110"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_fdfad4d7b34b408e",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "implementation_hash": "116129d29cbf68c6f570990b8fcbb34508b8cdf2dd210b2c2722911eed8061f7",
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "38",
+                "max_output_tokens": 1536,
+                "prompt_version": "healthy",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "107"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_f6b3b07d769a4c9c",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "implementation_hash": "116129d29cbf68c6f570990b8fcbb34508b8cdf2dd210b2c2722911eed8061f7",
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 8,
+                "generation": "37",
+                "max_output_tokens": 4096,
+                "prompt_version": "healthy",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "104"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_71af90b04fbe4ba4",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "implementation_hash": "116129d29cbf68c6f570990b8fcbb34508b8cdf2dd210b2c2722911eed8061f7",
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "36",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "101"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_5b037d55d6c14c95",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "30",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "85"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_f229d25feed14d28",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "29",
+                "max_output_tokens": 1536,
+                "prompt_version": "healthy",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "82"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_b203f2c372ed4556",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 8,
+                "generation": "28",
+                "max_output_tokens": 4096,
+                "prompt_version": "healthy",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "79"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_b9c1056b2bb9483d",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "27",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "76"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_86f21728217743ef",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "13",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "36"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_877fcd72d57c4f0f",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "12",
+                "max_output_tokens": 1536,
+                "prompt_version": "healthy",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "33"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_9a757ed056334c17",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 8,
+                "generation": "11",
+                "max_output_tokens": 4096,
+                "prompt_version": "healthy",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "30"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_150c25ba1c7544f5",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "swarm",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "off",
+              "memory_snapshot_hash": null,
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "10",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "27"
+              },
+              "worker_completion_cap": 1600
+            }
+          }
+        ],
+        "run_ids": [
+          "run_399758e29e154ce3",
+          "run_fdfad4d7b34b408e",
+          "run_f6b3b07d769a4c9c",
+          "run_71af90b04fbe4ba4",
+          "run_5b037d55d6c14c95",
+          "run_f229d25feed14d28",
+          "run_b203f2c372ed4556",
+          "run_b9c1056b2bb9483d",
+          "run_86f21728217743ef",
+          "run_877fcd72d57c4f0f",
+          "run_9a757ed056334c17",
+          "run_150c25ba1c7544f5"
+        ],
+        "cells": [
+          {
+            "scenario": "prompt",
+            "n": 3,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 17.623,
+            "usage_tokens": 13133,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_71af90b04fbe4ba4",
+              "run_b9c1056b2bb9483d",
+              "run_150c25ba1c7544f5"
+            ]
+          },
+          {
+            "scenario": "cost",
+            "n": 3,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 19.932,
+            "usage_tokens": 22320,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_f6b3b07d769a4c9c",
+              "run_b203f2c372ed4556",
+              "run_9a757ed056334c17"
+            ]
+          },
+          {
+            "scenario": "loop",
+            "n": 3,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 19.611,
+            "usage_tokens": 15486,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_fdfad4d7b34b408e",
+              "run_f229d25feed14d28",
+              "run_877fcd72d57c4f0f"
+            ]
+          },
+          {
+            "scenario": "composite",
+            "n": 3,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 19.165,
+            "usage_tokens": 17908,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_399758e29e154ce3",
+              "run_5b037d55d6c14c95",
+              "run_86f21728217743ef"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "memory",
+        "label": "蜂群 + Playbook",
+        "n": 8,
+        "failures": 0,
+        "success_rate": 1.0,
+        "median_s": 19.237000000000002,
+        "usage_tokens": 46739,
+        "unknown_usage_runs": 0,
+        "conditions": [
+          {
+            "run_id": "run_f51372f68e5e45cb",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "memory",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "seeded",
+              "memory_snapshot_hash": "9b4a2fde0aaddd16760fd0b97b97a58168362b1cbd3d5acec4bf19a30152558e",
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "34",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "97"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_bb6a376a06ea46c7",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "memory",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "seeded",
+              "memory_snapshot_hash": "9b4a2fde0aaddd16760fd0b97b97a58168362b1cbd3d5acec4bf19a30152558e",
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "33",
+                "max_output_tokens": 1536,
+                "prompt_version": "healthy",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "94"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_a414c134e5be41b8",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "memory",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "seeded",
+              "memory_snapshot_hash": "9b4a2fde0aaddd16760fd0b97b97a58168362b1cbd3d5acec4bf19a30152558e",
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 8,
+                "generation": "32",
+                "max_output_tokens": 4096,
+                "prompt_version": "healthy",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "91"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_03f5feaf7cac4b32",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "memory",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "seeded",
+              "memory_snapshot_hash": "9b4a2fde0aaddd16760fd0b97b97a58168362b1cbd3d5acec4bf19a30152558e",
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "probe_schedule": {
+                "interval_s": 30,
+                "max_detection_rounds": 3,
+                "scope": "active_incident"
+              },
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "31",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "88"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_e4726aa50d7548a5",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "memory",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "seeded",
+              "memory_snapshot_hash": "9b4a2fde0aaddd16760fd0b97b97a58168362b1cbd3d5acec4bf19a30152558e",
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "17",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "48"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_47ae5427c038413f",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "memory",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "seeded",
+              "memory_snapshot_hash": "9b4a2fde0aaddd16760fd0b97b97a58168362b1cbd3d5acec4bf19a30152558e",
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "16",
+                "max_output_tokens": 1536,
+                "prompt_version": "healthy",
+                "retry_limit": 6,
+                "retry_on_terminal": true,
+                "revision": "45"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_84ebe3e23972413e",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "memory",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "seeded",
+              "memory_snapshot_hash": "9b4a2fde0aaddd16760fd0b97b97a58168362b1cbd3d5acec4bf19a30152558e",
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 8,
+                "generation": "15",
+                "max_output_tokens": 4096,
+                "prompt_version": "healthy",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "42"
+              },
+              "worker_completion_cap": 1600
+            }
+          },
+          {
+            "run_id": "run_905fd8572429458b",
+            "manifest": {
+              "cache_condition": "not_controlled_provider_cache",
+              "condition": "memory",
+              "environment": "evaluation",
+              "evidence_origin": "live",
+              "fixture_version": "xiaozhi-s9-v1",
+              "hardware_isolation": false,
+              "jev_enabled": false,
+              "memory_condition": "seeded",
+              "memory_snapshot_hash": "9b4a2fde0aaddd16760fd0b97b97a58168362b1cbd3d5acec4bf19a30152558e",
+              "model": "evomap-gpt-5.6-luna",
+              "model_timeout_s": 60.0,
+              "request_concurrency_limit": 2,
+              "scenario_seed": 42,
+              "total_token_budget": 16000,
+              "transport_mode": "local",
+              "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+              "victim_config": {
+                "context_multiplier": 1,
+                "generation": "14",
+                "max_output_tokens": 1536,
+                "prompt_version": "degraded",
+                "retry_limit": 3,
+                "retry_on_terminal": false,
+                "revision": "39"
+              },
+              "worker_completion_cap": 1600
+            }
+          }
+        ],
+        "run_ids": [
+          "run_f51372f68e5e45cb",
+          "run_bb6a376a06ea46c7",
+          "run_a414c134e5be41b8",
+          "run_03f5feaf7cac4b32",
+          "run_e4726aa50d7548a5",
+          "run_47ae5427c038413f",
+          "run_84ebe3e23972413e",
+          "run_905fd8572429458b"
+        ],
+        "cells": [
+          {
+            "scenario": "prompt",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 16.401,
+            "usage_tokens": 8822,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_03f5feaf7cac4b32",
+              "run_905fd8572429458b"
+            ]
+          },
+          {
+            "scenario": "cost",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 19.807,
+            "usage_tokens": 15020,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_a414c134e5be41b8",
+              "run_84ebe3e23972413e"
+            ]
+          },
+          {
+            "scenario": "loop",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 19.202,
+            "usage_tokens": 10712,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_bb6a376a06ea46c7",
+              "run_47ae5427c038413f"
+            ]
+          },
+          {
+            "scenario": "composite",
+            "n": 2,
+            "failures": 0,
+            "success_rate": 1.0,
+            "median_s": 20.803,
+            "usage_tokens": 12185,
+            "unknown_usage_runs": 0,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": [
+              "run_f51372f68e5e45cb",
+              "run_e4726aa50d7548a5"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "memory_jev",
+        "label": "蜂群 + Playbook + Jev（未启用）",
+        "n": 0,
+        "failures": null,
+        "success_rate": null,
+        "median_s": null,
+        "usage_tokens": null,
+        "unknown_usage_runs": null,
+        "conditions": [],
+        "run_ids": [],
+        "cells": [
+          {
+            "scenario": "prompt",
+            "n": 0,
+            "failures": null,
+            "success_rate": null,
+            "median_s": null,
+            "usage_tokens": null,
+            "unknown_usage_runs": null,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": []
+          },
+          {
+            "scenario": "cost",
+            "n": 0,
+            "failures": null,
+            "success_rate": null,
+            "median_s": null,
+            "usage_tokens": null,
+            "unknown_usage_runs": null,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": []
+          },
+          {
+            "scenario": "loop",
+            "n": 0,
+            "failures": null,
+            "success_rate": null,
+            "median_s": null,
+            "usage_tokens": null,
+            "unknown_usage_runs": null,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": []
+          },
+          {
+            "scenario": "composite",
+            "n": 0,
+            "failures": null,
+            "success_rate": null,
+            "median_s": null,
+            "usage_tokens": null,
+            "unknown_usage_runs": null,
+            "token_budget": [
+              16000
+            ],
+            "run_ids": []
+          }
+        ]
+      }
+    ],
+    "limitations": [
+      "只统计独立 9024 进程及数据库中的 evaluation 运行；集成演练与导览不混入计分",
+      "共享物理 Mac 与供应商；未控制供应商缓存，样本不足不能推断优势",
+      "失败、重置、未知 usage 均保留；未知成本不算零成本"
+    ]
+  },
+  "component_tests": {
+    "command": "./.venv/bin/python -m pytest -q",
+    "passed": 55,
+    "failed": 0,
+    "elapsed_s": 5.62,
+    "kind": "component_and_boundary_tests",
+    "provider_calls": false,
+    "recorded_at": "2026-09-21T21:11:57.275281+00:00"
+  },
+  "evidence": {
+    "core_acceptance": "artifacts/final-acceptance.log",
+    "prior_acceptance_failure": "artifacts/final-acceptance-attempt1.log",
+    "latest_browser": "artifacts/final-browser/report.json",
+    "memory": "artifacts/browser-memory/2026-09-21T20-54-58.590Z/report.json",
+    "attract": "artifacts/attract/20260921T205623Z/report.json",
+    "offline": "artifacts/offline/report.json",
+    "startup": "artifacts/startup/report.json",
+    "dual_telemetry": "artifacts/telemetry/telemetry-check-20260921T210738Z.json",
+    "langfuse_browser": "artifacts/observability-browser/browser-report.json",
+    "partial_repair": "artifacts/live-safety/composite-partial-repair.json",
+    "revision_race": "artifacts/live-safety/verification-revision-race.json",
+    "poster": "artifacts/delivery/section9-A3-poster.pdf",
+    "replay": "artifacts/delivery/section9-90s-replay.mp4"
+  },
+  "limits": [
+    "Remote EvoMap inference; offline model use unavailable",
+    "Hub OAuth/publication pending; official GEP SDK used locally",
+    "Jev disabled; 5th row untested",
+    "Process/database isolation on one Mac, not hardware isolation",
+    "Provider cache and USD pricing not controlled; small samples do not establish superiority",
+    "Earlier Langfuse-only telemetry did not prove backend fan-out; final gzip fix verified by identical trace IDs",
+    "Failed calibration, budget-contention trial, and intentional resets retained separately from formal matrix",
+    "No push or public deployment; Star-Office artwork licensed for noncommercial demonstration only"
+  ]
+}

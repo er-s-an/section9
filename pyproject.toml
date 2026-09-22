@@ -1,0 +1,27 @@
+[project]
+name = "section9"
+version = "0.1.0"
+description = "A verifiable local agent incident-response laboratory"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "httpx>=0.28,<1",
+  "pydantic>=2.10,<3", "python-dotenv>=1,<2", "pyyaml>=6,<7",
+  "opentelemetry-sdk>=1.30,<2", "opentelemetry-exporter-otlp-proto-http>=1.30,<2",
+  "opentelemetry-proto>=1.30,<2", "langfuse>=4.7,<5"
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "pytest-asyncio>=0.25,<2", "ruff>=0.11,<1", "jsonschema>=4,<5"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 110
+
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

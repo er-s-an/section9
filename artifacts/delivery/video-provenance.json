@@ -1,0 +1,10 @@
+{
+  "source": "artifacts/browser-acceptance/2026-09-21T20-43-06.361Z/video/page@e764d084c78c854db8050c743427ddda.webm",
+  "output": "artifacts/delivery/section9-90s-replay.mp4",
+  "original_duration_s": 79.04,
+  "output_duration_s": 90,
+  "speed": 1,
+  "historical_recording": true,
+  "live": false,
+  "editing": "Five-second title and final evidence card; continuous browser recording at original speed, bottom historical watermark; no fake results."
+}

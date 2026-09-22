@@ -1,0 +1,83 @@
+{
+  "checked_at": "2026-09-21T20:07:00.641629Z",
+  "endpoint": "/api/public/v2/observations?fields=core,basic,metadata,time",
+  "window_start": "2026-09-20T20:07:00.641629Z",
+  "http_status": 200,
+  "status": "received",
+  "matching_spans": [
+    {
+      "trace_id": "6fccd7ce…ed4c",
+      "name": "s9.probe:verify",
+      "run_id": "run_55c5f8847af64658",
+      "timestamp": "2026-09-21T20:03:48.249Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "3c30d9ec…20f9",
+      "name": "s9.probe:verify",
+      "run_id": "run_55c5f8847af64658",
+      "timestamp": "2026-09-21T20:03:45.795Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "80349c72…85c8",
+      "name": "s9.probe:verify",
+      "run_id": "run_55c5f8847af64658",
+      "timestamp": "2026-09-21T20:03:45.793Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "4376d48d…0e77",
+      "name": "s9.repair",
+      "run_id": "run_55c5f8847af64658",
+      "timestamp": "2026-09-21T20:03:41.702Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "dc290fba…ae14",
+      "name": "s9.diagnose",
+      "run_id": "run_55c5f8847af64658",
+      "timestamp": "2026-09-21T20:03:36.255Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "3bf4da20…b5e8",
+      "name": "s9.probe:detect",
+      "run_id": "run_55c5f8847af64658",
+      "timestamp": "2026-09-21T20:03:32.277Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "8a9d84cf…9149",
+      "name": "s9.diagnose",
+      "run_id": "run_7449aa9bfe774566",
+      "timestamp": "2026-09-21T20:00:38.498Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "e74aaeeb…5c9f",
+      "name": "s9.probe:detect",
+      "run_id": "run_7449aa9bfe774566",
+      "timestamp": "2026-09-21T19:59:58.153Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "649461ee…7865",
+      "name": "s9.user",
+      "run_id": "interactive",
+      "timestamp": "2026-09-21T19:59:54.011Z",
+      "metadata_complete": true,
+      "status": "received"
+    }
+  ],
+  "returned_count": 11,
+  "criteria": "local projectId, excluding local probe names; metadata_complete must be true"
+}

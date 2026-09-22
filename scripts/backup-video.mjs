@@ -1,0 +1,30 @@
+import { createRequire } from 'node:module';
+import fs from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import path from 'node:path';
+const require = createRequire(new URL('../frontend/package.json', import.meta.url));
+const { chromium } = require('@playwright/test');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const source = path.resolve(root, process.argv[2] || 'artifacts/browser-acceptance/2026-09-21T20-43-06.361Z/video/page@e764d084c78c854db8050c743427ddda.webm');
+const out = path.join(root, 'artifacts/delivery');
+await fs.mkdir(out, { recursive: true });
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1080 } });
+const base = `<style>*{box-sizing:border-box}body{margin:0;background:#141412;color:#f5eadb;font-family:'PingFang SC',sans-serif;padding:100px}h1{font-size:78px;color:#ff841e;line-height:1.3}h2{font-size:35px;font-weight:500}p{font-size:26px;line-height:1.8;color:#c8c4ba}small{font-size:22px;color:#ef963e}.box{border:2px solid #ff841e;padding:30px;margin-top:40px;font-size:29px;line-height:1.8}.k{letter-spacing:7px;color:#ff841e}</style>`;
+await page.setContent(base + `<div class=k>SECTION 9 / LOCAL LABORATORY</div><h1>故障发生以后，<br>谁能改，谁来验？</h1><h2>90 秒历史实录 · 2026-09-22 · 非实时演示</h2><div class=box>L0 拒绝写入 → L1 批准修复 → 独立业务验收<br>A 暂停 → B 接管 → A 的过期请求被拒 → reset</div><p>接下来的浏览器操作来自本机真实运行，原速播放。<br>客服与协作在本机；模型推理调用远程 EvoMap Luna。</p>`);
+await page.screenshot({ path: path.join(out, 'video-intro.png') });
+await page.setContent(base + `<div class=k>SECTION 9 / REPLAY COMPLETE</div><h1>已执行，不等于已通过。</h1><h2>权限、版本与独立业务结果一起决定能否结案。</h2><div class=box>刚才的真实记录：L1 审批闭环 25.528 秒<br>暂停 / 接管 / 旧请求拒绝：30.384 秒</div><p>原始运行、验收记录和录像保存在 artifacts/browser-acceptance/<br>2026-09-21T20-43-06.361Z/，可以逐条复查。</p><small>这是历史录像。Hub 未授权发布 · Jev 未启用 · 完整断网推理不支持<br>小样本实测，不声称蜂群性能优于单 Agent。</small>`);
+await page.screenshot({ path: path.join(out, 'video-outro.png') });
+await page.setViewportSize({ width: 1440, height: 80 });
+await page.setContent(`<style>body{margin:0;background:#121210;color:#ff8a24;font:25px 'PingFang SC',sans-serif;padding:20px 35px}</style>历史实录 · 2026-09-22 04:43 · 本机真实浏览器验收 · 非实时 · 远程 EvoMap 推理`);
+await page.screenshot({ path: path.join(out, 'video-caption.png') });
+await browser.close();
+const duration = Number(execFileSync('ffprobe', ['-v','error','-show_entries','format=duration','-of','default=noprint_wrappers=1:nokey=1',source], { encoding: 'utf8' }).trim());
+if (duration >= 85) throw new Error('Source exceeds the 85 second unaccelerated video slot');
+const output = path.join(out, 'section9-90s-replay.mp4');
+const args = ['-y','-loop','1','-t','5','-i',path.join(out,'video-intro.png'),'-i',source,'-loop','1','-t',String(85-duration),'-i',path.join(out,'video-outro.png'),'-loop','1','-i',path.join(out,'video-caption.png'),'-filter_complex',
+  `[0:v]fps=25,setsar=1[v0];[1:v]pad=1440:1080:0:0:color=0x121210,fps=25,setsar=1[v1p];[v1p][3:v]overlay=0:1000:shortest=1[v1];[2:v]fps=25,setsar=1[v2];[v0][v1][v2]concat=n=3:v=1:a=0[v]`,
+  '-map','[v]','-t','90','-c:v','libx264','-preset','fast','-crf','21','-pix_fmt','yuv420p','-movflags','+faststart',output];
+execFileSync('ffmpeg',args,{stdio:'pipe',timeout:180000});
+await fs.writeFile(path.join(out,'video-provenance.json'),JSON.stringify({source:path.relative(root,source),output:path.relative(root,output),original_duration_s:duration,output_duration_s:90,speed:1,historical_recording:true,live:false,editing:'Five-second title and final evidence card; continuous browser recording at original speed, bottom historical watermark; no fake results.'},null,2));
+console.log(JSON.stringify({output,duration_s:90,original_duration_s:duration}));

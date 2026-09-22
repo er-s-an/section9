@@ -1,0 +1,16 @@
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
+const require=createRequire(new URL('../frontend/package.json',import.meta.url));
+const {chromium}=require('@playwright/test');
+const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'..');
+const out=path.join(root,'artifacts/delivery');await fs.mkdir(out,{recursive:true});
+const browser=await chromium.launch({headless:true});
+const page=await browser.newPage({viewport:{width:1123,height:1587},deviceScaleFactor:1});
+await page.goto(pathToFileURL(path.join(root,'docs/DELIVERY_POSTER.html')).href,{waitUntil:'networkidle'});
+await page.emulateMedia({media:'print'});
+await page.screenshot({path:path.join(out,'section9-poster-preview.png'),fullPage:true});
+await page.pdf({path:path.join(out,'section9-A3-poster.pdf'),format:'A3',printBackground:true,preferCSSPageSize:true});
+const report=await page.evaluate(()=>({title:document.title,qrLoaded:[...document.images].every(i=>i.complete&&i.naturalWidth>0),overflow:document.documentElement.scrollWidth>innerWidth}));
+await browser.close();if(!report.qrLoaded)throw new Error('QR image did not load');console.log(JSON.stringify(report));

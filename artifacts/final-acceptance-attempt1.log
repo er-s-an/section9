@@ -1,0 +1,21 @@
+...............................................                          [100%]
+47 passed in 6.00s
+
+> section9-laboratory@0.1.0 build
+> tsc -b && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 4574 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.46 kB │ gzip:  0.34 kB
+dist/assets/index-BvrCxmG9.css   21.90 kB │ gzip:  5.99 kB
+dist/assets/index-CjwgI9k9.js   303.43 kB │ gzip: 91.62 kB
+✓ built in 4.17s
+PASS: 194 prospective repository files checked; no configured secrets found
+{"generation":"17","revision":"36","checks":{"old_grants_invalidated":true,"healthy_config_restored":true,"history_preserved":true,"message_epoch_advanced":true,"cancelled_requests":0}}
+Section9 stopped
+Ready: http://127.0.0.1:9019
+{"output":"/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/artifacts/browser-acceptance/2026-09-21T20-43-06.361Z","passed":true,"checks":[{"name":"L0 actual write denial","passed":true,"run_id":"run_98546a5976494975","revision":"38"},{"name":"L1 approved exact plan and live business checks","passed":true,"run_id":"run_98546a5976494975"},{"name":"actual OS pause, takeover and stale A rejection without write","passed":true,"run_id":"run_69eb94948f044545","old_actor":"fixer-a","new_actor":"fixer-b"},{"name":"reset invalidates in-flight grant and restores healthy configuration","passed":true,"run_id":"run_55cf218b900b4cdf","reset_revision":"45"},{"name":"communication control toggles server transport epoch","passed":true},{"name":"run detail and actual evidence drawer open","passed":true}]}
+{"output":"/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/artifacts/browser-extra/2026-09-21T20-44-25.660Z","started_at":"2026-09-21T20:44:25.908Z","checks":[],"errors":[],"passed":false,"failure":"Error: Timeout: capability join and real cost contribution\n    at wait (file:///Users/xiejiachen/Documents/ChatGPT/rebuild/section9/scripts/browser-extra.mjs:18:198)\n    at async file:///Users/xiejiachen/Documents/ChatGPT/rebuild/section9/scripts/browser-extra.mjs:29:3","finished_at":"2026-09-21T20:46:11.465Z"}

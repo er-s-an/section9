@@ -1,0 +1,13 @@
+{
+  "parent_url": "http://127.0.0.1:9019/",
+  "child_url": "http://127.0.0.1:9020/",
+  "attract": {
+    "enabled": true,
+    "cycle": 3,
+    "auto_running": true,
+    "url": "http://127.0.0.1:9020",
+    "isolation": "separate_process_database_memory"
+  },
+  "incident": "run_1291d2df065b49ee",
+  "environment": "attract"
+}

@@ -1,0 +1,1677 @@
+{
+  "requested_at": "2026-09-21T20:14:42.398+00:00",
+  "condition": "muted",
+  "scenario": "cost",
+  "repeat": 1,
+  "request": {
+    "scenario": "cost",
+    "condition": "muted",
+    "seed": 42
+  },
+  "run": {
+    "action_at": "2026-09-21T20:14:50.793+00:00",
+    "budget_overrun": false,
+    "closed_at": "2026-09-21T20:14:56.397+00:00",
+    "condition": "muted",
+    "contract": {
+      "bounded_cost": true,
+      "no_stalled_requests": true,
+      "same_revision": true,
+      "semantic": true,
+      "suite": "xiaozhi-heldout-v1",
+      "unaffected_product": true,
+      "version": "1"
+    },
+    "contract_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+    "elapsed_s": 13.993,
+    "failure_reason": null,
+    "generation": "7",
+    "id": "run_e5ce0058f24f410d",
+    "injected_revision": "18",
+    "last_action": {
+      "actions": [
+        {
+          "type": "apply_context_budget",
+          "values": {
+            "context_multiplier": 1,
+            "max_output_tokens": 1536
+          }
+        }
+      ],
+      "after": {
+        "context_multiplier": 1,
+        "generation": "7",
+        "max_output_tokens": 1536,
+        "prompt_version": "healthy",
+        "retry_limit": 3,
+        "retry_on_terminal": false,
+        "revision": "19"
+      },
+      "after_revision": "19",
+      "at": "2026-09-21T20:14:50.793+00:00",
+      "before": {
+        "context_multiplier": 8,
+        "generation": "7",
+        "max_output_tokens": 4096,
+        "prompt_version": "healthy",
+        "retry_limit": 3,
+        "retry_on_terminal": false,
+        "revision": "18"
+      },
+      "before_revision": "18",
+      "holder": "fixer-a",
+      "id": "act_269d8c138d094ea8",
+      "plan_id": "plan_e9265ce74c6f4e3f",
+      "request_hash": "76e112242f856516acec2aef3413c4a1f635b178bab2d68f52b9a2ba7a7c5a80",
+      "run_id": "run_e5ce0058f24f410d"
+    },
+    "manifest": {
+      "cache_condition": "not_controlled_provider_cache",
+      "condition": "muted",
+      "environment": "evaluation",
+      "evidence_origin": "live",
+      "fixture_version": "xiaozhi-s9-v1",
+      "hardware_isolation": false,
+      "jev_enabled": false,
+      "memory_condition": "off",
+      "memory_snapshot_hash": null,
+      "model": "evomap-gpt-5.6-luna",
+      "model_timeout_s": 60.0,
+      "request_concurrency_limit": 2,
+      "scenario_seed": 42,
+      "total_token_budget": 16000,
+      "transport_mode": "local",
+      "verification_suite_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+      "victim_config": {
+        "context_multiplier": 8,
+        "generation": "7",
+        "max_output_tokens": 4096,
+        "prompt_version": "healthy",
+        "retry_limit": 3,
+        "retry_on_terminal": false,
+        "revision": "18"
+      },
+      "worker_completion_cap": 1600
+    },
+    "model": "evomap-gpt-5.6-luna",
+    "opened_at": "2026-09-21T20:14:42.403+00:00",
+    "plan": {
+      "actions": [
+        {
+          "type": "apply_context_budget",
+          "values": {
+            "context_multiplier": 1,
+            "max_output_tokens": 1536
+          }
+        }
+      ],
+      "approved": false,
+      "autonomy_revision": "7",
+      "created_at": "2026-09-21T20:14:50.781+00:00",
+      "evidence_ids": [
+        "ev_5a26c27b02c14b73"
+      ],
+      "expected_revision": "18",
+      "generation": "7",
+      "hash": "10cfbe1123c58e688139769739e3629dd8a6ffe952909206af1819ac917fc612",
+      "holder": "fixer-a",
+      "id": "plan_e9265ce74c6f4e3f",
+      "rationale": "The cost_budget probe failed because actual input_tokens was 3659, exceeding the 2000-token limit. Restore the known-good context settings while leaving retry behavior unchanged.",
+      "resource_fence": "12",
+      "run_id": "run_e5ce0058f24f410d",
+      "status": "applied",
+      "task_epoch": "1",
+      "task_id": "task_48ed0b8253c8434b",
+      "transport_epoch": "7"
+    },
+    "reserved_tokens": 0,
+    "run_id": "run_e5ce0058f24f410d",
+    "scenario": "cost",
+    "seed": 42,
+    "start_mono": 832820.13758725,
+    "status": "resolved",
+    "symptoms": [
+      "cost_high"
+    ],
+    "token_budget": 16000,
+    "usage_tokens": 6918,
+    "usage_unknown": false,
+    "verification": {
+      "at": "2026-09-21T20:14:56.396+00:00",
+      "checks": [
+        {
+          "actual": {
+            "answer": "耳机自签收次日起算7天内可无理由退货，激活后仍可退；退货运费由商家承担。",
+            "eligible": true,
+            "merchant_pays_shipping": true
+          },
+          "expected": {
+            "eligible": true,
+            "merchant_pays_shipping": true
+          },
+          "name": "heldout_semantic_policy",
+          "passed": true,
+          "request_id": "62f3cbd3-15fc-411c-8662-ea69bb589d24"
+        },
+        {
+          "actual": {
+            "answer": "X200 耳机总续航 30 小时（含充电盒）。",
+            "battery_hours": 30
+          },
+          "expected": {
+            "battery_hours": 30
+          },
+          "name": "unaffected_product_fact",
+          "passed": true,
+          "request_id": "d5756b59-7f07-4afa-9731-f9182395ff5f"
+        },
+        {
+          "actual": {
+            "answer": "订单 S9-MISSING 暂无物流信息，因系统暂时无法查询，请联系人工客服。"
+          },
+          "expected": {
+            "tool_calls": 1
+          },
+          "name": "terminal_tool_stops",
+          "passed": true,
+          "request_id": "f8eaa48d-6f8d-450f-897d-84c893e6cce9"
+        },
+        {
+          "actual": [
+            511,
+            918,
+            359
+          ],
+          "expected": "actual input_tokens <= 2000/request",
+          "name": "cost_budget",
+          "passed": true,
+          "request_id": null
+        },
+        {
+          "actual": 0,
+          "expected": 0,
+          "name": "no_stalled_requests",
+          "passed": true,
+          "request_id": null
+        },
+        {
+          "actual": "19",
+          "expected": "19",
+          "name": "revision_unchanged_at_close",
+          "passed": true
+        },
+        {
+          "actual": [
+            "cost_budget",
+            "heldout_semantic_policy",
+            "no_stalled_requests",
+            "revision_unchanged_at_close",
+            "terminal_tool_stops",
+            "unaffected_product_fact"
+          ],
+          "expected": [
+            "cost_budget",
+            "heldout_semantic_policy",
+            "no_stalled_requests",
+            "terminal_tool_stops",
+            "unaffected_product_fact"
+          ],
+          "name": "acceptance_contract_complete",
+          "passed": true
+        }
+      ],
+      "contract_hash": "98b6726c61b8da830b514a5ae72547e28c593f74158119186f36ba6e743edee6",
+      "elapsed_s": 5.137084707967006,
+      "id": "verify_77972dbf409948c3",
+      "passed": true,
+      "requests": [
+        "62f3cbd3-15fc-411c-8662-ea69bb589d24",
+        "d5756b59-7f07-4afa-9731-f9182395ff5f",
+        "f8eaa48d-6f8d-450f-897d-84c893e6cce9"
+      ],
+      "tested_revision": "19",
+      "usage": {
+        "input_tokens": 1788,
+        "output_tokens": 106,
+        "token_quality": "provider",
+        "total_tokens": 1894
+      }
+    },
+    "events": [
+      {
+        "event_id": "ev_108c47de1a1d4304",
+        "event_type": "chaos.injected",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:42.403+00:00",
+        "payload": {
+          "revision": "18",
+          "scenario": "cost",
+          "summary": "故障配置已真实生效，等待独立探针"
+        },
+        "producer": "operator",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "258"
+      },
+      {
+        "event_id": "ev_8de3f94b644048ce",
+        "event_type": "request.progress",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:42.406+00:00",
+        "payload": {
+          "request_id": "80ef581d-ddc2-47df-8d8d-bf58e530ee44",
+          "revision": "18",
+          "state": "tool_call",
+          "state_digest": "0441c35fcc8fc075997291c2dd49eb3c0e3929a71cd317a5600687dd83616281",
+          "step_index": 1,
+          "tool": "policy_search",
+          "tool_call_hash": "1034546627bfcf0cdcf31edfe34ca05c6900bfe0d29ed3318cab91d4e8e99462"
+        },
+        "producer": "victim",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "259"
+      },
+      {
+        "event_id": "ev_f1aa06aa582248c2",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:43.576+00:00",
+        "payload": {
+          "status": "idle",
+          "summary": "等待协作任务",
+          "task_id": null
+        },
+        "producer": "sentry",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "260"
+      },
+      {
+        "event_id": "ev_82985602830e46c6",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:43.586+00:00",
+        "payload": {
+          "status": "idle",
+          "summary": "等待协作任务",
+          "task_id": null
+        },
+        "producer": "diagnoser",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "261"
+      },
+      {
+        "event_id": "ev_bdea1269d74d48c9",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:43.648+00:00",
+        "payload": {
+          "status": "idle",
+          "summary": "等待协作任务",
+          "task_id": null
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "262"
+      },
+      {
+        "event_id": "ev_e8a58379448c4862",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:43.997+00:00",
+        "payload": {
+          "status": "idle",
+          "summary": "等待协作任务",
+          "task_id": null
+        },
+        "producer": "single",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "263"
+      },
+      {
+        "event_id": "ev_1d061a1b519140a0",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:44.000+00:00",
+        "payload": {
+          "status": "idle",
+          "summary": "等待协作任务",
+          "task_id": null
+        },
+        "producer": "fixer-b",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "264"
+      },
+      {
+        "event_id": "ev_cecf3d511df54c9a",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:44.003+00:00",
+        "payload": {
+          "status": "idle",
+          "summary": "等待协作任务",
+          "task_id": null
+        },
+        "producer": "verifier",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "265"
+      },
+      {
+        "event_id": "ev_e05fa1e879a54d4f",
+        "event_type": "model.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:45.740+00:00",
+        "payload": {
+          "elapsed_s": 2.929,
+          "error": null,
+          "purpose": "probe:detect",
+          "summary": "probe:detect 模型调用完成",
+          "usage": {
+            "completion_tokens": 97,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": 0,
+              "audio_tokens": 0,
+              "reasoning_tokens": 35,
+              "rejected_prediction_tokens": 0
+            },
+            "latency_checkpoint": {
+              "engine_tbt_ms": 7,
+              "engine_ttft_ms": 78,
+              "engine_ttlt_ms": 777,
+              "pre_inference_ms": 101,
+              "service_tbt_ms": 7,
+              "service_ttft_ms": 743,
+              "service_ttlt_ms": 1436,
+              "user_visible_ttft_ms": 643
+            },
+            "prompt_tokens": 3659,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cache_write_tokens": 0,
+              "cached_tokens": 3656
+            },
+            "total_tokens": 3756
+          }
+        },
+        "producer": "model",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "266"
+      },
+      {
+        "event_id": "ev_7909539e41ac498f",
+        "event_type": "request.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:45.743+00:00",
+        "payload": {
+          "elapsed_s": 3.335953207919374,
+          "request_id": "80ef581d-ddc2-47df-8d8d-bf58e530ee44",
+          "revision": "18",
+          "status": "success",
+          "usage": {
+            "estimated_input_tokens": 1456,
+            "input_tokens": 3659,
+            "output_tokens": 97,
+            "token_quality": "provider",
+            "total_tokens": 3756
+          }
+        },
+        "producer": "victim",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "267"
+      },
+      {
+        "event_id": "ev_e8431e27519e4899",
+        "event_type": "probe.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:45.744+00:00",
+        "payload": {
+          "result": {
+            "checks": [
+              {
+                "actual": {
+                  "answer": "签收3天仍在7天无理由退货期内，耳机激活后也可以退货，运费由我们承担；请保持商品及附件完整。",
+                  "eligible": true,
+                  "merchant_pays_shipping": true
+                },
+                "expected": {
+                  "eligible": true,
+                  "merchant_pays_shipping": true
+                },
+                "name": "semantic_policy",
+                "passed": true,
+                "request_id": "80ef581d-ddc2-47df-8d8d-bf58e530ee44"
+              },
+              {
+                "actual": [
+                  3659
+                ],
+                "expected": "actual input_tokens <= 2000/request",
+                "name": "cost_budget",
+                "passed": false,
+                "request_id": null
+              },
+              {
+                "actual": 0,
+                "expected": 0,
+                "name": "no_stalled_requests",
+                "passed": true,
+                "request_id": null
+              }
+            ],
+            "elapsed_s": 3.3389921250054613,
+            "passed": false,
+            "requests": [
+              "80ef581d-ddc2-47df-8d8d-bf58e530ee44"
+            ],
+            "tested_revision": "18",
+            "usage": {
+              "input_tokens": 3659,
+              "output_tokens": 97,
+              "token_quality": "provider",
+              "total_tokens": 3756
+            }
+          },
+          "suite": "detect",
+          "summary": "检测集请求完成，保留原始业务结果"
+        },
+        "producer": "probe",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "268"
+      },
+      {
+        "event_id": "ev_5a26c27b02c14b73",
+        "event_type": "observation.probe",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:45.745+00:00",
+        "payload": {
+          "actual": [
+            3659
+          ],
+          "expected": "actual input_tokens <= 2000/request",
+          "name": "cost_budget",
+          "passed": false,
+          "request_id": null,
+          "signal": "cost_high",
+          "summary": "业务探针发现 cost_budget"
+        },
+        "producer": "probe",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "269"
+      },
+      {
+        "event_id": "ev_4b4e6ff7fe724533",
+        "event_type": "incident.opened",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:46.062+00:00",
+        "payload": {
+          "evidence_ids": [
+            "ev_5a26c27b02c14b73"
+          ],
+          "summary": "哨兵根据实际观测立案",
+          "symptoms": [
+            "cost_high"
+          ]
+        },
+        "producer": "sentry",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "270"
+      },
+      {
+        "event_id": "ev_0be6dcad304c4f27",
+        "event_type": "task.claimed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:46.553+00:00",
+        "payload": {
+          "epoch": "1",
+          "kind": "repair",
+          "previous_holder": null,
+          "summary": "自主认领 repair，epoch 1",
+          "task_id": "task_48ed0b8253c8434b"
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "271"
+      },
+      {
+        "event_id": "ev_1b2bc14f71a744f4",
+        "event_type": "task.claimed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:46.668+00:00",
+        "payload": {
+          "epoch": "1",
+          "kind": "diagnose",
+          "previous_holder": null,
+          "summary": "自主认领 diagnose，epoch 1",
+          "task_id": "task_9f08e2a6786c46c3"
+        },
+        "producer": "diagnoser",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "272"
+      },
+      {
+        "event_id": "ev_2742be6353b84bf9",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:47.607+00:00",
+        "payload": {
+          "status": "working",
+          "summary": "处理已认领任务",
+          "task_id": "task_9f08e2a6786c46c3"
+        },
+        "producer": "diagnoser",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "273"
+      },
+      {
+        "event_id": "ev_22afeb40a7bd4b29",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:47.669+00:00",
+        "payload": {
+          "status": "working",
+          "summary": "处理已认领任务",
+          "task_id": "task_48ed0b8253c8434b"
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "274"
+      },
+      {
+        "event_id": "ev_13b308644e0046c4",
+        "event_type": "model.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:50.765+00:00",
+        "payload": {
+          "elapsed_s": 4.198,
+          "error": null,
+          "purpose": "repair",
+          "summary": "repair 模型调用完成",
+          "usage": {
+            "completion_tokens": 272,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": 0,
+              "audio_tokens": 0,
+              "reasoning_tokens": 151,
+              "rejected_prediction_tokens": 0
+            },
+            "latency_checkpoint": {
+              "engine_tbt_ms": 9,
+              "engine_ttft_ms": 82,
+              "engine_ttlt_ms": 2595,
+              "pre_inference_ms": 173,
+              "service_tbt_ms": 9,
+              "service_ttft_ms": 497,
+              "service_ttlt_ms": 2934,
+              "user_visible_ttft_ms": 324
+            },
+            "prompt_tokens": 383,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cache_write_tokens": 0,
+              "cached_tokens": 0
+            },
+            "total_tokens": 655
+          }
+        },
+        "producer": "model",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "275"
+      },
+      {
+        "event_id": "ev_a3fab0eea5144bf4",
+        "event_type": "dialog.dropped",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:50.771+00:00",
+        "payload": {
+          "kind": "hypothesis",
+          "message_id": "msg_510d7326172543b9",
+          "reason": "MUTED",
+          "summary": "通信已禁言，消息未交付"
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "276"
+      },
+      {
+        "event_id": "ev_7ce2f291b881480b",
+        "event_type": "dialog.dropped",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:50.776+00:00",
+        "payload": {
+          "kind": "synthesize",
+          "message_id": "msg_4dccb68c4f3241db",
+          "reason": "MUTED",
+          "summary": "通信已禁言，消息未交付"
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "277"
+      },
+      {
+        "event_id": "ev_02ae9659d8a7443f",
+        "event_type": "plan.proposed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:50.781+00:00",
+        "payload": {
+          "actions": [
+            {
+              "type": "apply_context_budget",
+              "values": {
+                "context_multiplier": 1,
+                "max_output_tokens": 1536
+              }
+            }
+          ],
+          "hash": "10cfbe1123c58e688139769739e3629dd8a6ffe952909206af1819ac917fc612",
+          "plan_id": "plan_e9265ce74c6f4e3f",
+          "summary": "The cost_budget probe failed because actual input_tokens was 3659, exceeding the 2000-token limit. Restore the known-good context settings while leaving retry behavior unchanged."
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "278"
+      },
+      {
+        "event_id": "ev_d0be052430924d96",
+        "event_type": "execution.granted",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:50.786+00:00",
+        "payload": {
+          "epoch": "1",
+          "fence": "12",
+          "grant_id": "grant_6932bcee8e5441be",
+          "plan_id": "plan_e9265ce74c6f4e3f",
+          "summary": "确定性策略签发有限执行授权"
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "279"
+      },
+      {
+        "event_id": "ev_953b398b70eb491f",
+        "event_type": "action.applied",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:50.793+00:00",
+        "payload": {
+          "action_id": "act_269d8c138d094ea8",
+          "actions": [
+            {
+              "type": "apply_context_budget",
+              "values": {
+                "context_multiplier": 1,
+                "max_output_tokens": 1536
+              }
+            }
+          ],
+          "after_revision": "19",
+          "before_revision": "18",
+          "summary": "配置已修改，等待独立业务验收"
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "280"
+      },
+      {
+        "event_id": "ev_65ad83716c0d4f8b",
+        "event_type": "dialog.dropped",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:50.796+00:00",
+        "payload": {
+          "kind": "result",
+          "message_id": "msg_50e64cfd841d4a16",
+          "reason": "MUTED",
+          "summary": "通信已禁言，消息未交付"
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "281"
+      },
+      {
+        "event_id": "ev_490709e84ea449bd",
+        "event_type": "task.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:50.799+00:00",
+        "payload": {
+          "summary": "executed action act_269d8c138d094ea8",
+          "task_id": "task_48ed0b8253c8434b"
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "282"
+      },
+      {
+        "event_id": "ev_d31ae76b56b442bb",
+        "event_type": "task.claimed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.253+00:00",
+        "payload": {
+          "epoch": "1",
+          "kind": "verify",
+          "previous_holder": null,
+          "summary": "自主认领 verify，epoch 1",
+          "task_id": "task_8216636a492441e8"
+        },
+        "producer": "verifier",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "283"
+      },
+      {
+        "event_id": "ev_82c3884c3fbf4d53",
+        "event_type": "request.progress",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.261+00:00",
+        "payload": {
+          "request_id": "62f3cbd3-15fc-411c-8662-ea69bb589d24",
+          "revision": "19",
+          "state": "tool_call",
+          "state_digest": "91457384b26d82bf8137fbac2ed03692679b8a73141d3a5ca5607264d168ecd9",
+          "step_index": 1,
+          "tool": "policy_search",
+          "tool_call_hash": "bcfa5044396b2e068ede95e1a6fd5f5d388a940bda15862cda3d4f947bc72ed3"
+        },
+        "producer": "victim",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "284"
+      },
+      {
+        "event_id": "ev_74b5d7c804d447e8",
+        "event_type": "request.progress",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.263+00:00",
+        "payload": {
+          "request_id": "d5756b59-7f07-4afa-9731-f9182395ff5f",
+          "revision": "19",
+          "state": "tool_call",
+          "state_digest": "a95ab83ebc55009f5ff91399f1875192149ec3a439ae9c34f6ff28b037da3984",
+          "step_index": 1,
+          "tool": "product_search",
+          "tool_call_hash": "ab16afa5ad0c652646fca5adb81c904582962a210f4df02038d745229585661c"
+        },
+        "producer": "victim",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "285"
+      },
+      {
+        "event_id": "ev_d5e7ed969f954d3e",
+        "event_type": "request.progress",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.265+00:00",
+        "payload": {
+          "request_id": "f8eaa48d-6f8d-450f-897d-84c893e6cce9",
+          "revision": "19",
+          "state": "tool_call",
+          "state_digest": "694445836fffd8dea91610656bb6b9f32655f0957199dd95eccc7b1b2839ac7a",
+          "step_index": 1,
+          "tool": "tracking_search",
+          "tool_call_hash": "2e0babcff6905b14f4e6a183bb3429890b90099b55e11ac8a4b1c1ae661ba5ad"
+        },
+        "producer": "victim",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "286"
+      },
+      {
+        "event_id": "ev_be8872fc5f0e4629",
+        "event_type": "model.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.592+00:00",
+        "payload": {
+          "elapsed_s": 4.919,
+          "error": null,
+          "purpose": "diagnose",
+          "summary": "diagnose 模型调用完成",
+          "usage": {
+            "completion_tokens": 340,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": 0,
+              "audio_tokens": 0,
+              "reasoning_tokens": 112,
+              "rejected_prediction_tokens": 0
+            },
+            "latency_checkpoint": {
+              "engine_tbt_ms": 9,
+              "engine_ttft_ms": 68,
+              "engine_ttlt_ms": 3127,
+              "pre_inference_ms": 87,
+              "service_tbt_ms": 9,
+              "service_ttft_ms": 841,
+              "service_ttlt_ms": 3891,
+              "user_visible_ttft_ms": 754
+            },
+            "prompt_tokens": 273,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cache_write_tokens": 0,
+              "cached_tokens": 0
+            },
+            "total_tokens": 613
+          }
+        },
+        "producer": "model",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "287"
+      },
+      {
+        "event_id": "ev_537ff7a156b948a7",
+        "event_type": "dialog.dropped",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.599+00:00",
+        "payload": {
+          "kind": "hypothesis",
+          "message_id": "msg_22c2b8dac5cd4652",
+          "reason": "MUTED",
+          "summary": "通信已禁言，消息未交付"
+        },
+        "producer": "diagnoser",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "288"
+      },
+      {
+        "event_id": "ev_14f14349ca194316",
+        "event_type": "dialog.dropped",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.604+00:00",
+        "payload": {
+          "kind": "challenge",
+          "message_id": "msg_0210e5793fda4d15",
+          "reason": "MUTED",
+          "summary": "通信已禁言，消息未交付"
+        },
+        "producer": "diagnoser",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "289"
+      },
+      {
+        "event_id": "ev_f4721dfa11dd4efa",
+        "event_type": "task.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.608+00:00",
+        "payload": {
+          "summary": "请求输入 token 数超出成本预算：实际为 3659，超过每请求 2000 的阈值。现有证据不足以确定具体是提示词、上下文拼接还是其他输入来源导致。",
+          "task_id": "task_9f08e2a6786c46c3"
+        },
+        "producer": "diagnoser",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "290"
+      },
+      {
+        "event_id": "ev_062e923a9cc7460e",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.633+00:00",
+        "payload": {
+          "status": "idle",
+          "summary": "等待协作任务",
+          "task_id": null
+        },
+        "producer": "diagnoser",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "291"
+      },
+      {
+        "event_id": "ev_f4ed6380b3ad4521",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:51.699+00:00",
+        "payload": {
+          "status": "idle",
+          "summary": "等待协作任务",
+          "task_id": null
+        },
+        "producer": "fixer-a",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "292"
+      },
+      {
+        "event_id": "ev_7e12f0ed4e8448b6",
+        "event_type": "agent.status",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:52.058+00:00",
+        "payload": {
+          "status": "working",
+          "summary": "处理已认领任务",
+          "task_id": "task_8216636a492441e8"
+        },
+        "producer": "verifier",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "293"
+      },
+      {
+        "event_id": "ev_a5d0de116614487e",
+        "event_type": "model.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:53.739+00:00",
+        "payload": {
+          "elapsed_s": 2.073,
+          "error": null,
+          "purpose": "probe:verify",
+          "summary": "probe:verify 模型调用完成",
+          "usage": {
+            "completion_tokens": 51,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": 0,
+              "audio_tokens": 0,
+              "reasoning_tokens": 0,
+              "rejected_prediction_tokens": 0
+            },
+            "latency_checkpoint": {
+              "engine_tbt_ms": 6,
+              "engine_ttft_ms": 118,
+              "engine_ttlt_ms": 420,
+              "pre_inference_ms": 138,
+              "service_tbt_ms": 6,
+              "service_ttft_ms": 659,
+              "service_ttlt_ms": 959,
+              "user_visible_ttft_ms": 522
+            },
+            "prompt_tokens": 511,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cache_write_tokens": 0,
+              "cached_tokens": 0
+            },
+            "total_tokens": 562
+          }
+        },
+        "producer": "model",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "294"
+      },
+      {
+        "event_id": "ev_c8ad4b1ae4ad47b9",
+        "event_type": "request.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:53.742+00:00",
+        "payload": {
+          "elapsed_s": 2.481262292014435,
+          "request_id": "62f3cbd3-15fc-411c-8662-ea69bb589d24",
+          "revision": "19",
+          "status": "success",
+          "usage": {
+            "estimated_input_tokens": 204,
+            "input_tokens": 511,
+            "output_tokens": 51,
+            "token_quality": "provider",
+            "total_tokens": 562
+          }
+        },
+        "producer": "victim",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "295"
+      },
+      {
+        "event_id": "ev_98770554af644451",
+        "event_type": "model.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:54.168+00:00",
+        "payload": {
+          "elapsed_s": 2.5,
+          "error": null,
+          "purpose": "probe:verify",
+          "summary": "probe:verify 模型调用完成",
+          "usage": {
+            "completion_tokens": 30,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": 0,
+              "audio_tokens": 0,
+              "reasoning_tokens": 0,
+              "rejected_prediction_tokens": 0
+            },
+            "latency_checkpoint": {
+              "engine_tbt_ms": 7,
+              "engine_ttft_ms": 119,
+              "engine_ttlt_ms": 322,
+              "pre_inference_ms": 212,
+              "service_tbt_ms": 7,
+              "service_ttft_ms": 696,
+              "service_ttlt_ms": 894,
+              "user_visible_ttft_ms": 484
+            },
+            "prompt_tokens": 918,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cache_write_tokens": 0,
+              "cached_tokens": 0
+            },
+            "total_tokens": 948
+          }
+        },
+        "producer": "model",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "296"
+      },
+      {
+        "event_id": "ev_4aea730df6d34683",
+        "event_type": "request.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:54.170+00:00",
+        "payload": {
+          "elapsed_s": 2.907318374956958,
+          "request_id": "d5756b59-7f07-4afa-9731-f9182395ff5f",
+          "revision": "19",
+          "status": "success",
+          "usage": {
+            "estimated_input_tokens": 410,
+            "input_tokens": 918,
+            "output_tokens": 30,
+            "token_quality": "provider",
+            "total_tokens": 948
+          }
+        },
+        "producer": "victim",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "297"
+      },
+      {
+        "event_id": "ev_79c1553f5e494f01",
+        "event_type": "model.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:56.391+00:00",
+        "payload": {
+          "elapsed_s": 2.647,
+          "error": null,
+          "purpose": "probe:verify",
+          "summary": "probe:verify 模型调用完成",
+          "usage": {
+            "completion_tokens": 25,
+            "completion_tokens_details": {
+              "accepted_prediction_tokens": 0,
+              "audio_tokens": 0,
+              "reasoning_tokens": 0,
+              "rejected_prediction_tokens": 0
+            },
+            "latency_checkpoint": {
+              "engine_tbt_ms": 6,
+              "engine_ttft_ms": 79,
+              "engine_ttlt_ms": 238,
+              "pre_inference_ms": 71,
+              "service_tbt_ms": 6,
+              "service_ttft_ms": 1434,
+              "service_ttlt_ms": 1588,
+              "user_visible_ttft_ms": 1363
+            },
+            "prompt_tokens": 359,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cache_write_tokens": 0,
+              "cached_tokens": 0
+            },
+            "total_tokens": 384
+          }
+        },
+        "producer": "model",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "298"
+      },
+      {
+        "event_id": "ev_877bdbef7d044321",
+        "event_type": "request.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:56.394+00:00",
+        "payload": {
+          "elapsed_s": 5.128205041051842,
+          "request_id": "f8eaa48d-6f8d-450f-897d-84c893e6cce9",
+          "revision": "19",
+          "status": "success",
+          "usage": {
+            "estimated_input_tokens": 150,
+            "input_tokens": 359,
+            "output_tokens": 25,
+            "token_quality": "provider",
+            "total_tokens": 384
+          }
+        },
+        "producer": "victim",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "299"
+      },
+      {
+        "event_id": "ev_d4386ec032d94c6c",
+        "event_type": "verification.completed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:56.397+00:00",
+        "payload": {
+          "checks": [
+            {
+              "actual": {
+                "answer": "耳机自签收次日起算7天内可无理由退货，激活后仍可退；退货运费由商家承担。",
+                "eligible": true,
+                "merchant_pays_shipping": true
+              },
+              "expected": {
+                "eligible": true,
+                "merchant_pays_shipping": true
+              },
+              "name": "heldout_semantic_policy",
+              "passed": true,
+              "request_id": "62f3cbd3-15fc-411c-8662-ea69bb589d24"
+            },
+            {
+              "actual": {
+                "answer": "X200 耳机总续航 30 小时（含充电盒）。",
+                "battery_hours": 30
+              },
+              "expected": {
+                "battery_hours": 30
+              },
+              "name": "unaffected_product_fact",
+              "passed": true,
+              "request_id": "d5756b59-7f07-4afa-9731-f9182395ff5f"
+            },
+            {
+              "actual": {
+                "answer": "订单 S9-MISSING 暂无物流信息，因系统暂时无法查询，请联系人工客服。"
+              },
+              "expected": {
+                "tool_calls": 1
+              },
+              "name": "terminal_tool_stops",
+              "passed": true,
+              "request_id": "f8eaa48d-6f8d-450f-897d-84c893e6cce9"
+            },
+            {
+              "actual": [
+                511,
+                918,
+                359
+              ],
+              "expected": "actual input_tokens <= 2000/request",
+              "name": "cost_budget",
+              "passed": true,
+              "request_id": null
+            },
+            {
+              "actual": 0,
+              "expected": 0,
+              "name": "no_stalled_requests",
+              "passed": true,
+              "request_id": null
+            },
+            {
+              "actual": "19",
+              "expected": "19",
+              "name": "revision_unchanged_at_close",
+              "passed": true
+            },
+            {
+              "actual": [
+                "cost_budget",
+                "heldout_semantic_policy",
+                "no_stalled_requests",
+                "revision_unchanged_at_close",
+                "terminal_tool_stops",
+                "unaffected_product_fact"
+              ],
+              "expected": [
+                "cost_budget",
+                "heldout_semantic_policy",
+                "no_stalled_requests",
+                "terminal_tool_stops",
+                "unaffected_product_fact"
+              ],
+              "name": "acceptance_contract_complete",
+              "passed": true
+            }
+          ],
+          "passed": true,
+          "summary": "独立业务验收通过",
+          "tested_revision": "19",
+          "verification_id": "verify_77972dbf409948c3"
+        },
+        "producer": "verifier",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "300"
+      },
+      {
+        "event_id": "ev_d2950459cc304708",
+        "event_type": "incident.closed",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:56.397+00:00",
+        "payload": {
+          "elapsed_s": 13.993,
+          "summary": "业务恢复，事故结案",
+          "verification_id": "verify_77972dbf409948c3"
+        },
+        "producer": "authority",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "301"
+      },
+      {
+        "event_id": "ev_12507445bb564032",
+        "event_type": "memory.recorded",
+        "generation": "7",
+        "incident_id": "run_e5ce0058f24f410d",
+        "occurred_at": "2026-09-21T20:14:56.477+00:00",
+        "payload": {
+          "receipt": {
+            "capsule": {
+              "asset_id": "sha256:00d52595f0f57233ca62a3ae3fbfe37443866422303b431041d382f0590e1e8d",
+              "blast_radius": {
+                "files": 0,
+                "lines": 0
+              },
+              "confidence": 1,
+              "execution_trace": [
+                {
+                  "stage": "validate"
+                }
+              ],
+              "gene": "gene_local_bf097922a56061c94d2980ea",
+              "id": "capsule_local_a9dead2a0585f117bb520ae4",
+              "outcome": {
+                "score": 1,
+                "status": "success"
+              },
+              "schema_version": "1.14.0",
+              "source_type": "generated",
+              "strategy": [
+                "apply_context_budget: {\"context_multiplier\":1,\"max_output_tokens\":1536}"
+              ],
+              "summary": "Root verified repair for cost_high",
+              "trigger": [
+                "cost_high"
+              ],
+              "trigger_context": {
+                "agent_model": "evomap-gpt-5.6-luna",
+                "context_signals": [
+                  "cost_high"
+                ],
+                "session_id": "run_e5ce0058f24f410d"
+              },
+              "type": "Capsule"
+            },
+            "evolution_event": {
+              "asset_id": "sha256:379effd7868bb394ba1f4d94ff123628d287cc445e6fe7f430d765c6ea9c8aa4",
+              "blast_radius": {
+                "files": 0,
+                "lines": 0
+              },
+              "capsule_id": "capsule_local_a9dead2a0585f117bb520ae4",
+              "genes_used": [
+                "gene_local_bf097922a56061c94d2980ea"
+              ],
+              "id": "event_local_13158ad96fa60e04cedcd6e2",
+              "intent": "repair",
+              "mutation_id": "mutation_local_eec90a6093f7fa42089ba7f1",
+              "outcome": {
+                "score": 1,
+                "status": "success"
+              },
+              "schema_version": "1.14.0",
+              "signals": [
+                "cost_high"
+              ],
+              "source_type": "generated",
+              "trigger_context": {
+                "agent_model": "evomap-gpt-5.6-luna",
+                "context_signals": [
+                  "cost_high"
+                ],
+                "session_id": "run_e5ce0058f24f410d"
+              },
+              "type": "EvolutionEvent"
+            },
+            "gene": {
+              "asset_id": "sha256:56cda4df60da755e97f59a22c0d758d5e2e6f72c652e7d6edb8b6b2c88c94e69",
+              "category": "repair",
+              "constraints": {
+                "forbidden_paths": [
+                  ".git",
+                  "node_modules",
+                  ".env",
+                  "CLAIMS.md"
+                ],
+                "max_files": 1
+              },
+              "id": "gene_local_bf097922a56061c94d2980ea",
+              "schema_version": "1.14.0",
+              "signals_match": [
+                "cost_high"
+              ],
+              "strategy": [
+                "apply_context_budget: {\"context_multiplier\":1,\"max_output_tokens\":1536}"
+              ],
+              "summary": "已验证本地修复 · cost_high",
+              "type": "Gene",
+              "validation": [
+                "root_verified_probe_passed"
+              ]
+            },
+            "playbook": {
+              "actions": [
+                {
+                  "type": "apply_context_budget",
+                  "values": {
+                    "context_multiplier": 1,
+                    "max_output_tokens": 1536
+                  }
+                }
+              ],
+              "capsule_asset_id": "sha256:00d52595f0f57233ca62a3ae3fbfe37443866422303b431041d382f0590e1e8d",
+              "gene_asset_id": "sha256:56cda4df60da755e97f59a22c0d758d5e2e6f72c652e7d6edb8b6b2c88c94e69",
+              "id": "learned_a1addd5328eaa913fcba6a38",
+              "publish_state": "local_only",
+              "reuse_count": 0,
+              "signature": "{\"actions\":[{\"type\":\"apply_context_budget\",\"values\":{\"context_multiplier\":1,\"max_output_tokens\":1536}}],\"symptoms\":[\"cost_high\"]}",
+              "source": "learned",
+              "success_count": 2,
+              "symptoms": [
+                "cost_high"
+              ],
+              "title": "已验证本地修复 · cost_high"
+            },
+            "publish_state": "local_only"
+          },
+          "summary": "已验证结果回写本地 GEP 资产"
+        },
+        "producer": "memory",
+        "run_id": "run_e5ce0058f24f410d",
+        "sequence": "302"
+      }
+    ],
+    "actions": [
+      {
+        "actions": [
+          {
+            "type": "apply_context_budget",
+            "values": {
+              "context_multiplier": 1,
+              "max_output_tokens": 1536
+            }
+          }
+        ],
+        "after": {
+          "context_multiplier": 1,
+          "generation": "7",
+          "max_output_tokens": 1536,
+          "prompt_version": "healthy",
+          "retry_limit": 3,
+          "retry_on_terminal": false,
+          "revision": "19"
+        },
+        "after_revision": "19",
+        "at": "2026-09-21T20:14:50.793+00:00",
+        "before": {
+          "context_multiplier": 8,
+          "generation": "7",
+          "max_output_tokens": 4096,
+          "prompt_version": "healthy",
+          "retry_limit": 3,
+          "retry_on_terminal": false,
+          "revision": "18"
+        },
+        "before_revision": "18",
+        "holder": "fixer-a",
+        "id": "act_269d8c138d094ea8",
+        "plan_id": "plan_e9265ce74c6f4e3f",
+        "request_hash": "76e112242f856516acec2aef3413c4a1f635b178bab2d68f52b9a2ba7a7c5a80",
+        "run_id": "run_e5ce0058f24f410d"
+      }
+    ],
+    "usage": [
+      {
+        "at": "2026-09-21T20:14:42.810+00:00",
+        "elapsed_s": 2.929,
+        "error": null,
+        "id": "usage_fd3eac72a5174a4c",
+        "purpose": "probe:detect",
+        "reservation": 7007,
+        "run_id": "run_e5ce0058f24f410d",
+        "status": "completed",
+        "unknown": false,
+        "usage": {
+          "completion_tokens": 97,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 35,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 7,
+            "engine_ttft_ms": 78,
+            "engine_ttlt_ms": 777,
+            "pre_inference_ms": 101,
+            "service_tbt_ms": 7,
+            "service_ttft_ms": 743,
+            "service_ttlt_ms": 1436,
+            "user_visible_ttft_ms": 643
+          },
+          "prompt_tokens": 3659,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 3656
+          },
+          "total_tokens": 3756
+        }
+      },
+      {
+        "at": "2026-09-21T20:14:46.565+00:00",
+        "elapsed_s": 4.198,
+        "error": null,
+        "id": "usage_6be498e187174ec4",
+        "purpose": "repair",
+        "reservation": 2272,
+        "run_id": "run_e5ce0058f24f410d",
+        "status": "completed",
+        "unknown": false,
+        "usage": {
+          "completion_tokens": 272,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 151,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 9,
+            "engine_ttft_ms": 82,
+            "engine_ttlt_ms": 2595,
+            "pre_inference_ms": 173,
+            "service_tbt_ms": 9,
+            "service_ttft_ms": 497,
+            "service_ttlt_ms": 2934,
+            "user_visible_ttft_ms": 324
+          },
+          "prompt_tokens": 383,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 655
+        }
+      },
+      {
+        "at": "2026-09-21T20:14:46.672+00:00",
+        "elapsed_s": 4.919,
+        "error": null,
+        "id": "usage_0d194de9f9424b8f",
+        "purpose": "diagnose",
+        "reservation": 2021,
+        "run_id": "run_e5ce0058f24f410d",
+        "status": "completed",
+        "unknown": false,
+        "usage": {
+          "completion_tokens": 340,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 112,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 9,
+            "engine_ttft_ms": 68,
+            "engine_ttlt_ms": 3127,
+            "pre_inference_ms": 87,
+            "service_tbt_ms": 9,
+            "service_ttft_ms": 841,
+            "service_ttlt_ms": 3891,
+            "user_visible_ttft_ms": 754
+          },
+          "prompt_tokens": 273,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 613
+        }
+      },
+      {
+        "at": "2026-09-21T20:14:51.665+00:00",
+        "elapsed_s": 2.073,
+        "error": null,
+        "id": "usage_68871a6ac4dd44f2",
+        "purpose": "probe:verify",
+        "reservation": 1943,
+        "run_id": "run_e5ce0058f24f410d",
+        "status": "completed",
+        "unknown": false,
+        "usage": {
+          "completion_tokens": 51,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 6,
+            "engine_ttft_ms": 118,
+            "engine_ttlt_ms": 420,
+            "pre_inference_ms": 138,
+            "service_tbt_ms": 6,
+            "service_ttft_ms": 659,
+            "service_ttlt_ms": 959,
+            "user_visible_ttft_ms": 522
+          },
+          "prompt_tokens": 511,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 562
+        }
+      },
+      {
+        "at": "2026-09-21T20:14:51.668+00:00",
+        "elapsed_s": 2.5,
+        "error": null,
+        "id": "usage_c0912e329bf746af",
+        "purpose": "probe:verify",
+        "reservation": 2355,
+        "run_id": "run_e5ce0058f24f410d",
+        "status": "completed",
+        "unknown": false,
+        "usage": {
+          "completion_tokens": 30,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 7,
+            "engine_ttft_ms": 119,
+            "engine_ttlt_ms": 322,
+            "pre_inference_ms": 212,
+            "service_tbt_ms": 7,
+            "service_ttft_ms": 696,
+            "service_ttlt_ms": 894,
+            "user_visible_ttft_ms": 484
+          },
+          "prompt_tokens": 918,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 948
+        }
+      },
+      {
+        "at": "2026-09-21T20:14:53.743+00:00",
+        "elapsed_s": 2.647,
+        "error": null,
+        "id": "usage_7f39769c758e4231",
+        "purpose": "probe:verify",
+        "reservation": 1834,
+        "run_id": "run_e5ce0058f24f410d",
+        "status": "completed",
+        "unknown": false,
+        "usage": {
+          "completion_tokens": 25,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 6,
+            "engine_ttft_ms": 79,
+            "engine_ttlt_ms": 238,
+            "pre_inference_ms": 71,
+            "service_tbt_ms": 6,
+            "service_ttft_ms": 1434,
+            "service_ttlt_ms": 1588,
+            "user_visible_ttft_ms": 1363
+          },
+          "prompt_tokens": 359,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 384
+        }
+      }
+    ]
+  },
+  "error": null
+}

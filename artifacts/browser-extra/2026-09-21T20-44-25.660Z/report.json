@@ -1,0 +1,8 @@
+{
+  "started_at": "2026-09-21T20:44:25.908Z",
+  "checks": [],
+  "errors": [],
+  "passed": false,
+  "failure": "Error: Timeout: capability join and real cost contribution\n    at wait (file:///Users/xiejiachen/Documents/ChatGPT/rebuild/section9/scripts/browser-extra.mjs:18:198)\n    at async file:///Users/xiejiachen/Documents/ChatGPT/rebuild/section9/scripts/browser-extra.mjs:29:3",
+  "finished_at": "2026-09-21T20:46:11.465Z"
+}
