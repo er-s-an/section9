@@ -13,7 +13,7 @@ const page = await context.newPage();
 const errors = [];
 page.on('pageerror', e => errors.push(String(e)));
 page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
-const report = { started_at: new Date().toISOString(), base_url: 'http://127.0.0.1:9019', checks: [], runs: [], errors };
+const report = { identity: null, started_at: new Date().toISOString(), base_url: 'http://127.0.0.1:9019', checks: [], runs: [], errors };
 async function state() { return (await page.request.get(report.base_url + '/api/state')).json(); }
 async function run(id) { return (await page.request.get(report.base_url + '/api/runs/' + id)).json(); }
 async function waitFor(predicate, label, timeout = 100000) {
@@ -38,6 +38,7 @@ async function reset() {
   await waitFor(async () => (await state()).generation !== before, 'reset generation');
 }
 try {
+  report.identity = (await (await page.request.get(report.base_url + '/api/health')).json()).identity;
   await page.goto(report.base_url, { waitUntil: 'networkidle' });
   await page.getByRole('heading', { name: '可观测协作现场' }).waitFor();
   await screenshot('01-home');
@@ -62,6 +63,7 @@ try {
   assert.equal(approved.verification.passed, true);
   assert.equal(approved.actions.length, 1);
   report.checks.push({ name: 'L1 approved exact plan and live business checks', passed: true, run_id: id });
+  await page.locator('.incident-head .severity').filter({hasText:'resolved'}).waitFor();
   await screenshot('04-L1-resolved');
   await reset();
   await page.getByRole('button', { name: 'L2', exact: true }).click();

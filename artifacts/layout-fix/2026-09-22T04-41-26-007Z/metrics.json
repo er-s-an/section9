@@ -1,0 +1,15 @@
+{
+  "metrics": {
+    "innerWidth": 1440,
+    "scrollWidth": 1440,
+    "bodyScrollWidth": 1440,
+    "plan": null
+  },
+  "metrics1280": {
+    "innerWidth": 1280,
+    "scrollWidth": 1280,
+    "bodyScrollWidth": 1280,
+    "plan": null
+  },
+  "consoleErrors": []
+}

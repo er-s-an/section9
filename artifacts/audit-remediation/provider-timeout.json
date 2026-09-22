@@ -1,0 +1,394 @@
+{
+  "budget_overrun": false,
+  "closed_at": "2026-09-22T04:54:50.670+00:00",
+  "condition": "swarm",
+  "contract": {
+    "answer_consistency": true,
+    "bounded_cost": true,
+    "cost_limits": {
+      "input": 2000,
+      "output": 1536,
+      "total": 3536
+    },
+    "negative_boundary": true,
+    "no_stalled_requests": true,
+    "same_revision": true,
+    "semantic": true,
+    "suite": "xiaozhi-heldout-v2",
+    "unaffected_product": true,
+    "version": "2",
+    "whole_run_budget": true
+  },
+  "contract_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+  "elapsed_s": 62.223,
+  "failure_reason": "NO_CONFIRMED_ANOMALY_OR_MODEL_FAILURE",
+  "generation": "55",
+  "id": "run_60ef4f1eff9d4b1b",
+  "injected_revision": "112",
+  "last_action": null,
+  "manifest": {
+    "cache_condition": "not_controlled_provider_cache",
+    "condition": "swarm",
+    "environment": "demo",
+    "evidence_origin": "live",
+    "fixture_version": "xiaozhi-s9-v1",
+    "hardware_isolation": false,
+    "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+    "jev_enabled": false,
+    "memory_condition": "off",
+    "memory_snapshot_hash": null,
+    "model": "evomap-gpt-5.6-luna",
+    "model_timeout_s": 60.0,
+    "probe_schedule": {
+      "interval_s": 30,
+      "max_detection_rounds": 3,
+      "scope": "active_incident"
+    },
+    "request_concurrency_limit": 2,
+    "scenario_seed": 42,
+    "source_identity": {
+      "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+      "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+      "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+      "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+      "dirty": true,
+      "dirty_diff_sha256": "a7dd75c3a10787db824e7a4e4cc2457f403b19faf6c7db0e402bc0867fb67f79",
+      "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+      "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+      "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+    },
+    "source_identity_hash": "f227374d76905a6ba47ba71e9483467132ecb9b59382cfad4f48a8e09c6b6870",
+    "total_token_budget": 16000,
+    "transport_mode": "local",
+    "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+    "victim_config": {
+      "context_multiplier": 1,
+      "generation": "55",
+      "max_output_tokens": 1536,
+      "prompt_version": "degraded",
+      "retry_limit": 3,
+      "retry_on_terminal": false,
+      "revision": "112"
+    },
+    "worker_completion_cap": 1600
+  },
+  "model": "evomap-gpt-5.6-luna",
+  "opened_at": "2026-09-22T04:53:48.447+00:00",
+  "plan": null,
+  "reserved_tokens": 0,
+  "run_id": "run_60ef4f1eff9d4b1b",
+  "scenario": "prompt",
+  "seed": 42,
+  "start_mono": 859608.051366416,
+  "status": "failed",
+  "symptoms": [],
+  "token_budget": 16000,
+  "unknown_reserved_tokens": 2050,
+  "usage_tokens": 0,
+  "usage_unknown": true,
+  "verification": null,
+  "events": [
+    {
+      "event_id": "ev_dcb0982ad88c42f5",
+      "event_type": "chaos.injected",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:53:48.447+00:00",
+      "payload": {
+        "revision": "112",
+        "scenario": "prompt",
+        "summary": "故障配置已真实生效，等待独立探针"
+      },
+      "producer": "operator",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2231"
+    },
+    {
+      "event_id": "ev_f4d805dcd9fb4563",
+      "event_type": "request.progress",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:53:48.474+00:00",
+      "payload": {
+        "request_id": "d6020f93-82c5-4773-a52f-dd1ddcf85f51",
+        "revision": "112",
+        "state": "tool_call",
+        "state_digest": "6fca81dad7d849db6bdaadf4ca93bd9501f1d27727c910103a7359ce269674fe",
+        "step_index": 1,
+        "tool": "policy_search",
+        "tool_call_hash": "b7b0cac6c390f4e24beb5da0cba69ae7ca1c107c48c7e3317ecf9629409bd1f0"
+      },
+      "producer": "victim",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2232"
+    },
+    {
+      "event_id": "ev_baedd78b0c0e48cc",
+      "event_type": "agent.status",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:53:50.983+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "single",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2233"
+    },
+    {
+      "event_id": "ev_2005ef80cdc44984",
+      "event_type": "agent.status",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:53:51.068+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-a",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2234"
+    },
+    {
+      "event_id": "ev_9f10f185973e4799",
+      "event_type": "agent.status",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:53:51.071+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "diagnoser",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2235"
+    },
+    {
+      "event_id": "ev_ddad897c9d5e48e0",
+      "event_type": "agent.status",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:53:51.073+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "sentry",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2236"
+    },
+    {
+      "event_id": "ev_0a0f1b0f20634e1d",
+      "event_type": "agent.status",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:53:51.075+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-b",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2237"
+    },
+    {
+      "event_id": "ev_fbcee2131e604b39",
+      "event_type": "agent.status",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:53:51.080+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "verifier",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2238"
+    },
+    {
+      "event_id": "ev_8ecedd95d5ca4545",
+      "event_type": "model.failed",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:54:50.607+00:00",
+      "payload": {
+        "elapsed_s": 61.62,
+        "error": "ReadTimeout",
+        "purpose": "probe:detect",
+        "summary": "probe:detect 模型调用失败",
+        "usage": null
+      },
+      "producer": "model",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2239"
+    },
+    {
+      "event_id": "ev_b5bc0bf915204b79",
+      "event_type": "request.completed",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:54:50.633+00:00",
+      "payload": {
+        "elapsed_s": 62.17003233300056,
+        "error": "ReadTimeout",
+        "request_id": "d6020f93-82c5-4773-a52f-dd1ddcf85f51",
+        "revision": "112",
+        "status": "error",
+        "usage": {
+          "input_tokens": null,
+          "output_tokens": null,
+          "token_quality": "unknown",
+          "total_tokens": null
+        }
+      },
+      "producer": "victim",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2240"
+    },
+    {
+      "event_id": "ev_016e3895d3ae4d44",
+      "event_type": "probe.completed",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:54:50.657+00:00",
+      "payload": {
+        "result": {
+          "checks": [
+            {
+              "actual": "",
+              "expected": {
+                "eligible": true,
+                "merchant_pays_shipping": true
+              },
+              "name": "semantic_policy",
+              "passed": false,
+              "request_id": "d6020f93-82c5-4773-a52f-dd1ddcf85f51"
+            },
+            {
+              "actual": {
+                "failures": [],
+                "inputs": [
+                  null
+                ],
+                "unknown_requests": [
+                  "d6020f93-82c5-4773-a52f-dd1ddcf85f51"
+                ]
+              },
+              "expected": "each request input<=2000, output<=1536, total<=3536 and total=input+output",
+              "name": "cost_budget",
+              "passed": false,
+              "request_id": null
+            },
+            {
+              "actual": 0,
+              "expected": 0,
+              "name": "no_stalled_requests",
+              "passed": true,
+              "request_id": null
+            }
+          ],
+          "elapsed_s": 62.198294540983625,
+          "passed": false,
+          "requests": [
+            "d6020f93-82c5-4773-a52f-dd1ddcf85f51"
+          ],
+          "tested_revision": "112",
+          "usage": {
+            "input_tokens": null,
+            "known_subtotal": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0
+            },
+            "output_tokens": null,
+            "token_quality": "unknown",
+            "total_tokens": null
+          }
+        },
+        "suite": "detect",
+        "summary": "检测集请求完成，保留原始业务结果"
+      },
+      "producer": "probe",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2241"
+    },
+    {
+      "event_id": "ev_262efb62c7a040b3",
+      "event_type": "authority.revoked",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:54:50.671+00:00",
+      "payload": {
+        "reason": "NO_CONFIRMED_ANOMALY_OR_MODEL_FAILURE",
+        "summary": "事故终态撤销任务与执行授权"
+      },
+      "producer": "system",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2242"
+    },
+    {
+      "event_id": "ev_1395be045951413f",
+      "event_type": "incident.failed",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:54:50.672+00:00",
+      "payload": {
+        "code": "NO_CONFIRMED_ANOMALY_OR_MODEL_FAILURE",
+        "elapsed_s": 62.223,
+        "summary": "运行未通过，失败和消耗已保留"
+      },
+      "producer": "system",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2243"
+    },
+    {
+      "event_id": "ev_cd9caa6d4e6c4aa7",
+      "event_type": "telemetry.span_received",
+      "generation": "55",
+      "incident_id": "run_60ef4f1eff9d4b1b",
+      "occurred_at": "2026-09-22T04:54:55.502+00:00",
+      "payload": {
+        "attributes": {
+          "langfuse.observation.input": "{\"messages\":[{\"role\":\"system\",\"content\":\"你是「小智客服」——3C 数码电商的官方售后客服助手。所有售后政策的唯一权威来源是本 prompt 的「售后政策」一节。\\n\\n## 售后政策（唯一权威；如与知识库资料冲突，一律以本节为准，禁止引用知识库中的相反说法）\\n退货需经人工审核，已激活商品不支持退货。\\n\\n## 回答准则\\n- 回答必须严格遵循「售后政策」一节；知识库资料仅用于产品参数与物流信息。\\n- 涉及退货、退款、售后问题时，只引用「售后政策」一节的条款，绝不引用知识库中关于退货的旧说法。\\n- 退货相关的一切条款（含退货运费、退换条件）一律以「售后政策」一节为准，本节未承诺的退货权益一律不承认。\\n- 用简体中文，语气礼貌、简洁、口语化但不失专业。\\n- 不确定时，如实说明并建议联系人工客服，不要猜测。\\n\\n## 输出纪律\\n- 用户要求用 JSON 输出时，必须只输出可解析的合法 JSON，不要夹带任何解释、markdown 代码块或额外文字。\\n- 用户要求逐字引用时，必须逐字引用原文，不得改写。\\n- 用户要求一句话概括时，用一句话（不超过 30 字）完整覆盖核心承诺，不啰嗦、不截断。\\n\\n工具证据：{\\\"tool\\\": \\\"policy_search\\\", \\\"ok\\\": true, \\\"evidence\\\": \\\"content: \\\\\\\"我们支持 7 天无理由退货（自签收次日起算，激活后仍可退，运费由我们承担）。退货前请保持商品及附件完整。\\\\\\\"\\\\ncontent: \\\\\\\"耳机等数码商品激活后仍可在 7 天无理由退货期内申请退货，不影响退货权益。\\\\\\\"\\\\ncontent: \\\\\\\"7 天无理由退货的运费由我们承担；非质量问题换货运费同样由我们承担。\\\\\\\"\\\"}\\n用户问题：签收 3 天，耳机已激活。我能无理由退货吗，运费谁付？只输出 JSON，eligible 和 merchant_pays_shipping 是布尔值。answer 只用一句：结论：本次{可以/不可以}无理由退货；{退货运费由商家承担/本次不适用商家承担退货运费}。根据实际政策选择花括号中的分支，去掉花括号，不加其他说明。\"},{\"role\":\"user\",\"content\":\"签收 3 天，耳机已激活。我能无理由退货吗，运费谁付？只输出 JSON，eligible 和 merchant_pays_shipping 是布尔值。answer 只用一句：结论：本次{可以/不可以}无理由退货；{退货运费由商家承担/本次不适用商家承担退货运费}。根据实际政策选择花括号中的分支，去掉花括号，不加其他说明。\"}]}",
+          "langfuse.observation.metadata.environment": "demo",
+          "langfuse.observation.metadata.model": "evomap-gpt-5.6-luna",
+          "langfuse.observation.metadata.purpose": "probe:detect",
+          "langfuse.observation.metadata.run_id": "run_60ef4f1eff9d4b1b",
+          "langfuse.observation.metadata.status": "failed",
+          "langfuse.observation.output": "{\"content\":\"\",\"error\":\"ReadTimeout\"}",
+          "langfuse.observation.type": "span"
+        },
+        "duration_ms": 61640.393,
+        "name": "s9.probe:detect",
+        "span_id": "a9acdd18a60172c2",
+        "summary": "Collector 独立路径收到完整 span",
+        "trace_id": "11ef85be3bd438f6e129eba03b94a8ff"
+      },
+      "producer": "collector",
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "sequence": "2244"
+    }
+  ],
+  "actions": [],
+  "usage": [
+    {
+      "at": "2026-09-22T04:53:48.969+00:00",
+      "elapsed_s": 61.62,
+      "error": "ReadTimeout",
+      "id": "usage_0174cf0ae5c648c7",
+      "purpose": "probe:detect",
+      "reservation": 2050,
+      "run_id": "run_60ef4f1eff9d4b1b",
+      "status": "failed",
+      "unknown": true,
+      "usage": null
+    }
+  ]
+}

@@ -1,0 +1,795 @@
+{
+  "budget_overrun": false,
+  "closed_at": "2026-09-22T04:34:25.670+00:00",
+  "condition": "swarm",
+  "contract": {
+    "answer_consistency": true,
+    "bounded_cost": true,
+    "cost_limits": {
+      "input": 2000,
+      "output": 1536,
+      "total": 3536
+    },
+    "negative_boundary": true,
+    "no_stalled_requests": true,
+    "same_revision": true,
+    "semantic": true,
+    "suite": "xiaozhi-heldout-v2",
+    "unaffected_product": true,
+    "version": "2",
+    "whole_run_budget": true
+  },
+  "contract_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+  "elapsed_s": 15.264,
+  "failure_reason": "WORKER_TASK_FAILED",
+  "generation": "37",
+  "id": "run_0c470f51cd814d42",
+  "injected_revision": "82",
+  "last_action": null,
+  "manifest": {
+    "cache_condition": "not_controlled_provider_cache",
+    "condition": "swarm",
+    "environment": "demo",
+    "evidence_origin": "live",
+    "fixture_version": "xiaozhi-s9-v1",
+    "hardware_isolation": false,
+    "implementation_hash": "70323b72a43b2b35dde7efe87cfffd89cb0e6173678c29205f401fede28f3f07",
+    "jev_enabled": false,
+    "memory_condition": "off",
+    "memory_snapshot_hash": null,
+    "model": "evomap-gpt-5.6-luna",
+    "model_timeout_s": 60.0,
+    "probe_schedule": {
+      "interval_s": 30,
+      "max_detection_rounds": 3,
+      "scope": "active_incident"
+    },
+    "request_concurrency_limit": 2,
+    "scenario_seed": 42,
+    "source_identity": {
+      "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+      "backend_source_hash": "0a4e2bea99585932a21e3292a879d5c9e38747497736496397e8ec117272eb7f",
+      "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+      "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+      "dirty": true,
+      "dirty_diff_sha256": "194b6a423385b51a82327c433857a21c412a36e82d94d9fe7eb691781de03434",
+      "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+      "frontend_build_hash": "bd354b92d533ca7bbe8ba0e9764afdae849468c8792e435af2b7a21e664cc359",
+      "git_commit": "901f66007cb98cde67a1f5469362646373be8327"
+    },
+    "source_identity_hash": "e333498d7f97682480c2e35f9c3cf25b364102b5557c50df150c72fe8d15e6a7",
+    "total_token_budget": 16000,
+    "transport_mode": "local",
+    "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+    "victim_config": {
+      "context_multiplier": 1,
+      "generation": "37",
+      "max_output_tokens": 1536,
+      "prompt_version": "degraded",
+      "retry_limit": 3,
+      "retry_on_terminal": false,
+      "revision": "82"
+    },
+    "worker_completion_cap": 1600
+  },
+  "model": "evomap-gpt-5.6-luna",
+  "opened_at": "2026-09-22T04:34:10.405+00:00",
+  "plan": null,
+  "reserved_tokens": 0,
+  "run_id": "run_0c470f51cd814d42",
+  "scenario": "prompt",
+  "seed": 42,
+  "start_mono": 858430.032718875,
+  "status": "failed",
+  "symptoms": [
+    "quality_mismatch"
+  ],
+  "token_budget": 16000,
+  "usage_tokens": 2004,
+  "usage_unknown": false,
+  "verification": null,
+  "events": [
+    {
+      "event_id": "ev_58ad43526f8a4426",
+      "event_type": "chaos.injected",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:10.406+00:00",
+      "payload": {
+        "revision": "82",
+        "scenario": "prompt",
+        "summary": "故障配置已真实生效，等待独立探针"
+      },
+      "producer": "operator",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1713"
+    },
+    {
+      "event_id": "ev_6739cc67af5f4fdb",
+      "event_type": "request.progress",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:10.419+00:00",
+      "payload": {
+        "request_id": "b8d1e4b5-2ab7-47c7-84cd-e7633a9f6be9",
+        "revision": "82",
+        "state": "tool_call",
+        "state_digest": "be1f89374228a59ceb558cfe612074720d8a8d39c399ce336c29f7631bcd947f",
+        "step_index": 1,
+        "tool": "policy_search",
+        "tool_call_hash": "b7b0cac6c390f4e24beb5da0cba69ae7ca1c107c48c7e3317ecf9629409bd1f0"
+      },
+      "producer": "victim",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1714"
+    },
+    {
+      "event_id": "ev_01509f68d4fa4638",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:10.526+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "diagnoser",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1715"
+    },
+    {
+      "event_id": "ev_91f35e437806467a",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:10.664+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-a",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1716"
+    },
+    {
+      "event_id": "ev_b7b4ec1a806a4036",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:10.723+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-b",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1717"
+    },
+    {
+      "event_id": "ev_2630ec2a487e4317",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:10.782+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "verifier",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1718"
+    },
+    {
+      "event_id": "ev_cf92dc97c273412f",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:10.806+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "single",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1719"
+    },
+    {
+      "event_id": "ev_1f833155f8fb47c2",
+      "event_type": "model.completed",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:14.828+00:00",
+      "payload": {
+        "elapsed_s": 3.997,
+        "error": null,
+        "purpose": "probe:detect",
+        "summary": "probe:detect 模型调用完成",
+        "usage": {
+          "completion_tokens": 86,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 37,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 12,
+            "engine_ttft_ms": 129,
+            "engine_ttlt_ms": 1150,
+            "pre_inference_ms": 89,
+            "service_tbt_ms": 12,
+            "service_ttft_ms": 1509,
+            "service_ttlt_ms": 2525,
+            "user_visible_ttft_ms": 1420
+          },
+          "prompt_tokens": 695,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 781
+        }
+      },
+      "producer": "model",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1720"
+    },
+    {
+      "event_id": "ev_209be1b5666f4ad7",
+      "event_type": "request.completed",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:14.833+00:00",
+      "payload": {
+        "elapsed_s": 4.4157975419657305,
+        "request_id": "b8d1e4b5-2ab7-47c7-84cd-e7633a9f6be9",
+        "revision": "82",
+        "status": "success",
+        "usage": {
+          "estimated_input_tokens": 257,
+          "input_tokens": 695,
+          "output_tokens": 86,
+          "token_quality": "provider",
+          "total_tokens": 781
+        }
+      },
+      "producer": "victim",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1721"
+    },
+    {
+      "event_id": "ev_3d4e078209aa49da",
+      "event_type": "probe.completed",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:14.836+00:00",
+      "payload": {
+        "result": {
+          "checks": [
+            {
+              "actual": {
+                "answer": "结论：本次不可以无理由退货；本次不适用商家承担退货运费。",
+                "eligible": false,
+                "merchant_pays_shipping": false
+              },
+              "expected": {
+                "eligible": true,
+                "merchant_pays_shipping": true
+              },
+              "name": "semantic_policy",
+              "passed": false,
+              "request_id": "b8d1e4b5-2ab7-47c7-84cd-e7633a9f6be9"
+            },
+            {
+              "actual": {
+                "failures": [],
+                "inputs": [
+                  695
+                ],
+                "unknown_requests": []
+              },
+              "expected": "each request input<=2000, output<=1536, total<=3536 and total=input+output",
+              "name": "cost_budget",
+              "passed": true,
+              "request_id": null
+            },
+            {
+              "actual": 0,
+              "expected": 0,
+              "name": "no_stalled_requests",
+              "passed": true,
+              "request_id": null
+            }
+          ],
+          "elapsed_s": 4.4238206669688225,
+          "passed": false,
+          "requests": [
+            "b8d1e4b5-2ab7-47c7-84cd-e7633a9f6be9"
+          ],
+          "tested_revision": "82",
+          "usage": {
+            "input_tokens": 695,
+            "output_tokens": 86,
+            "token_quality": "provider",
+            "total_tokens": 781
+          }
+        },
+        "suite": "detect",
+        "summary": "检测集请求完成，保留原始业务结果"
+      },
+      "producer": "probe",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1722"
+    },
+    {
+      "event_id": "ev_6c0c3cf929cc4bf6",
+      "event_type": "observation.probe",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:14.837+00:00",
+      "payload": {
+        "actual": {
+          "answer": "结论：本次不可以无理由退货；本次不适用商家承担退货运费。",
+          "eligible": false,
+          "merchant_pays_shipping": false
+        },
+        "expected": {
+          "eligible": true,
+          "merchant_pays_shipping": true
+        },
+        "name": "semantic_policy",
+        "passed": false,
+        "request_id": "b8d1e4b5-2ab7-47c7-84cd-e7633a9f6be9",
+        "signal": "quality_mismatch",
+        "summary": "业务探针发现 semantic_policy"
+      },
+      "producer": "probe",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1723"
+    },
+    {
+      "event_id": "ev_6c63e1b296774841",
+      "event_type": "incident.opened",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:14.870+00:00",
+      "payload": {
+        "evidence_ids": [
+          "ev_6c0c3cf929cc4bf6"
+        ],
+        "summary": "哨兵根据实际观测立案",
+        "symptoms": [
+          "quality_mismatch"
+        ]
+      },
+      "producer": "sentry",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1724"
+    },
+    {
+      "event_id": "ev_97359308ee7346d8",
+      "event_type": "task.claimed",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:14.937+00:00",
+      "payload": {
+        "epoch": "1",
+        "kind": "diagnose",
+        "previous_holder": null,
+        "summary": "自主认领 diagnose，epoch 1",
+        "task_id": "task_b4c2f00fdb2c424b"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1725"
+    },
+    {
+      "event_id": "ev_854980d134284744",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:16.580+00:00",
+      "payload": {
+        "status": "working",
+        "summary": "处理已认领任务",
+        "task_id": "task_b4c2f00fdb2c424b"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1726"
+    },
+    {
+      "event_id": "ev_4350dd68b6b34990",
+      "event_type": "model.completed",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:21.050+00:00",
+      "payload": {
+        "elapsed_s": 6.101,
+        "error": null,
+        "purpose": "diagnose",
+        "summary": "diagnose 模型调用完成",
+        "usage": {
+          "completion_tokens": 335,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 80,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 13,
+            "engine_ttft_ms": 125,
+            "engine_ttlt_ms": 4573,
+            "pre_inference_ms": 143,
+            "service_tbt_ms": 13,
+            "service_ttft_ms": 472,
+            "service_ttlt_ms": 4912,
+            "user_visible_ttft_ms": 329
+          },
+          "prompt_tokens": 345,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 680
+        }
+      },
+      "producer": "model",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1727"
+    },
+    {
+      "event_id": "ev_1e22d912d7e84130",
+      "event_type": "model.completed",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:25.647+00:00",
+      "payload": {
+        "elapsed_s": 4.579,
+        "error": null,
+        "purpose": "diagnose",
+        "summary": "diagnose 模型调用完成",
+        "usage": {
+          "completion_tokens": 270,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 36,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 9,
+            "engine_ttft_ms": 210,
+            "engine_ttlt_ms": 2724,
+            "pre_inference_ms": 69,
+            "service_tbt_ms": 9,
+            "service_ttft_ms": 713,
+            "service_ttlt_ms": 3221,
+            "user_visible_ttft_ms": 644
+          },
+          "prompt_tokens": 273,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 543
+        }
+      },
+      "producer": "model",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1728"
+    },
+    {
+      "event_id": "ev_e75d4c61627d4f2d",
+      "event_type": "dialog.received",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:25.655+00:00",
+      "payload": {
+        "at": "2026-09-22T04:34:25.655+00:00",
+        "confidence": 0.0,
+        "content": "failed: invalid diagnosis output after two model calls (proposed_checks must be a list of objects)",
+        "evidence_ids": [
+          "ev_6c0c3cf929cc4bf6"
+        ],
+        "generation": "37",
+        "id": "msg_510645c5b4f648b4",
+        "instance_id": "instance_2539266f3be3448d",
+        "kind": "result",
+        "run_id": "run_0c470f51cd814d42",
+        "sender": "diagnoser",
+        "summary": "failed: invalid diagnosis output after two model calls (proposed_checks must be a list of objects)",
+        "task_epoch": "1",
+        "task_id": "task_b4c2f00fdb2c424b",
+        "transport_epoch": "48"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1729"
+    },
+    {
+      "event_id": "ev_f7705012938e4304",
+      "event_type": "task.completed",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:25.670+00:00",
+      "payload": {
+        "summary": "failed: invalid diagnosis output after two model calls (proposed_checks must be a list of objects)",
+        "task_id": "task_b4c2f00fdb2c424b"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1730"
+    },
+    {
+      "event_id": "ev_8372a492b4cb4f15",
+      "event_type": "authority.revoked",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:25.670+00:00",
+      "payload": {
+        "reason": "WORKER_TASK_FAILED",
+        "summary": "事故终态撤销任务与执行授权"
+      },
+      "producer": "system",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1731"
+    },
+    {
+      "event_id": "ev_e17246eac0a94442",
+      "event_type": "incident.failed",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:25.671+00:00",
+      "payload": {
+        "code": "WORKER_TASK_FAILED",
+        "summary": "failed: invalid diagnosis output after two model calls (proposed_checks must be a list of objects)"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1732"
+    },
+    {
+      "event_id": "ev_6662179e75da439d",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:34:26.754+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "diagnoser",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1733"
+    },
+    {
+      "event_id": "ev_64908581e5d64195",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:37:33.415+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-b",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1747"
+    },
+    {
+      "event_id": "ev_15ddfe9240d24ded",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:37:33.510+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "verifier",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1748"
+    },
+    {
+      "event_id": "ev_0863a3c68f5244a2",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:37:33.590+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "single",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1749"
+    },
+    {
+      "event_id": "ev_bc3f6f131f3748d6",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:37:35.095+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "sentry",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1750"
+    },
+    {
+      "event_id": "ev_aad1455fca45459f",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:37:35.175+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "diagnoser",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1751"
+    },
+    {
+      "event_id": "ev_b117566f401044ae",
+      "event_type": "agent.status",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:37:35.275+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-a",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1752"
+    },
+    {
+      "event_id": "ev_858a06665a854028",
+      "event_type": "authority.revoked",
+      "generation": "37",
+      "incident_id": "run_0c470f51cd814d42",
+      "occurred_at": "2026-09-22T04:37:43.306+00:00",
+      "payload": {
+        "reason": "reset",
+        "summary": "事故终态撤销任务与执行授权"
+      },
+      "producer": "system",
+      "run_id": "run_0c470f51cd814d42",
+      "sequence": "1753"
+    }
+  ],
+  "actions": [],
+  "usage": [
+    {
+      "at": "2026-09-22T04:34:10.827+00:00",
+      "elapsed_s": 3.997,
+      "error": null,
+      "id": "usage_c4b1c59a05c74eae",
+      "purpose": "probe:detect",
+      "reservation": 2050,
+      "run_id": "run_0c470f51cd814d42",
+      "status": "completed",
+      "unknown": false,
+      "usage": {
+        "completion_tokens": 86,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 37,
+          "rejected_prediction_tokens": 0
+        },
+        "latency_checkpoint": {
+          "engine_tbt_ms": 12,
+          "engine_ttft_ms": 129,
+          "engine_ttlt_ms": 1150,
+          "pre_inference_ms": 89,
+          "service_tbt_ms": 12,
+          "service_ttft_ms": 1509,
+          "service_ttlt_ms": 2525,
+          "user_visible_ttft_ms": 1420
+        },
+        "prompt_tokens": 695,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 781
+      }
+    },
+    {
+      "at": "2026-09-22T04:34:14.946+00:00",
+      "elapsed_s": 6.101,
+      "error": null,
+      "id": "usage_f6217fb174944aa9",
+      "purpose": "diagnose",
+      "reservation": 2099,
+      "run_id": "run_0c470f51cd814d42",
+      "status": "completed",
+      "unknown": false,
+      "usage": {
+        "completion_tokens": 335,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 80,
+          "rejected_prediction_tokens": 0
+        },
+        "latency_checkpoint": {
+          "engine_tbt_ms": 13,
+          "engine_ttft_ms": 125,
+          "engine_ttlt_ms": 4573,
+          "pre_inference_ms": 143,
+          "service_tbt_ms": 13,
+          "service_ttft_ms": 472,
+          "service_ttlt_ms": 4912,
+          "user_visible_ttft_ms": 329
+        },
+        "prompt_tokens": 345,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 680
+      }
+    },
+    {
+      "at": "2026-09-22T04:34:21.065+00:00",
+      "elapsed_s": 4.579,
+      "error": null,
+      "id": "usage_b9d6368043b44c87",
+      "purpose": "diagnose",
+      "reservation": 1911,
+      "run_id": "run_0c470f51cd814d42",
+      "status": "completed",
+      "unknown": false,
+      "usage": {
+        "completion_tokens": 270,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 36,
+          "rejected_prediction_tokens": 0
+        },
+        "latency_checkpoint": {
+          "engine_tbt_ms": 9,
+          "engine_ttft_ms": 210,
+          "engine_ttlt_ms": 2724,
+          "pre_inference_ms": 69,
+          "service_tbt_ms": 9,
+          "service_ttft_ms": 713,
+          "service_ttlt_ms": 3221,
+          "user_visible_ttft_ms": 644
+        },
+        "prompt_tokens": 273,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 543
+      }
+    }
+  ]
+}

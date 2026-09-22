@@ -1,0 +1,435 @@
+{
+  "budget_overrun": false,
+  "closed_at": "2026-09-22T04:40:25.676+00:00",
+  "condition": "swarm",
+  "contract": {
+    "answer_consistency": true,
+    "bounded_cost": true,
+    "cost_limits": {
+      "input": 2000,
+      "output": 1536,
+      "total": 3536
+    },
+    "negative_boundary": true,
+    "no_stalled_requests": true,
+    "same_revision": true,
+    "semantic": true,
+    "suite": "xiaozhi-heldout-v2",
+    "unaffected_product": true,
+    "version": "2",
+    "whole_run_budget": true
+  },
+  "contract_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+  "elapsed_s": 1.669,
+  "failure_reason": "OPERATOR_RESET",
+  "generation": "43",
+  "id": "run_fe0d6d1f1e844343",
+  "injected_revision": "96",
+  "last_action": null,
+  "manifest": {
+    "cache_condition": "not_controlled_provider_cache",
+    "condition": "swarm",
+    "environment": "demo",
+    "evidence_origin": "live",
+    "fixture_version": "xiaozhi-s9-v1",
+    "hardware_isolation": false,
+    "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+    "jev_enabled": false,
+    "memory_condition": "off",
+    "memory_snapshot_hash": null,
+    "model": "evomap-gpt-5.6-luna",
+    "model_timeout_s": 60,
+    "probe_schedule": {
+      "interval_s": 30,
+      "max_detection_rounds": 3,
+      "scope": "active_incident"
+    },
+    "request_concurrency_limit": 2,
+    "scenario_seed": 42,
+    "source_identity": {
+      "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+      "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+      "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+      "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+      "dirty": true,
+      "dirty_diff_sha256": "394aa54705c0f0e7891fd53813290d787dcbb8c5d41ca32a5253a9b315c7fa58",
+      "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+      "frontend_build_hash": "bd354b92d533ca7bbe8ba0e9764afdae849468c8792e435af2b7a21e664cc359",
+      "git_commit": "715b35831a1f7dc6ea80bac7d10f12be9bb40a01"
+    },
+    "source_identity_hash": "f5ee893c0b6fcd6babea5cddb0ec54ba8a8b8baf1c34109564b34e7eb3bd7bcf",
+    "total_token_budget": 16000,
+    "transport_mode": "local",
+    "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+    "victim_config": {
+      "context_multiplier": 1,
+      "generation": "43",
+      "max_output_tokens": 1536,
+      "prompt_version": "healthy",
+      "retry_limit": 6,
+      "retry_on_terminal": true,
+      "revision": "96"
+    },
+    "worker_completion_cap": 1600
+  },
+  "model": "evomap-gpt-5.6-luna",
+  "opened_at": "2026-09-22T04:40:24.008+00:00",
+  "plan": null,
+  "reserved_tokens": 0,
+  "run_id": "run_fe0d6d1f1e844343",
+  "scenario": "loop",
+  "seed": 42,
+  "start_mono": 858803.633820625,
+  "status": "reset",
+  "symptoms": [],
+  "token_budget": 16000,
+  "unknown_reserved_tokens": 2006,
+  "usage_tokens": 0,
+  "usage_unknown": true,
+  "verification": null,
+  "events": [
+    {
+      "event_id": "ev_8d5bbce2a14044dc",
+      "event_type": "chaos.injected",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:24.008+00:00",
+      "payload": {
+        "revision": "96",
+        "scenario": "loop",
+        "summary": "故障配置已真实生效，等待独立探针"
+      },
+      "producer": "operator",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "1995"
+    },
+    {
+      "event_id": "ev_5f4f2383f73b47ca",
+      "event_type": "request.progress",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:24.011+00:00",
+      "payload": {
+        "request_id": "0cec589e-2cad-4027-b04c-712fb9ffc283",
+        "revision": "96",
+        "state": "tool_call",
+        "state_digest": "12b4afbf4660263bb2aac3cf5d224ac734bc9b22eb8cf152d4ec4c79201a7e8a",
+        "step_index": 1,
+        "tool": "tracking_search",
+        "tool_call_hash": "fa8e55afa572375d5e6ca5a87f0810acea586d44e030003bc726bf42c8f24098"
+      },
+      "producer": "victim",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "1996"
+    },
+    {
+      "event_id": "ev_d6537f6a9f0c4462",
+      "event_type": "request.progress",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:24.013+00:00",
+      "payload": {
+        "request_id": "d2bea2ed-badc-4192-ba72-ab0cde450f40",
+        "revision": "96",
+        "state": "tool_call",
+        "state_digest": "dfddf7367931ce67607bcd0f226a301966174547b7432ea2f9eb07b458f7a891",
+        "step_index": 1,
+        "tool": "policy_search",
+        "tool_call_hash": "b7b0cac6c390f4e24beb5da0cba69ae7ca1c107c48c7e3317ecf9629409bd1f0"
+      },
+      "producer": "victim",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "1997"
+    },
+    {
+      "event_id": "ev_22525450ab2c474d",
+      "event_type": "agent.status",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:24.361+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-a",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "1998"
+    },
+    {
+      "event_id": "ev_bf9d8e121c854689",
+      "event_type": "request.progress",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:24.413+00:00",
+      "payload": {
+        "request_id": "0cec589e-2cad-4027-b04c-712fb9ffc283",
+        "revision": "96",
+        "state": "tool_call",
+        "state_digest": "12b4afbf4660263bb2aac3cf5d224ac734bc9b22eb8cf152d4ec4c79201a7e8a",
+        "step_index": 2,
+        "tool": "tracking_search",
+        "tool_call_hash": "fa8e55afa572375d5e6ca5a87f0810acea586d44e030003bc726bf42c8f24098"
+      },
+      "producer": "victim",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "1999"
+    },
+    {
+      "event_id": "ev_9b2eb2d9001e45de",
+      "event_type": "agent.status",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:24.523+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "sentry",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2000"
+    },
+    {
+      "event_id": "ev_bd9510e0fe76484e",
+      "event_type": "agent.status",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:24.525+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "diagnoser",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2001"
+    },
+    {
+      "event_id": "ev_324783debaa9414a",
+      "event_type": "agent.status",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:24.566+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "cost",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2002"
+    },
+    {
+      "event_id": "ev_0ec1699d40554219",
+      "event_type": "request.progress",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:24.816+00:00",
+      "payload": {
+        "request_id": "0cec589e-2cad-4027-b04c-712fb9ffc283",
+        "revision": "96",
+        "state": "tool_call",
+        "state_digest": "12b4afbf4660263bb2aac3cf5d224ac734bc9b22eb8cf152d4ec4c79201a7e8a",
+        "step_index": 3,
+        "tool": "tracking_search",
+        "tool_call_hash": "fa8e55afa572375d5e6ca5a87f0810acea586d44e030003bc726bf42c8f24098"
+      },
+      "producer": "victim",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2003"
+    },
+    {
+      "event_id": "ev_3a1dc3daa1a5464c",
+      "event_type": "agent.status",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.008+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-b",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2004"
+    },
+    {
+      "event_id": "ev_cbd8a7335c724add",
+      "event_type": "request.progress",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.224+00:00",
+      "payload": {
+        "request_id": "0cec589e-2cad-4027-b04c-712fb9ffc283",
+        "revision": "96",
+        "state": "tool_call",
+        "state_digest": "12b4afbf4660263bb2aac3cf5d224ac734bc9b22eb8cf152d4ec4c79201a7e8a",
+        "step_index": 4,
+        "tool": "tracking_search",
+        "tool_call_hash": "fa8e55afa572375d5e6ca5a87f0810acea586d44e030003bc726bf42c8f24098"
+      },
+      "producer": "victim",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2005"
+    },
+    {
+      "event_id": "ev_2db2ed1431584735",
+      "event_type": "observation.liveness",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.225+00:00",
+      "payload": {
+        "evidence_id": "ev_cbd8a7335c724add",
+        "request_id": "0cec589e-2cad-4027-b04c-712fb9ffc283",
+        "signal": "tool_stalled",
+        "state_digest": "12b4afbf4660263bb2aac3cf5d224ac734bc9b22eb8cf152d4ec4c79201a7e8a",
+        "steps": 4,
+        "summary": "独立活性路径发现同工具、同状态重复 4 次",
+        "tool_call_hash": "fa8e55afa572375d5e6ca5a87f0810acea586d44e030003bc726bf42c8f24098"
+      },
+      "producer": "liveness",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2006"
+    },
+    {
+      "event_id": "ev_2857f61a06b941b1",
+      "event_type": "agent.status",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.310+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "single",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2007"
+    },
+    {
+      "event_id": "ev_0e87175c04054902",
+      "event_type": "agent.status",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.330+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "verifier",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2008"
+    },
+    {
+      "event_id": "ev_4096ed9968c84b0d",
+      "event_type": "request.progress",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.628+00:00",
+      "payload": {
+        "request_id": "0cec589e-2cad-4027-b04c-712fb9ffc283",
+        "revision": "96",
+        "state": "tool_call",
+        "state_digest": "12b4afbf4660263bb2aac3cf5d224ac734bc9b22eb8cf152d4ec4c79201a7e8a",
+        "step_index": 5,
+        "tool": "tracking_search",
+        "tool_call_hash": "fa8e55afa572375d5e6ca5a87f0810acea586d44e030003bc726bf42c8f24098"
+      },
+      "producer": "victim",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2009"
+    },
+    {
+      "event_id": "ev_49148f010b0441bf",
+      "event_type": "authority.revoked",
+      "generation": "43",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.677+00:00",
+      "payload": {
+        "reason": "reset",
+        "summary": "事故终态撤销任务与执行授权"
+      },
+      "producer": "system",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2010"
+    },
+    {
+      "event_id": "ev_dcfc75b7a34d42aa",
+      "event_type": "request.completed",
+      "generation": "44",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.679+00:00",
+      "payload": {
+        "elapsed_s": 1.6686800840543583,
+        "request_id": "0cec589e-2cad-4027-b04c-712fb9ffc283",
+        "revision": "96",
+        "status": "cancelled",
+        "usage": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "token_quality": "not_requested",
+          "total_tokens": 0
+        }
+      },
+      "producer": "victim",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2012"
+    },
+    {
+      "event_id": "ev_2c1e92d40fab4960",
+      "event_type": "model.failed",
+      "generation": "44",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.681+00:00",
+      "payload": {
+        "elapsed_s": 1.262,
+        "error": "CANCELLED_USAGE_UNKNOWN",
+        "purpose": "probe:detect",
+        "summary": "probe:detect 模型调用失败",
+        "usage": null
+      },
+      "producer": "model",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2013"
+    },
+    {
+      "event_id": "ev_5d17e044ec404753",
+      "event_type": "request.completed",
+      "generation": "44",
+      "incident_id": "run_fe0d6d1f1e844343",
+      "occurred_at": "2026-09-22T04:40:25.683+00:00",
+      "payload": {
+        "elapsed_s": 1.6710564580280334,
+        "request_id": "d2bea2ed-badc-4192-ba72-ab0cde450f40",
+        "revision": "96",
+        "status": "cancelled",
+        "usage": {
+          "input_tokens": null,
+          "output_tokens": null,
+          "token_quality": "unknown",
+          "total_tokens": null
+        }
+      },
+      "producer": "victim",
+      "run_id": "run_fe0d6d1f1e844343",
+      "sequence": "2014"
+    }
+  ],
+  "actions": [],
+  "usage": [
+    {
+      "at": "2026-09-22T04:40:24.416+00:00",
+      "elapsed_s": 1.262,
+      "error": "CANCELLED_USAGE_UNKNOWN",
+      "id": "usage_9fb648ff2dda4f18",
+      "purpose": "probe:detect",
+      "reservation": 2006,
+      "run_id": "run_fe0d6d1f1e844343",
+      "status": "failed",
+      "unknown": true,
+      "usage": null
+    }
+  ]
+}

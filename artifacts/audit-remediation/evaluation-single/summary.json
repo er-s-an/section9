@@ -1,0 +1,383 @@
+{
+  "started_at": "2026-09-22T04:52:05.640+00:00",
+  "finished_at": "2026-09-22T04:52:25.329+00:00",
+  "base_url": "http://127.0.0.1:9024",
+  "run_id": "run_7f693365246f4159",
+  "run_ids": [
+    "run_7f693365246f4159"
+  ],
+  "conditions": [
+    "single",
+    "muted",
+    "swarm",
+    "memory",
+    "memory_jev"
+  ],
+  "scenarios": [
+    "prompt",
+    "cost",
+    "loop",
+    "composite"
+  ],
+  "repeats": 1,
+  "max_runs": 1,
+  "executed_runs": 1,
+  "cells": [
+    {
+      "condition": "single",
+      "scenario": "prompt",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "single",
+      "scenario": "cost",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "single",
+      "scenario": "loop",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "single",
+      "scenario": "composite",
+      "n": 1,
+      "success": 1,
+      "failure": 0,
+      "time_seconds": 19.241,
+      "tokens": 5277,
+      "tokens_unknown": 0,
+      "run_ids": [
+        "run_7f693365246f4159"
+      ],
+      "manifest_checks": [
+        {
+          "run_id": "run_7f693365246f4159",
+          "environment": "evaluation",
+          "model": "evomap-gpt-5.6-luna",
+          "total_token_budget": 16000,
+          "concurrency": 2,
+          "fixture_version": "xiaozhi-s9-v1",
+          "memory_snapshot": "off",
+          "environment_ok": true,
+          "model_ok": true,
+          "budget_ok": true,
+          "concurrency_ok": true,
+          "fixture_ok": true,
+          "memory_snapshot_recorded": true,
+          "source_identity": {
+            "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+            "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+            "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+            "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+            "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1"
+          },
+          "identity_status": "aligned",
+          "identity_missing": [],
+          "identity_ok": true,
+          "aligned": true
+        }
+      ],
+      "status": "measured"
+    },
+    {
+      "condition": "muted",
+      "scenario": "prompt",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "muted",
+      "scenario": "cost",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "muted",
+      "scenario": "loop",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "muted",
+      "scenario": "composite",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "swarm",
+      "scenario": "prompt",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "swarm",
+      "scenario": "cost",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "swarm",
+      "scenario": "loop",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "swarm",
+      "scenario": "composite",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "memory",
+      "scenario": "prompt",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "memory",
+      "scenario": "cost",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "memory",
+      "scenario": "loop",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "memory",
+      "scenario": "composite",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测"
+    },
+    {
+      "condition": "memory_jev",
+      "scenario": "prompt",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测",
+      "disabled_reason": "no_real_model_artifact_jev_p2_disabled"
+    },
+    {
+      "condition": "memory_jev",
+      "scenario": "cost",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测",
+      "disabled_reason": "no_real_model_artifact_jev_p2_disabled"
+    },
+    {
+      "condition": "memory_jev",
+      "scenario": "loop",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测",
+      "disabled_reason": "no_real_model_artifact_jev_p2_disabled"
+    },
+    {
+      "condition": "memory_jev",
+      "scenario": "composite",
+      "n": 0,
+      "success": 0,
+      "failure": 0,
+      "time_seconds": null,
+      "tokens": null,
+      "tokens_unknown": 0,
+      "run_ids": [],
+      "manifest_checks": [],
+      "status": "待测",
+      "disabled_reason": "no_real_model_artifact_jev_p2_disabled"
+    }
+  ],
+  "errors": [],
+  "manifest_alignment": {
+    "expected_by_scenario": {
+      "composite": {
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off",
+        "identity": {
+          "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+          "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+          "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+          "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+          "dirty": true,
+          "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+          "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+          "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+          "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+        }
+      }
+    },
+    "checks": [
+      {
+        "run_id": "run_7f693365246f4159",
+        "environment": "evaluation",
+        "model": "evomap-gpt-5.6-luna",
+        "total_token_budget": 16000,
+        "concurrency": 2,
+        "fixture_version": "xiaozhi-s9-v1",
+        "memory_snapshot": "off",
+        "environment_ok": true,
+        "model_ok": true,
+        "budget_ok": true,
+        "concurrency_ok": true,
+        "fixture_ok": true,
+        "memory_snapshot_recorded": true,
+        "source_identity": {
+          "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+          "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+          "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+          "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+          "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1"
+        },
+        "identity_status": "aligned",
+        "identity_missing": [],
+        "identity_ok": true,
+        "aligned": true
+      }
+    ],
+    "all_aligned": true
+  },
+  "comparability": {
+    "mixed_conditions_incomparable": true,
+    "note": "不同 condition 是不同协作/通信策略；不据此虚构优势。",
+    "manifest_grouping": "同一 scenario 内比较；忽略 condition 和 scenario 本身不跨组比较",
+    "memory_note": "memory 与非 memory 的 memory_snapshot 差异是被测处理条件，不单独视为不公平。"
+  },
+  "limitations": [
+    "未测矩阵格显示待测",
+    "unknown usage 不按零 token 计",
+    "失败运行和原始响应均保留"
+  ]
+}

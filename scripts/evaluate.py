@@ -227,6 +227,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Collect bounded real Section 9 evaluation runs")
     parser.add_argument("--conditions", nargs="+", default=None, help="subset of swarm single muted memory single_memory")
     parser.add_argument("--scenarios", nargs="+", default=None, help="subset of prompt cost loop composite")
+    parser.add_argument("--require-pass", action="store_true", help="exit nonzero if any measured run fails or provenance is unaligned")
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--max-runs", type=int, default=20)
     parser.add_argument("--base-url", default="http://127.0.0.1:9024")
@@ -244,6 +245,8 @@ def main() -> int:
         raise SystemExit(str(exc)) from exc
     print(json.dumps({"summary": str(Path(args.output) / "summary.json"),
                       "executed_runs": summary["executed_runs"], "errors": len(summary["errors"])}, ensure_ascii=False))
+    if args.require_pass and (summary["errors"] or not summary["manifest_alignment"]["all_aligned"] or any(c["failure"] for c in summary["cells"])):
+        return 1
     return 0
 
 

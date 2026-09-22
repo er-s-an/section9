@@ -1,0 +1,236 @@
+{
+  "origin": "live_remote_model_intentional_interruption",
+  "performance_trial": false,
+  "run_id": "run_94eeec2a6fb542d9",
+  "reset_seconds": 0.005713624996133149,
+  "reset": {
+    "generation": "42",
+    "revision": "115",
+    "checks": {
+      "old_grants_invalidated": true,
+      "healthy_config_restored": true,
+      "history_preserved": true,
+      "message_epoch_advanced": true,
+      "cancelled_requests": 1,
+      "model_requests_released": true
+    },
+    "model_cancellation": {
+      "generation": "41",
+      "requested": 1,
+      "cancelled": 0,
+      "failed": 1,
+      "remaining": 0,
+      "timed_out": false
+    }
+  },
+  "run": {
+    "budget_overrun": false,
+    "closed_at": "2026-09-22T04:45:33.277+00:00",
+    "condition": "swarm",
+    "contract": {
+      "answer_consistency": true,
+      "bounded_cost": true,
+      "cost_limits": {
+        "input": 2000,
+        "output": 1536,
+        "total": 3536
+      },
+      "negative_boundary": true,
+      "no_stalled_requests": true,
+      "same_revision": true,
+      "semantic": true,
+      "suite": "xiaozhi-heldout-v2",
+      "unaffected_product": true,
+      "version": "2",
+      "whole_run_budget": true
+    },
+    "contract_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+    "elapsed_s": 0.464,
+    "failure_reason": "OPERATOR_RESET",
+    "generation": "41",
+    "id": "run_94eeec2a6fb542d9",
+    "injected_revision": "114",
+    "last_action": null,
+    "manifest": {
+      "cache_condition": "not_controlled_provider_cache",
+      "condition": "swarm",
+      "environment": "evaluation",
+      "evidence_origin": "live",
+      "fixture_version": "xiaozhi-s9-v1",
+      "hardware_isolation": false,
+      "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+      "jev_enabled": false,
+      "memory_condition": "off",
+      "memory_snapshot_hash": null,
+      "model": "evomap-gpt-5.6-luna",
+      "model_timeout_s": 60.0,
+      "probe_schedule": {
+        "interval_s": 30,
+        "max_detection_rounds": 3,
+        "scope": "active_incident"
+      },
+      "request_concurrency_limit": 2,
+      "scenario_seed": 42,
+      "source_identity": {
+        "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+        "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+        "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+        "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+        "dirty": true,
+        "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+        "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+        "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+        "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+      },
+      "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+      "total_token_budget": 16000,
+      "transport_mode": "local",
+      "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+      "victim_config": {
+        "context_multiplier": 1,
+        "generation": "41",
+        "max_output_tokens": 1536,
+        "prompt_version": "degraded",
+        "retry_limit": 3,
+        "retry_on_terminal": false,
+        "revision": "114"
+      },
+      "worker_completion_cap": 1600
+    },
+    "model": "evomap-gpt-5.6-luna",
+    "opened_at": "2026-09-22T04:45:32.814+00:00",
+    "plan": null,
+    "reserved_tokens": 0,
+    "run_id": "run_94eeec2a6fb542d9",
+    "scenario": "prompt",
+    "seed": 42,
+    "start_mono": 859112.421411416,
+    "status": "reset",
+    "symptoms": [],
+    "token_budget": 16000,
+    "unknown_reserved_tokens": 2050,
+    "usage_tokens": 0,
+    "usage_unknown": true,
+    "verification": null,
+    "events": [
+      {
+        "event_id": "ev_8b6bffbc3ae245c6",
+        "event_type": "chaos.injected",
+        "generation": "41",
+        "incident_id": "run_94eeec2a6fb542d9",
+        "occurred_at": "2026-09-22T04:45:32.814+00:00",
+        "payload": {
+          "revision": "114",
+          "scenario": "prompt",
+          "summary": "故障配置已真实生效，等待独立探针"
+        },
+        "producer": "operator",
+        "run_id": "run_94eeec2a6fb542d9",
+        "sequence": "2377"
+      },
+      {
+        "event_id": "ev_2f9cb161f9e846fe",
+        "event_type": "request.progress",
+        "generation": "41",
+        "incident_id": "run_94eeec2a6fb542d9",
+        "occurred_at": "2026-09-22T04:45:32.817+00:00",
+        "payload": {
+          "request_id": "d85a477f-be3c-4336-91fe-2db1ff0dfb7f",
+          "revision": "114",
+          "state": "tool_call",
+          "state_digest": "d38118f9eb92bc4059fb8963c9f93634b9c4dd4517c81c63bffef8f49230abb6",
+          "step_index": 1,
+          "tool": "policy_search",
+          "tool_call_hash": "b7b0cac6c390f4e24beb5da0cba69ae7ca1c107c48c7e3317ecf9629409bd1f0"
+        },
+        "producer": "victim",
+        "run_id": "run_94eeec2a6fb542d9",
+        "sequence": "2378"
+      },
+      {
+        "event_id": "ev_55830723417a40b9",
+        "event_type": "agent.status",
+        "generation": "41",
+        "incident_id": "run_94eeec2a6fb542d9",
+        "occurred_at": "2026-09-22T04:45:33.180+00:00",
+        "payload": {
+          "status": "idle",
+          "summary": "等待协作任务",
+          "task_id": null
+        },
+        "producer": "sentry",
+        "run_id": "run_94eeec2a6fb542d9",
+        "sequence": "2379"
+      },
+      {
+        "event_id": "ev_44ba6b4959b141c1",
+        "event_type": "authority.revoked",
+        "generation": "41",
+        "incident_id": "run_94eeec2a6fb542d9",
+        "occurred_at": "2026-09-22T04:45:33.278+00:00",
+        "payload": {
+          "reason": "reset",
+          "summary": "事故终态撤销任务与执行授权"
+        },
+        "producer": "system",
+        "run_id": "run_94eeec2a6fb542d9",
+        "sequence": "2380"
+      },
+      {
+        "event_id": "ev_614ae5fc65554dc0",
+        "event_type": "model.failed",
+        "generation": "42",
+        "incident_id": "run_94eeec2a6fb542d9",
+        "occurred_at": "2026-09-22T04:45:33.279+00:00",
+        "payload": {
+          "elapsed_s": 0.056,
+          "error": "CANCELLED_USAGE_UNKNOWN",
+          "purpose": "probe:detect",
+          "summary": "probe:detect 模型调用失败",
+          "usage": null
+        },
+        "producer": "model",
+        "run_id": "run_94eeec2a6fb542d9",
+        "sequence": "2382"
+      },
+      {
+        "event_id": "ev_57efa316661547f0",
+        "event_type": "request.completed",
+        "generation": "42",
+        "incident_id": "run_94eeec2a6fb542d9",
+        "occurred_at": "2026-09-22T04:45:33.281+00:00",
+        "payload": {
+          "elapsed_s": 0.4648497090674937,
+          "request_id": "d85a477f-be3c-4336-91fe-2db1ff0dfb7f",
+          "revision": "114",
+          "status": "cancelled",
+          "usage": {
+            "input_tokens": null,
+            "output_tokens": null,
+            "token_quality": "unknown",
+            "total_tokens": null
+          }
+        },
+        "producer": "victim",
+        "run_id": "run_94eeec2a6fb542d9",
+        "sequence": "2383"
+      }
+    ],
+    "actions": [],
+    "usage": [
+      {
+        "at": "2026-09-22T04:45:33.221+00:00",
+        "elapsed_s": 0.056,
+        "error": "CANCELLED_USAGE_UNKNOWN",
+        "id": "usage_34d6ed745498410a",
+        "purpose": "probe:detect",
+        "reservation": 2050,
+        "run_id": "run_94eeec2a6fb542d9",
+        "status": "failed",
+        "unknown": true,
+        "usage": null
+      }
+    ]
+  },
+  "passed": true
+}

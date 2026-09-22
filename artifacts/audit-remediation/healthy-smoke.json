@@ -1,0 +1,109 @@
+{
+  "identity": {
+    "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+    "git_commit": "901f66007cb98cde67a1f5469362646373be8327",
+    "dirty": true,
+    "dirty_diff_sha256": "f2fdb075ec62a20eee36b6eb451abcdd99059b185550ef43caed4f787f03113f",
+    "backend_source_hash": "914754b471261a24e2fdd0bc2491ee302f2f359c0ac6161beba66297a084c5e4",
+    "frontend_build_hash": "be0fa7c4a8be17f2e54d3b231afe58d37f32305d3bb262e44a55095b11d8dadb",
+    "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+    "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+    "acceptance_contract_hash": "75f88aceb89a9d05f4d058f5a54b8945f6bb2c49249bc3078563ec20b6bde083"
+  },
+  "origin": "live_remote_model_preintegration_smoke",
+  "result": {
+    "passed": false,
+    "checks": [
+      {
+        "name": "heldout_semantic_policy",
+        "passed": true,
+        "expected": {
+          "eligible": true,
+          "merchant_pays_shipping": true
+        },
+        "actual": {
+          "eligible": true,
+          "merchant_pays_shipping": true,
+          "answer": "结论：本次可以无理由退货；退货运费由商家承担。"
+        },
+        "request_id": "0a804e86-d2f1-4ee8-a9bd-876a4815a105"
+      },
+      {
+        "name": "heldout_outside_return_window",
+        "passed": false,
+        "expected": {
+          "eligible": false,
+          "merchant_pays_shipping": false
+        },
+        "actual": {
+          "eligible": false,
+          "merchant_pays_shipping": false,
+          "answer": "结论：本次不可以无理由退货；本次不适用商家承担退货运费"
+        },
+        "request_id": "91ead24f-1510-4044-807c-ac4110870477"
+      },
+      {
+        "name": "unaffected_product_fact",
+        "passed": true,
+        "expected": {
+          "battery_hours": 30
+        },
+        "actual": {
+          "battery_hours": 30,
+          "answer": "结论：X200续航为30小时。"
+        },
+        "request_id": "4fb6ee59-ac32-47d4-b372-340f106b1a6f"
+      },
+      {
+        "name": "terminal_tool_stops",
+        "passed": true,
+        "expected": {
+          "tool_calls": 1,
+          "found": false
+        },
+        "actual": {
+          "found": false,
+          "answer": "结论：未查到该订单。"
+        },
+        "request_id": "844cb5ea-94fc-4d22-a9a5-3158fe9916c7"
+      },
+      {
+        "name": "cost_budget",
+        "passed": true,
+        "expected": "each request input<=2000, output<=1536, total<=3536 and total=input+output",
+        "actual": {
+          "inputs": [
+            633,
+            621,
+            948,
+            425
+          ],
+          "failures": [],
+          "unknown_requests": []
+        },
+        "request_id": null
+      },
+      {
+        "name": "no_stalled_requests",
+        "passed": true,
+        "expected": 0,
+        "actual": 0,
+        "request_id": null
+      }
+    ],
+    "requests": [
+      "0a804e86-d2f1-4ee8-a9bd-876a4815a105",
+      "91ead24f-1510-4044-807c-ac4110870477",
+      "4fb6ee59-ac32-47d4-b372-340f106b1a6f",
+      "844cb5ea-94fc-4d22-a9a5-3158fe9916c7"
+    ],
+    "tested_revision": "1",
+    "usage": {
+      "input_tokens": 2627,
+      "output_tokens": 282,
+      "total_tokens": 2909,
+      "token_quality": "provider"
+    },
+    "elapsed_s": 8.476011916995049
+  }
+}

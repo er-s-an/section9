@@ -130,15 +130,21 @@ try {
 
   // The UI must reject memory + muted before making an injection request; the backend must reject it too.
   const memoryButton = page.locator('.control-line').filter({hasText:'下轮 Playbook'}).getByRole('button')
-  if ((await memoryButton.innerText()).includes('关闭')) await memoryButton.click()
-  const communicationAfterReset = page.getByRole('button', { name: /正常通信|已禁言/ }).first()
-  if ((await communicationAfterReset.innerText()).includes('正常通信')) await communicationAfterReset.click()
-  await page.waitForTimeout(300)
-  check('memory and muted are both enabled', (await page.getByRole('button', { name: '记忆复用' }).count()) === 1 && (await page.getByRole('button', { name: '已禁言' }).count()) === 1)
+  if (!(await stateFrom(context.request))?.memory_enabled) {
+    await memoryButton.click()
+    if (!await waitFor(async()=> (await stateFrom(context.request))?.memory_enabled && await page.getByRole('button', {name:'记忆复用', exact:true}).count(), 15000)) throw new Error('memory toggle did not settle')
+  }
+  if (!(await stateFrom(context.request))?.muted) {
+    const normal = page.getByRole('button', {name:'正常通信', exact:true})
+    await normal.waitFor({state:'visible'})
+    await normal.click()
+  }
+  const bothEnabled = await waitFor(async()=> {const s=await stateFrom(context.request);return s?.memory_enabled && s?.muted && await page.getByRole('button',{name:'已禁言',exact:true}).count()},15000)
+  check('memory and muted are both enabled', bothEnabled)
   const runsBeforeReject = await getJson(context.request, '/api/runs')
   const blockedRequestCount = report.requests.filter(row => row.url.endsWith('/api/inject') && row.method === 'POST').length
   await page.getByRole('button', { name: '复合故障' }).click()
-  await page.waitForTimeout(400)
+  await page.getByText(/记忆复用与禁言不能同时注入/).waitFor({state:'visible',timeout:5000})
   const runsAfterReject = await getJson(context.request, '/api/runs')
   const blockedRequestCountAfter = report.requests.filter(row => row.url.endsWith('/api/inject') && row.method === 'POST').length
   check('UI blocks memory+muted without POST', blockedRequestCountAfter === blockedRequestCount && await page.getByText(/记忆复用与禁言不能同时注入/).count() > 0)

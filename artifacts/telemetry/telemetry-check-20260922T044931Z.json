@@ -1,0 +1,157 @@
+{
+  "checked_at": "2026-09-22T04:49:31.884907Z",
+  "run_id": "run_20934a32dfd045b8",
+  "evidence": null,
+  "endpoint": "/api/public/v2/observations?fields=core,basic,metadata,time",
+  "window_start": "2026-09-21T04:49:31.884907Z",
+  "http_status": 200,
+  "status": "received",
+  "matching_spans": [
+    {
+      "trace_id": "0c310ff74836ba080d6e7a2f87418cb5",
+      "trace_id_display": "0c310ff7…8cb5",
+      "name": "s9.probe:verify",
+      "run_id": "run_20934a32dfd045b8",
+      "timestamp": "2026-09-22T04:48:52.463Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "be8949b32f058367f2945501c1f82799",
+      "trace_id_display": "be8949b3…2799",
+      "name": "s9.probe:verify",
+      "run_id": "run_20934a32dfd045b8",
+      "timestamp": "2026-09-22T04:48:52.396Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "29cfa4e177de89b4bced11297f818a11",
+      "trace_id_display": "29cfa4e1…8a11",
+      "name": "s9.probe:verify",
+      "run_id": "run_20934a32dfd045b8",
+      "timestamp": "2026-09-22T04:48:49.457Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "dcfb6d7a2ba7fb0bb40d54c2cfbeb562",
+      "trace_id_display": "dcfb6d7a…b562",
+      "name": "s9.probe:verify",
+      "run_id": "run_20934a32dfd045b8",
+      "timestamp": "2026-09-22T04:48:49.448Z",
+      "metadata_complete": true,
+      "status": "received"
+    },
+    {
+      "trace_id": "4a355d6d40d30f8617abf86e32dff496",
+      "trace_id_display": "4a355d6d…f496",
+      "name": "s9.repair",
+      "run_id": "run_20934a32dfd045b8",
+      "timestamp": "2026-09-22T04:48:44.261Z",
+      "metadata_complete": true,
+      "status": "received"
+    }
+  ],
+  "database_events": [
+    {
+      "trace_id": "d3e30bbd7c6cdd7492dfb1b4d89e5f0b",
+      "trace_id_display": "d3e30bbd…5f0b",
+      "run_id": "run_20934a32dfd045b8",
+      "name": "s9.probe:detect",
+      "timestamp": "2026-09-22T04:48:41.135+00:00",
+      "database": "evaluation"
+    },
+    {
+      "trace_id": "f46dd7df1dfb79a880e9c11c58db9bc8",
+      "trace_id_display": "f46dd7df…9bc8",
+      "run_id": "run_20934a32dfd045b8",
+      "name": "s9.diagnose",
+      "timestamp": "2026-09-22T04:48:47.146+00:00",
+      "database": "evaluation"
+    },
+    {
+      "trace_id": "4a355d6d40d30f8617abf86e32dff496",
+      "trace_id_display": "4a355d6d…f496",
+      "run_id": "run_20934a32dfd045b8",
+      "name": "s9.repair",
+      "timestamp": "2026-09-22T04:48:51.149+00:00",
+      "database": "evaluation"
+    },
+    {
+      "trace_id": "29cfa4e177de89b4bced11297f818a11",
+      "trace_id_display": "29cfa4e1…8a11",
+      "run_id": "run_20934a32dfd045b8",
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T04:48:57.154+00:00",
+      "database": "evaluation"
+    },
+    {
+      "trace_id": "dcfb6d7a2ba7fb0bb40d54c2cfbeb562",
+      "trace_id_display": "dcfb6d7a…b562",
+      "run_id": "run_20934a32dfd045b8",
+      "name": "s9.probe:verify",
+      "timestamp": "2026-09-22T04:48:57.157+00:00",
+      "database": "evaluation"
+    }
+  ],
+  "both_path_matches": [
+    {
+      "trace_id": "0c310ff74836ba080d6e7a2f87418cb5",
+      "trace_id_display": "0c310ff7…8cb5",
+      "name": "s9.probe:verify",
+      "run_id": "run_20934a32dfd045b8",
+      "langfuse_timestamp": "2026-09-22T04:48:52.463Z",
+      "database_timestamp": "2026-09-22T04:48:57.159+00:00",
+      "database": "evaluation",
+      "status": "both_paths_received"
+    },
+    {
+      "trace_id": "be8949b32f058367f2945501c1f82799",
+      "trace_id_display": "be8949b3…2799",
+      "name": "s9.probe:verify",
+      "run_id": "run_20934a32dfd045b8",
+      "langfuse_timestamp": "2026-09-22T04:48:52.396Z",
+      "database_timestamp": "2026-09-22T04:49:01.160+00:00",
+      "database": "evaluation",
+      "status": "both_paths_received"
+    },
+    {
+      "trace_id": "29cfa4e177de89b4bced11297f818a11",
+      "trace_id_display": "29cfa4e1…8a11",
+      "name": "s9.probe:verify",
+      "run_id": "run_20934a32dfd045b8",
+      "langfuse_timestamp": "2026-09-22T04:48:49.457Z",
+      "database_timestamp": "2026-09-22T04:48:57.154+00:00",
+      "database": "evaluation",
+      "status": "both_paths_received"
+    },
+    {
+      "trace_id": "dcfb6d7a2ba7fb0bb40d54c2cfbeb562",
+      "trace_id_display": "dcfb6d7a…b562",
+      "name": "s9.probe:verify",
+      "run_id": "run_20934a32dfd045b8",
+      "langfuse_timestamp": "2026-09-22T04:48:49.448Z",
+      "database_timestamp": "2026-09-22T04:48:57.157+00:00",
+      "database": "evaluation",
+      "status": "both_paths_received"
+    },
+    {
+      "trace_id": "4a355d6d40d30f8617abf86e32dff496",
+      "trace_id_display": "4a355d6d…f496",
+      "name": "s9.repair",
+      "run_id": "run_20934a32dfd045b8",
+      "langfuse_timestamp": "2026-09-22T04:48:44.261Z",
+      "database_timestamp": "2026-09-22T04:48:51.149+00:00",
+      "database": "evaluation",
+      "status": "both_paths_received"
+    }
+  ],
+  "database_status": {
+    "main": "ok",
+    "evaluation": "ok",
+    "attract": "ok"
+  },
+  "returned_count": 100,
+  "criteria": "explicit run_id; same full trace_id and same run_id in Langfuse metadata observation and telemetry.span_received in main/evaluation/attract DB; metadata_complete must be true"
+}

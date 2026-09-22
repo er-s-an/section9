@@ -1,0 +1,14 @@
+{
+  "reason": "old server failed to exit after 30s graceful stop; closed listeners but retained worker processes",
+  "verified_parent_pid": 4883,
+  "owned_worker_pids": [
+    4893,
+    4897,
+    4902,
+    4906,
+    4910,
+    4914,
+    6079
+  ],
+  "signal": "SIGTERM children, SIGKILL verified parent"
+}

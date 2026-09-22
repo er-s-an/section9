@@ -1,0 +1,20 @@
+{
+  "request_id": "b7d47373-883b-4f95-b9b9-0b662a892155",
+  "answer": "目前无法确认客服通道是否已恢复，请联系人工客服核实。",
+  "structured": {
+    "answer": "目前无法确认客服通道是否已恢复，请联系人工客服核实。"
+  },
+  "revision": "98",
+  "usage": {
+    "input_tokens": 433,
+    "output_tokens": 63,
+    "total_tokens": 496,
+    "token_quality": "provider",
+    "estimated_input_tokens": 162
+  },
+  "elapsed_s": 3.19505087507423,
+  "trace_id": "356b3ad0f8307beb605aedbf5aaf3e20",
+  "status": "success",
+  "model": "gpt-5.6-luna",
+  "tool_calls": 1
+}

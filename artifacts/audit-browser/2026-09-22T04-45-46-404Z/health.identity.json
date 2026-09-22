@@ -1,0 +1,56 @@
+{
+  "status": 200,
+  "identity": {
+    "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+    "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417",
+    "dirty": true,
+    "dirty_diff_sha256": "a7dd75c3a10787db824e7a4e4cc2457f403b19faf6c7db0e402bc0867fb67f79",
+    "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+    "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+    "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+    "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+    "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1"
+  },
+  "dependencies": {
+    "model": {
+      "status": "configured",
+      "model": "evomap-gpt-5.6-luna",
+      "detail": "远程 EvoMap API",
+      "remote_inference": true,
+      "max_concurrency": 2,
+      "active_requests": 0,
+      "tracked_generations": 0
+    },
+    "langfuse": {
+      "status": "available",
+      "detail": "HTTP 200",
+      "checked_at": "2026-09-22T04:45:40.083+00:00",
+      "url": "http://127.0.0.1:9030"
+    },
+    "collector": {
+      "status": "available",
+      "detail": "HTTP 200",
+      "checked_at": "2026-09-22T04:45:40.085+00:00",
+      "last_received_at": "2026-09-22T04:45:36.819+00:00"
+    },
+    "evomap": {
+      "status": "local",
+      "detail": "Section9 自建本地协作；官方 GEP SDK 资产",
+      "memory": {
+        "playbooks": 8,
+        "learned": 4,
+        "events": 63,
+        "publish_state": "local_only",
+        "hub_status": "not_implemented",
+        "remote_publish_implemented": false,
+        "needs_implementation": true,
+        "pending_auth": false,
+        "validator_error": null
+      }
+    },
+    "jev": {
+      "status": "disabled",
+      "detail": "P2：无真实压缩产物，未启用"
+    }
+  }
+}

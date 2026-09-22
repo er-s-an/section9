@@ -1,6 +1,6 @@
 # Section9：可验证的本地 Agent 故障响应实验室
 
-Section9 是一个本地、可审计的 Agent 故障响应实验室。它把真实模型请求、受控故障注入、角色协作、审批与独立验证连接成一条可复核的闭环。业务状态由 SQLite WAL 与事件记录保存；Langfuse 只负责遥测诊断，不能替代控制面、验收或审计记录。
+Section9 是一个固定小智业务 fixture 上的本地 Agent 故障响应实验室，模型推理依赖远程 API。它把真实模型请求、受控故障注入、角色协作、审批与独立验证连接成一条可复核的闭环。业务状态由 SQLite WAL 与事件记录保存；Langfuse 只负责遥测诊断，不能替代控制面、验收或审计记录。
 
 ![Section9 Agent 办公室](artifacts/office-reuse/final-layout/office-1440.png)
 
@@ -17,7 +17,7 @@ Section9 是一个本地、可审计的 Agent 故障响应实验室。它把真�
 - 本地 Langfuse：<http://127.0.0.1:9030>
 - Collector OTLP/HTTP：<http://127.0.0.1:9431/v1/traces>
 
-运行前需要在受保护位置配置远程模型 key。启动脚本会获取并校验固定版本的角色素材；LimeZu 原始图集不在此仓库再分发，详见素材归因。普通角色不读取操作台 SSE、全量日志、当前场景真值或其他角色的私有推理。Jev 当前 disabled；EvoMap Hub OAuth 为 pending auth；推理使用远程 EvoMap Luna API，并非本地或断网推理。
+运行前需要在受保护位置配置远程模型 key。启动脚本会获取并校验固定版本的角色素材；LimeZu 原始图集不在此仓库再分发，详见素材归因。普通角色不读取操作台 SSE、全量日志、当前场景真值或其他角色的私有推理。Jev 当前 disabled；EvoMap Hub 发布与远端检索尚未实现，不是登录后即可启用；推理使用远程 EvoMap Luna API，并非本地或断网推理。
 
 ## 启动与停止
 
@@ -48,14 +48,20 @@ Evaluation 使用独立的 `data/evaluation`、9024 API 和 9026 worker 进程�
 检查真实 span：
 
 ```sh
-./.venv/bin/python scripts/check-telemetry.py
+./.venv/bin/python scripts/check-telemetry.py --run-id <本次运行的run_id>
 ```
 
-它读取本地 Langfuse v4 Observations API，并将脱敏记录写入 `artifacts/telemetry/`。旧 LF-only 记录不能证明 Collector→控制端贯通；最终以 root 生成的同 trace_id 双侧入库报告为准。它不会用测试 POST 200 伪造“已观测”。
+它读取本地 Langfuse v4 Observations API，严格匹配指定运行的完整 trace_id，并将记录写入 `artifacts/telemetry/`。旧 LF-only 记录不能证明 Collector→控制端贯通；最终以 root 生成的同 trace_id 双侧入库报告为准。它不会用测试 POST 200 伪造“已观测”。
 
-## 当前交付证据
+## 当前整改与验收
 
-正式 evaluation 目前共 36 次：`single` 8/8、`muted` 7/8、`swarm` 12/12（每格 3 次）、`memory` 8/8，合计 35 pass、1 个 muted/composite 失败。失败和 unknown usage 均保留在原始 run 文件中；小样本不能推出任何条件优势。`memory_jev` 因 Jev 未启用保持待测，不能用 `single_memory` 替代。evaluation 使用 frozen seed snapshot，结果写回独立 evaluation-results；真实 demo memory 记录单独看待，不能与 frozen evaluation 混算。
+本轮修复跨事故 lease、迟到消息/计划、错误模型 JSON、reset 在途取消、业务答案与成本验收、启动身份、计分屏未知用量及版本分组。最新实测、失败记录和复现入口见 [审查整改报告](docs/AUDIT_REMEDIATION.md)。计分屏默认只显示当前实现版本；缺少完整源码绑定的旧记录单列为 legacy。
+
+一条验收命令：`./scripts/acceptance.sh`。它会真实调用远程模型、操作浏览器、短暂停止/恢复本项目 Collector，并保留一轮故意 reset 的 evaluation 失败与未知 usage。该安全实验不是性能样本；不会从统计中删除。四类正常故障中任何一轮失败、来源不一致或双路遥测不匹配，命令均返回非零。
+
+## 历史版本证据（不可视为当前版本通过）
+
+整改前历史 evaluation 共 36 次：`single` 8/8、`muted` 7/8、`swarm` 12/12（每格 3 次）、`memory` 8/8，合计 35 pass、1 个 muted/composite 失败。失败和 unknown usage 均保留在原始 run 文件中；小样本不能推出任何条件优势。`memory_jev` 因 Jev 未启用保持待测，不能用 `single_memory` 替代。evaluation 使用 frozen seed snapshot，结果写回独立 evaluation-results；真实 demo memory 记录单独看待，不能与 frozen evaluation 混算。
 
 ```sh
 cd /Users/xiejiachen/Documents/ChatGPT/rebuild/section9
@@ -63,12 +69,12 @@ cd /Users/xiejiachen/Documents/ChatGPT/rebuild/section9
 ./scripts/reset.sh
 ```
 
-模型为远程 `evomap-gpt-5.6-luna`，不是本地推理。真实官方 GEP SDK 与本地 authority 已接入，但不冒充 EvoMap 官方 native swarm；Hub 授权仍 pending，Jev 未启用。浏览器验收已实际检查权限、接管、旧 grant 拒绝和 reset；四类 integration 检查多次通过。
+模型为远程 `evomap-gpt-5.6-luna`，不是本地推理。真实官方 GEP SDK 与本地 authority 已接入，但不冒充 EvoMap 官方 native swarm；Hub 远端发布/检索未实现，Jev 未启用。浏览器验收已实际检查权限、接管、旧 grant 拒绝和 reset；四类 integration 检查多次通过。
 
-新增 4 次 swarm 的实测耗时为 18.963、19.932、21.215、21.221 秒。Attract 9020 已完成 3 次闭环：19.867、21.611、20.710 秒，总运行 278.831 秒；业务验证、主配置/事故/evaluation score/memory 不变、自动调用停止和独立进程/database/memory 检查均通过，共享同一台 Mac，非硬件隔离。
+历史新增 4 次 swarm 的实测耗时为 18.963、19.932、21.215、21.221 秒。Attract 9020 已完成 3 次闭环：19.867、21.611、20.710 秒，总运行 278.831 秒；业务验证、主配置/事故/evaluation score/memory 不变、自动调用停止和独立进程/database/memory 检查均通过，共享同一台 Mac，非硬件隔离。
 
 真实 demo memory 已连续两次复用同一 playbook：19.157、18.481 秒，2/2 成功、`reuse_count=2`；reset 实测 0.063 秒。离线 OS 阻断实测得到真实 `ConnectError`、usage `null`/`unknown`，本地控制状态与 memory 仍可读；这不是本地推理证明。warm-cached image stop/start 的启动实测见 `artifacts/startup/report.json`，首次下载未测。
 
-交付图像和视频的来源审计见 [docs/STAR_OFFICE_SOURCE_AUDIT.md](docs/STAR_OFFICE_SOURCE_AUDIT.md) 与 [docs/STAR_OFFICE_ATTRIBUTION.md](docs/STAR_OFFICE_ATTRIBUTION.md)：代码/逻辑按上游 MIT 说明，角色和其他美术资产仅限非商业示范。A3 海报和 90 秒原速历史录屏位于 `artifacts/delivery/`，字幕非实时。成员资料、Hub 授权和商业素材权利仍由用户处理。
+交付图像和视频的来源审计见 [docs/STAR_OFFICE_SOURCE_AUDIT.md](docs/STAR_OFFICE_SOURCE_AUDIT.md) 与 [docs/STAR_OFFICE_ATTRIBUTION.md](docs/STAR_OFFICE_ATTRIBUTION.md)：代码/逻辑按上游 MIT 说明，角色和其他美术资产仅限非商业示范。A3 海报和 90 秒原速历史录屏位于 `artifacts/delivery/`，字幕非实时。成员资料、如需 Hub 闭环还需开发与授权，商业素材权利仍由用户处理。
 
-完整交付结果、实测表格、限制和证据路径见 [交付说明](docs/DELIVERY.md)，操作顺序见 [演示指南](docs/DEMO.md)。最终同 trace_id 双路遥测已核对 8 条；55 项组件/边界检查通过，实际浏览器与模型闭环另有原始记录。服务启动会申请跟随本项目进程的 macOS 防空闲睡眠状态；停止服务后自动释放，不修改系统电源设置。
+完整交付结果、实测表格、限制和证据路径见 [交付说明](docs/DELIVERY.md)，操作顺序见 [演示指南](docs/DEMO.md)。历史同 trace_id 双路遥测曾核对 8 条；当时 55 项组件/边界检查通过，实际浏览器与模型闭环另有原始记录。服务启动会申请跟随本项目进程的 macOS 防空闲睡眠状态；停止服务后自动释放，不修改系统电源设置。

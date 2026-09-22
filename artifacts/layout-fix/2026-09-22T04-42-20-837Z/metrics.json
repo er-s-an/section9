@@ -1,0 +1,15 @@
+{
+  "m1440": {
+    "innerWidth": 1440,
+    "scrollWidth": 1440,
+    "bodyScrollWidth": 1440,
+    "plan": false
+  },
+  "m1280": {
+    "innerWidth": 1280,
+    "scrollWidth": 1280,
+    "bodyScrollWidth": 1280,
+    "plan": false
+  },
+  "errors": []
+}

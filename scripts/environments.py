@@ -57,7 +57,7 @@ def main():
         try:
             health = client.get(f"http://127.0.0.1:{port}/api/health")
             running = health.is_success
-            if running:
+            if running and args.command != "stop":
                 error = identity_error(health.json(), expected)
                 if error:
                     raise SystemExit(f"Evaluation listener identity rejected: {error}; stop/start the matching checkout")

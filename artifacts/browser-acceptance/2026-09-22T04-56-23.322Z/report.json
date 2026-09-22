@@ -1,0 +1,72 @@
+{
+  "identity": {
+    "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+    "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417",
+    "dirty": true,
+    "dirty_diff_sha256": "a7dd75c3a10787db824e7a4e4cc2457f403b19faf6c7db0e402bc0867fb67f79",
+    "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+    "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+    "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+    "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+    "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1"
+  },
+  "started_at": "2026-09-22T04:56:24.045Z",
+  "base_url": "http://127.0.0.1:9019",
+  "checks": [
+    {
+      "name": "L0 actual write denial",
+      "passed": true,
+      "run_id": "run_9db9d7162da449de",
+      "revision": "114"
+    },
+    {
+      "name": "L1 approved exact plan and live business checks",
+      "passed": true,
+      "run_id": "run_9db9d7162da449de"
+    },
+    {
+      "name": "actual OS pause, takeover and stale A rejection without write",
+      "passed": true,
+      "run_id": "run_358008448f294338",
+      "old_actor": "fixer-a",
+      "new_actor": "fixer-b"
+    },
+    {
+      "name": "reset invalidates in-flight grant and restores healthy configuration",
+      "passed": true,
+      "run_id": "run_770d1ff5704c400a",
+      "reset_revision": "121"
+    },
+    {
+      "name": "communication control toggles server transport epoch",
+      "passed": true
+    },
+    {
+      "name": "run detail and actual evidence drawer open",
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "label": "L0-L1-exact-approval",
+      "id": "run_9db9d7162da449de",
+      "status": "resolved",
+      "elapsed_s": 26.827
+    },
+    {
+      "label": "fencing",
+      "id": "run_358008448f294338",
+      "status": "resolved",
+      "elapsed_s": 37.129
+    },
+    {
+      "label": "reset-old-grant",
+      "id": "run_770d1ff5704c400a",
+      "status": "reset",
+      "elapsed_s": 17.195
+    }
+  ],
+  "errors": [],
+  "passed": true,
+  "finished_at": "2026-09-22T04:57:54.641Z"
+}

@@ -1,0 +1,927 @@
+{
+  "rows": [
+    {
+      "id": "single",
+      "label": "单 Agent",
+      "n": 1,
+      "failures": 0,
+      "success_rate": 1.0,
+      "median_s": 19.241,
+      "usage_tokens": 5277,
+      "unknown_usage_runs": 0,
+      "conditions": [
+        {
+          "run_id": "run_7f693365246f4159",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "single",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 1,
+              "generation": "52",
+              "max_output_tokens": 1536,
+              "prompt_version": "degraded",
+              "retry_limit": 6,
+              "retry_on_terminal": true,
+              "revision": "142"
+            },
+            "worker_completion_cap": 1600
+          }
+        }
+      ],
+      "run_ids": [
+        "run_7f693365246f4159"
+      ],
+      "cells": [
+        {
+          "scenario": "prompt",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "cost",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "loop",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "composite",
+          "n": 1,
+          "failures": 0,
+          "success_rate": 1.0,
+          "median_s": 19.241,
+          "usage_tokens": 5277,
+          "unknown_usage_runs": 0,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": [
+            "run_7f693365246f4159"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "muted",
+      "label": "蜂群禁言 · 通信依赖测试",
+      "n": 0,
+      "failures": null,
+      "success_rate": null,
+      "median_s": null,
+      "usage_tokens": null,
+      "unknown_usage_runs": null,
+      "conditions": [],
+      "run_ids": [],
+      "cells": [
+        {
+          "scenario": "prompt",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "cost",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "loop",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "composite",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        }
+      ]
+    },
+    {
+      "id": "swarm",
+      "label": "蜂群 · LLM 协作",
+      "n": 9,
+      "failures": 1,
+      "success_rate": 0.8888888888888888,
+      "median_s": 23.577,
+      "usage_tokens": 57328,
+      "unknown_usage_runs": 1,
+      "conditions": [
+        {
+          "run_id": "run_9f5345bca8624a5a",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "swarm",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 1,
+              "generation": "50",
+              "max_output_tokens": 1536,
+              "prompt_version": "degraded",
+              "retry_limit": 6,
+              "retry_on_terminal": true,
+              "revision": "138"
+            },
+            "worker_completion_cap": 1600
+          }
+        },
+        {
+          "run_id": "run_87bbb828fe4740e7",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "swarm",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 1,
+              "generation": "49",
+              "max_output_tokens": 1536,
+              "prompt_version": "degraded",
+              "retry_limit": 6,
+              "retry_on_terminal": true,
+              "revision": "135"
+            },
+            "worker_completion_cap": 1600
+          }
+        },
+        {
+          "run_id": "run_9e2923574681486d",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "swarm",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 1,
+              "generation": "48",
+              "max_output_tokens": 1536,
+              "prompt_version": "healthy",
+              "retry_limit": 6,
+              "retry_on_terminal": true,
+              "revision": "132"
+            },
+            "worker_completion_cap": 1600
+          }
+        },
+        {
+          "run_id": "run_bd3949998c924fff",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "swarm",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 1,
+              "generation": "47",
+              "max_output_tokens": 1536,
+              "prompt_version": "healthy",
+              "retry_limit": 6,
+              "retry_on_terminal": true,
+              "revision": "129"
+            },
+            "worker_completion_cap": 1600
+          }
+        },
+        {
+          "run_id": "run_acb1bdaf0170460a",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "swarm",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 8,
+              "generation": "46",
+              "max_output_tokens": 4096,
+              "prompt_version": "healthy",
+              "retry_limit": 3,
+              "retry_on_terminal": false,
+              "revision": "126"
+            },
+            "worker_completion_cap": 1600
+          }
+        },
+        {
+          "run_id": "run_040362e888724a08",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "swarm",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 8,
+              "generation": "45",
+              "max_output_tokens": 4096,
+              "prompt_version": "healthy",
+              "retry_limit": 3,
+              "retry_on_terminal": false,
+              "revision": "123"
+            },
+            "worker_completion_cap": 1600
+          }
+        },
+        {
+          "run_id": "run_20934a32dfd045b8",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "swarm",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 1,
+              "generation": "44",
+              "max_output_tokens": 1536,
+              "prompt_version": "degraded",
+              "retry_limit": 3,
+              "retry_on_terminal": false,
+              "revision": "120"
+            },
+            "worker_completion_cap": 1600
+          }
+        },
+        {
+          "run_id": "run_1c9a5c221d1245cd",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "swarm",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 1,
+              "generation": "43",
+              "max_output_tokens": 1536,
+              "prompt_version": "degraded",
+              "retry_limit": 3,
+              "retry_on_terminal": false,
+              "revision": "117"
+            },
+            "worker_completion_cap": 1600
+          }
+        },
+        {
+          "run_id": "run_94eeec2a6fb542d9",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "swarm",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "off",
+            "memory_snapshot_hash": null,
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 1,
+              "generation": "41",
+              "max_output_tokens": 1536,
+              "prompt_version": "degraded",
+              "retry_limit": 3,
+              "retry_on_terminal": false,
+              "revision": "114"
+            },
+            "worker_completion_cap": 1600
+          }
+        }
+      ],
+      "run_ids": [
+        "run_9f5345bca8624a5a",
+        "run_87bbb828fe4740e7",
+        "run_9e2923574681486d",
+        "run_bd3949998c924fff",
+        "run_acb1bdaf0170460a",
+        "run_040362e888724a08",
+        "run_20934a32dfd045b8",
+        "run_1c9a5c221d1245cd",
+        "run_94eeec2a6fb542d9"
+      ],
+      "cells": [
+        {
+          "scenario": "prompt",
+          "n": 3,
+          "failures": 1,
+          "success_rate": 0.6666666666666666,
+          "median_s": 21.659,
+          "usage_tokens": 11345,
+          "unknown_usage_runs": 1,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": [
+            "run_20934a32dfd045b8",
+            "run_1c9a5c221d1245cd",
+            "run_94eeec2a6fb542d9"
+          ]
+        },
+        {
+          "scenario": "cost",
+          "n": 2,
+          "failures": 0,
+          "success_rate": 1.0,
+          "median_s": 24.538,
+          "usage_tokens": 18311,
+          "unknown_usage_runs": 0,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": [
+            "run_acb1bdaf0170460a",
+            "run_040362e888724a08"
+          ]
+        },
+        {
+          "scenario": "loop",
+          "n": 2,
+          "failures": 0,
+          "success_rate": 1.0,
+          "median_s": 25.114,
+          "usage_tokens": 13173,
+          "unknown_usage_runs": 0,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": [
+            "run_9e2923574681486d",
+            "run_bd3949998c924fff"
+          ]
+        },
+        {
+          "scenario": "composite",
+          "n": 2,
+          "failures": 0,
+          "success_rate": 1.0,
+          "median_s": 25.494,
+          "usage_tokens": 14499,
+          "unknown_usage_runs": 0,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": [
+            "run_9f5345bca8624a5a",
+            "run_87bbb828fe4740e7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "memory",
+      "label": "蜂群 + Playbook",
+      "n": 1,
+      "failures": 0,
+      "success_rate": 1.0,
+      "median_s": 22.356,
+      "usage_tokens": 5796,
+      "unknown_usage_runs": 0,
+      "conditions": [
+        {
+          "run_id": "run_4d998f7ab4594fb3",
+          "manifest": {
+            "cache_condition": "not_controlled_provider_cache",
+            "condition": "memory",
+            "environment": "evaluation",
+            "evidence_origin": "live",
+            "fixture_version": "xiaozhi-s9-v1",
+            "hardware_isolation": false,
+            "implementation_hash": "c713bc1e30e57842fb350466f5e75f97398771ff74ce1d9b9258b0aebf45dea9",
+            "jev_enabled": false,
+            "memory_condition": "seeded",
+            "memory_snapshot_hash": "86ed76427a6fe37d60fd073270431acadc84208701ac219353d619dd5d67bab3",
+            "model": "evomap-gpt-5.6-luna",
+            "model_timeout_s": 60.0,
+            "probe_schedule": {
+              "interval_s": 30,
+              "max_detection_rounds": 3,
+              "scope": "active_incident"
+            },
+            "request_concurrency_limit": 2,
+            "scenario_seed": 42,
+            "source_identity": {
+              "acceptance_contract_hash": "4b33c9906f52fd8440593bc4083e3cdf66ac41ac56e54415c687d3da2b86a1a1",
+              "backend_source_hash": "b426352e31f4922e653b2addf5d5beef4b4a90eb8a38af176f974e7538fa4caf",
+              "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+              "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+              "dirty": true,
+              "dirty_diff_sha256": "e2461b4365332cd828b406336cf60c74e228cccd78897475e4246b20a8689248",
+              "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+              "frontend_build_hash": "0d3a457f6552d4d994276146e5c821c5a424b0d7b615961a65c3c38d0b8a993f",
+              "git_commit": "b90b02fe2ba349ae9177c505490478b408c92417"
+            },
+            "source_identity_hash": "dd304365f507fc8178b949dfb9ea68fedaf303013ad27ba588d50d7ca65170cc",
+            "total_token_budget": 16000,
+            "transport_mode": "local",
+            "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+            "victim_config": {
+              "context_multiplier": 1,
+              "generation": "54",
+              "max_output_tokens": 1536,
+              "prompt_version": "degraded",
+              "retry_limit": 3,
+              "retry_on_terminal": false,
+              "revision": "146"
+            },
+            "worker_completion_cap": 1600
+          }
+        }
+      ],
+      "run_ids": [
+        "run_4d998f7ab4594fb3"
+      ],
+      "cells": [
+        {
+          "scenario": "prompt",
+          "n": 1,
+          "failures": 0,
+          "success_rate": 1.0,
+          "median_s": 22.356,
+          "usage_tokens": 5796,
+          "unknown_usage_runs": 0,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": [
+            "run_4d998f7ab4594fb3"
+          ]
+        },
+        {
+          "scenario": "cost",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "loop",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "composite",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        }
+      ]
+    },
+    {
+      "id": "memory_jev",
+      "label": "蜂群 + Playbook + Jev（未启用）",
+      "n": 0,
+      "failures": null,
+      "success_rate": null,
+      "median_s": null,
+      "usage_tokens": null,
+      "unknown_usage_runs": null,
+      "conditions": [],
+      "run_ids": [],
+      "cells": [
+        {
+          "scenario": "prompt",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "cost",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "loop",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        },
+        {
+          "scenario": "composite",
+          "n": 0,
+          "failures": null,
+          "success_rate": null,
+          "median_s": null,
+          "usage_tokens": null,
+          "unknown_usage_runs": null,
+          "token_budget": [
+            16000
+          ],
+          "run_ids": []
+        }
+      ]
+    }
+  ],
+  "versions": [
+    {
+      "id": "ec677269f435e1e599be04b19249662841ab9e216bc8227115ad36145b49482f",
+      "label": "当前运行版本 ec677269f4",
+      "n": 11
+    },
+    {
+      "id": "legacy",
+      "label": "历史证据 · 缺少完整来源绑定",
+      "n": 36
+    }
+  ],
+  "current_version": "ec677269f435e1e599be04b19249662841ab9e216bc8227115ad36145b49482f",
+  "selected_version": "ec677269f435e1e599be04b19249662841ab9e216bc8227115ad36145b49482f",
+  "limitations": [
+    "按后端、前端、依赖、fixture、验收合同哈希分组；历史缺少绑定的证据单列",
+    "只统计独立 9024 进程及数据库中的 evaluation 运行；集成演练与导览不混入计分",
+    "共享物理 Mac 与供应商；未控制供应商缓存，样本不足不能推断优势",
+    "失败、重置、未知 usage 均保留；未知成本不算零成本"
+  ]
+}

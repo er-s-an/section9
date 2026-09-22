@@ -1,63 +1,39 @@
-# Section9 演示脚本
+# Section9 当前演示指南
 
-脚本只演示本地真实服务；模型返回、事件进度与验证结果以页面/API 实际响应为准。不要把页面静态构建或测试 double 当作生产证明。
+这是固定小智业务 fixture 的本地故障响应实验室。控制端、有限工具、事件库和观测栈在本机；推理依赖远程 EvoMap API。角色与可执行动作是预定义的，不宣称通用自主运维或蜂群优势。
 
-## 7 分钟完整演示
+## 启动
 
-### 0:00–0:45：启动与边界
+在仓库目录运行 `./scripts/start.sh`，打开 http://127.0.0.1:9019 。启动器会校验运行进程的源码与构建身份；源码更新后请先 `./scripts/stop.sh` 再启动，不能把旧进程当成新版本。
 
-```sh
-cd /Users/xiejiachen/Documents/ChatGPT/rebuild/section9
-./scripts/start.sh
-./scripts/infra-status.sh
-```
+## 展示顺序
 
-打开 [操作台 9019](http://127.0.0.1:9019)，说明 Langfuse [9030](http://127.0.0.1:9030) 与 Collector 是本机观测栈；模型推理仍是远程 EvoMap Luna。展示 `GET /api/health` 的实际依赖状态。
+1. 在小智客服输入“签收3天，已激活耳机能退吗，运费谁付？”等待真实回答。
+2. 保持 L2、正常通信，点击“语义退化”或“复合故障”。观察办公室角色状态，点击角色查看真实事件 ID、时间和消息。
+3. 等待独立业务验收。打开“运行记录 → 查看详情 / RCA”，查看逐次检查、配置版本、actions 与 usage。部分修复、矛盾答案、未知 usage、配置改变均不能结案。
+4. 点“重置实验室”，再点“演示 fencing 剧本”：观察 A 暂停、B 接管、A 恢复后的旧请求被拒。L0 拒绝写入；L1 必须批准当前确切计划。
+5. 重置后先点“正常通信”切为“已禁言”，再注入。run 的 condition 应为 muted，消息显示丢弃。本版修复员依赖同伴证据，禁言是通信依赖测试，不能作为同能力独立修复的公平优势证明。Playbook 与禁言组合暂不支持。
+6. “五行计分”默认当前版本，历史版本需从下拉框选择。显示已知 token 小计、未知 usage 轮数和失败；未测格为待测。故意 reset 的安全实验也保留，不能当正常性能试验。
 
-### 0:45–1:30：健康请求
+若 chat 卡住，reset 仍可点击，会取消旧 HTTP 请求并释放本轮槽位。不要刷新页面来伪装请求成功。
 
-在聊天入口提交一个真实产品问题。等待真实模型响应，指出 answer、usage、elapsed_s、revision 与 trace_id 来自 API；不手写或补齐答案。若模型失败，展示失败状态。
+## 本次遥测证据
 
-### 1:30–3:10：Prompt 故障闭环
-
-点击或调用：
-
-```sh
-cd /Users/xiejiachen/Documents/ChatGPT/rebuild/section9
-curl -sS -X POST http://127.0.0.1:9019/api/inject \
-  -H 'content-type: application/json' \
-  -d '{"scenario":"prompt","condition":"swarm","seed":42}'
-```
-
-观察事件流中的 injected、观察、诊断、计划、审批、执行与验证。说明 fixer 不能仅凭场景名得出结论，计划必须绑定 revision/hash；独立验证包含售后语义、未受影响的 X200 30 小时事实、终止工具错误与预算检查。
-
-### 3:10–4:15：通信隔离与权限
-
-将 communication 设置为 muted，展示同伴消息与同伴推理在通信入口被阻断，Agent 仍能基于自己的观测尝试修复；禁言组可能成功，也可能因修复不完整被验收拒绝。切换 L0/L1/L2 时展示计划/审批边界。所有 worker 使用独立 token 与 `/agent` 端点。
-
-### 4:15–5:00：失联接管与历史记录
-
-重置后点击“演示 fencing 剧本”，观察 A 被暂停、B 接管、A 恢复后旧请求被拒，再打开运行记录与 RCA。需要展示经验复用时，打开“下轮 Playbook”，注入语义退化，验收后 reset 并再次注入；Playbook 库会展示真实命中、成功和复用计数。说明只有 verified run 才能写入本地 GEP Gene/Capsule/EvolutionEvent；`publish_state` 是 `local_only`，不会注册或发布到 EvoMap Hub。
-
-### 5:00–5:45：真实遥测核验
+从运行记录复制本次 run_id 后运行：
 
 ```sh
-cd /Users/xiejiachen/Documents/ChatGPT/rebuild/section9
-./.venv/bin/python scripts/check-telemetry.py
+.venv/bin/python scripts/check-telemetry.py --run-id <本次run_id>
 ```
 
-展示 `artifacts/telemetry/` 中脱敏的 trace_id、name、run_id、timestamp 和 metadata_complete。API 查询使用 `fields=core,basic,metadata,time`；旧 LF-only 结果不证明 Collector→控制端贯通，展示 `artifacts/telemetry/telemetry-check-20260921T210738Z.json` 中 8 个同 trace_id 双侧入库记录。空结果或 metadata_incomplete 都要原样报告。
+检查报告保留完整 trace_id，要求本次 run 在 Langfuse 与 Collector→控制端的记录一致。独立业务探针与活性检查驱动控制；Collector 保存遥测证据，不宣称已实现纯 Collector 驱动的响应。
 
-### 5:45–7:00：独立 evaluation 与边界
+## 验收与重置
 
-说明 9024/9026 使用独立 evaluation 数据与 worker；正式 evaluation 共 36 次，35 pass、1 个 muted/composite fail：single 8/8、muted 7/8、swarm 12/12、memory 8/8。`memory_jev` 由于 Jev disabled 保持 disabled；小样本不支持条件优势结论。Attract 三轮已完成并停止自动模型调用，耗时为 19.867/21.611/20.710 秒，总计 278.831 秒。已有镜像和依赖下的停栈重启到真实业务可用实测 38.035 秒；首次下载、供应商缓存控制与完整离线推理仍未覆盖。
+```sh
+./scripts/acceptance.sh
+./scripts/reset.sh
+```
 
-## 90 秒短演示
+验收命令会调用真实模型、运行浏览器、短暂停止并恢复本项目 Collector。失败与未知消耗全部保留。实时数据和当前报告见 [整改验收](AUDIT_REMEDIATION.md)；旧录像、旧海报及 legacy 统计不能代替当前运行。
 
-1. 打开 9019，展示 `/api/health` 与当前依赖状态（10 秒）。
-2. 发起真实 chat，展示 answer、usage、elapsed_s、trace_id（20 秒）。
-3. 注入 prompt 场景，展示事件从故障到独立验证（35 秒）。
-4. 运行 `scripts/check-telemetry.py`，展示最新同 trace_id 双侧入库报告与 run_id；旧 LF-only 记录不作贯通证明（15 秒）。
-5. 说明本地控制、远程 Luna、Jev disabled、Hub OAuth pending、官方 GEP SDK + 本地 authority 不等于 native swarm，以及已测 warm-cached 启动、未测首次下载、缓存和断网边界（10 秒）。Star Office 代码/逻辑按 MIT 归因，美术资产仅限非商业示范，详见 `docs/STAR_OFFICE_SOURCE_AUDIT.md`。
-
-若任一步没有真实响应，短演示应停在该状态并报告 `NOT_RUN`/失败原因，不跳转到预录成功结果。
+Jev 未启用；Hub 发布/远程检索未实现，不是只差 OAuth。GEP 使用官方开发组件，本地协作与 authority 是 Section9 自己实现。开源美术来源及非商业限制见 [素材审计](STAR_OFFICE_SOURCE_AUDIT.md)。
