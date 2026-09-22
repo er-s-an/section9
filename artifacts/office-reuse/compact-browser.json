@@ -1,0 +1,15 @@
+{
+  "at": "2026-09-22T02:32:06.833997+00:00",
+  "source": "Codex in-app browser read-only DOM geometry and screenshot",
+  "viewport": 599,
+  "documentWidth": 599,
+  "room": {
+    "x": 10,
+    "width": 579,
+    "height": 325.6875
+  },
+  "all_seven_agents_inside": true,
+  "horizontal_overflow": false,
+  "backend_state_mutated": false,
+  "passed": true
+}

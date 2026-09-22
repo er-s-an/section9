@@ -37,3 +37,7 @@ node scripts/browser-office.mjs
 ```
 
 当前截图：[完整控制台](../artifacts/office-reuse/final-layout/office-1440.png)、[办公室场景](../artifacts/office-reuse/final-layout/office-room.png)。此前 A3 海报和 90 秒录屏展示旧布局，保留为历史记录。
+
+## 内置浏览器窄窗口补验
+
+在用户当前 Codex 内置浏览器的 599px 视口中，页面宽度实测为 599px，房间宽 579px，7 个角色按钮均完整位于场景内；控制台移至场景下方，注入按钮可换行。截图已通过当前浏览器工具直接查看，结构测量记录见 [compact-browser.json](../artifacts/office-reuse/compact-browser.json)。本次未追加模型调用；375px 手机窗口未单独验收。

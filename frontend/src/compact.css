@@ -1,0 +1,37 @@
+/* Compact Codex/browser viewport. Imported by the root app; desktop rules remain unchanged. */
+@media (max-width:1039px){
+  html,body,#root{min-width:0!important;width:100%;max-width:100%;overflow-x:hidden}
+  body{font-size:12px}
+  .topbar{height:auto;min-height:70px;flex-wrap:wrap;gap:8px;padding:10px 14px!important}
+  .top-meta{margin-left:auto;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+  .toolbar{height:auto;min-height:53px;flex-wrap:wrap;gap:6px;padding:7px 14px!important}
+  .tabs{height:39px;gap:13px;overflow-x:auto;max-width:100%;flex:1 1 100%}
+  .toolbar-right{width:100%;justify-content:space-between}
+  .workspace{display:flex;flex-direction:column;gap:12px;padding:12px 10px 20px!important;max-width:none}
+  .left-column{min-width:0;width:100%}.right-column{width:100%;display:grid;grid-template-columns:1fr;gap:10px}
+  .office-scene{width:100%;height:auto;min-height:0;aspect-ratio:1280/720;overflow:hidden}
+  .inject-strip{flex-wrap:wrap;align-items:flex-start}.inject-buttons{width:100%;flex-wrap:wrap}.inject-buttons button{flex:1 1 46%;min-width:0}
+  .lower-grid{grid-template-columns:1fr;gap:10px}.chat-dock{grid-template-columns:1fr!important;gap:7px!important}.chat-dock input{min-width:0;width:100%}.chat-dock button{width:100%}
+  .office-room,.s9-office__room{container-type:inline-size}
+  .s9-office{width:100%;min-width:0}.s9-office__room{--compact-frame:clamp(24px,6.3cqw,48px)}
+  .s9-office-agent{min-width:0;width:12%;font-size:clamp(8px,2.1cqw,10px)}
+  .s9-office-agent__sprite{width:var(--compact-frame);height:var(--compact-frame);background-size:calc(var(--compact-frame)*4) calc(var(--compact-frame)*2);animation:s9-office-compact-idle 1s steps(1) infinite}
+  @keyframes s9-office-compact-idle{0%{background-position:0 0}12.5%{background-position:calc(var(--compact-frame)*-1) 0}25%{background-position:calc(var(--compact-frame)*-2) 0}37.5%{background-position:calc(var(--compact-frame)*-3) 0}50%{background-position:0 calc(var(--compact-frame)*-1)}62.5%{background-position:calc(var(--compact-frame)*-1) calc(var(--compact-frame)*-1)}75%{background-position:calc(var(--compact-frame)*-2) calc(var(--compact-frame)*-1)}87.5%{background-position:calc(var(--compact-frame)*-3) calc(var(--compact-frame)*-1)}100%{background-position:0 0}}
+  .s9-office-agent strong,.s9-office-agent small{padding:1px 2px;font-size:clamp(8px,2.1cqw,10px);line-height:1.1;letter-spacing:0}
+  .s9-office-agent em{display:none}
+  .s9-office__label,.s9-office__badge,.s9-office__incident{padding:3px 4px;font-size:clamp(7px,1.8cqw,9px);letter-spacing:.03em}
+  .s9-office__caption{font-size:10px;line-height:1.6;white-space:normal}
+  .s9-office__details{max-width:100%;overflow-wrap:anywhere;line-height:1.5}
+  .data-view{padding:18px 10px;min-width:0}.score-matrix{max-width:100%;overflow-x:auto}
+  footer{height:auto;min-height:38px;padding:8px 12px;gap:7px;flex-wrap:wrap;line-height:1.4}
+}
+@media (max-width:620px){
+  .brand small{font-size:8px}.top-meta{font-size:9px}.top-meta .sse-state{display:none}
+  .tabs{gap:9px}.tabs button{font-size:10px}.model-chip{font-size:9px}.ghost{font-size:10px}
+  .section-heading h1,.data-heading h1{font-size:18px}.office-scene{min-height:0}
+  .scene-label,.wall-clock{font-size:8px}.room-title{top:7%;left:3%}.room-title span{font-size:10px}.room-title small{font-size:7px}
+  .s9-office-agent--cost{left:55%;top:72%}
+  .s9-office__archive{padding:4px 5px;font-size:8px}.s9-office__archive span{font-size:6px}
+  .panel{padding:10px}.panel-title{padding-bottom:7px;margin-bottom:7px}.agent-actions{flex-wrap:wrap}.agent-actions button{flex:1 1 30%}
+}
+@media (prefers-reduced-motion:reduce){.s9-office-agent{transition:none!important}.s9-office-agent__sprite{animation:none!important}}

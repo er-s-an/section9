@@ -9,6 +9,7 @@ import './sprite.css'
 import './sprite-fix.css'
 import OfficeScene from './OfficeScene'
 import './playbook.css'
+import './compact.css'
 
 type Agent={id:string;role:string;name:string;status:string;heartbeat_at:string|null;task_id:string|null;detail:string;capabilities:string[]}
 type Incident={id:string;run_id:string;status:string;opened_at:string;closed_at:string|null;symptoms:string[];scenario:string;plan:any;verification:any;elapsed_s:number|null}

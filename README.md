@@ -21,6 +21,8 @@ Section9 是一个本地、可审计的 Agent 故障响应实验室。它把真�
 
 ## 启动与停止
 
+新克隆需要 Python/uv、Node.js/npm 和运行中的 Docker Desktop。先执行 `python3 scripts/init-local-config.py`，再在本机 `.env` 填入自己的 `EVOMAP_MODEL_API_KEY`。初始化仅创建缺少的文件，保留已有配置；密码随机生成并以 0600 保存。详细说明见 [本地配置](docs/LOCAL_SETUP.md)。模型推理使用远程 EvoMap API。
+
 ```sh
 cd /Users/xiejiachen/Documents/ChatGPT/rebuild/section9
 ./scripts/start.sh

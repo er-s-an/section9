@@ -1,0 +1,11 @@
+{
+  "at": "2026-09-22T02:29:35.440004+00:00",
+  "generated_modes": "0600",
+  "existing_files_preserved": true,
+  "minimal_model_config_uses_defaults": true,
+  "compose_config_valid": true,
+  "compose_names": 23,
+  "real_database_started": false,
+  "provider_called": false,
+  "passed": true
+}
