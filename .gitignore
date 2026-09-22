@@ -15,3 +15,6 @@ artifacts/raw/
 
 # LimeZu character sheets are acquired locally; do not redistribute raw assets.
 frontend/public/vendor/star-office/guest_anim_*.webp
+
+# Generated TypeScript build metadata
+*.tsbuildinfo

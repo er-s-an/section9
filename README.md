@@ -2,6 +2,10 @@
 
 Section9 是一个本地、可审计的 Agent 故障响应实验室。它把真实模型请求、受控故障注入、角色协作、审批与独立验证连接成一条可复核的闭环。业务状态由 SQLite WAL 与事件记录保存；Langfuse 只负责遥测诊断，不能替代控制面、验收或审计记录。
 
+![Section9 Agent 办公室](artifacts/office-reuse/final-layout/office-1440.png)
+
+办公室复用 Star-Office-UI 固定版本的完整房间、桌椅与角色素材，真实状态接入 Section9。点击房间里的角色查看本轮任务与消息。2026-09-22 改版实测和复用边界见 [办公室验收记录](docs/OFFICE_DELIVERY.md)。
+
 当前入口（本机）：
 
 - 操作台：<http://127.0.0.1:9019>

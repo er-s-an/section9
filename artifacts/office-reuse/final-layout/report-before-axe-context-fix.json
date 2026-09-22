@@ -1,0 +1,20 @@
+{
+  "at": "2026-09-22T02:22:26.144Z",
+  "errors": [],
+  "widths": [
+    {
+      "width": 1280,
+      "role_count": 7,
+      "agents_inside_room": true,
+      "inspector_below_room": true
+    },
+    {
+      "width": 1440,
+      "role_count": 7,
+      "agents_inside_room": true,
+      "inspector_below_room": true
+    }
+  ],
+  "passed": false,
+  "failure": "Error: Please use browser.newContext()\n Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md\n    at AxeBuilder.analyze (/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/frontend/node_modules/@axe-core/playwright/dist/index.js:253:13)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:472:9)\n    at async file:///Users/xiejiachen/Documents/ChatGPT/rebuild/section9/scripts/browser-office-layout.mjs:39:27"
+}

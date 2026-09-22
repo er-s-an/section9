@@ -1,0 +1,20 @@
+{
+  "at": "2026-09-22T02:23:27.118Z",
+  "errors": [],
+  "widths": [
+    {
+      "width": 1280,
+      "role_count": 7,
+      "agents_inside_room": true,
+      "inspector_below_room": true
+    },
+    {
+      "width": 1440,
+      "role_count": 7,
+      "agents_inside_room": true,
+      "inspector_below_room": true
+    }
+  ],
+  "accessibility": [],
+  "passed": true
+}
