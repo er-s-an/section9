@@ -8,7 +8,7 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const out = path.join(root, 'artifacts', 'browser-acceptance', new Date().toISOString().replaceAll(':', '-'));
 await fs.mkdir(out, { recursive: true });
 const browser = await chromium.launch({ headless: true });
-const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, recordVideo: { dir: path.join(out, 'video'), size: { width: 1440, height: 1000 } } });
+const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, ...(process.env.S9_RECORD_VIDEO === '1' ? {recordVideo: { dir: path.join(out, 'video'), size: { width: 1440, height: 1000 } }} : {}) });
 const page = await context.newPage();
 const errors = [];
 page.on('pageerror', e => errors.push(String(e)));

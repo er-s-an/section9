@@ -54,18 +54,46 @@ def test_pair_stores_have_same_frozen_baseline_content_hash(tmp_path):
 
 
 def test_valid_swarm_repair_does_not_mutate_frozen_baseline_or_fence(tmp_path):
-    store = _store(tmp_path, "swarm", "run-swarm")
-    run, task, plan, grant = _repair_fixture(store)
-    before_baseline = dict(store.baseline_config)
-    with store.tx() as db:
-        fence = store.meta(db, "resource_fence")
-    result = store.execute("fixer-a", plan["id"], grant["id"], "apply-once")
+    baseline = _store(tmp_path, "baseline", "run-baseline")
+    swarm = _store(tmp_path, "swarm", "run-swarm")
+    baseline.inject("prompt", "single", "baseline", 42, 4000, run_id="run-baseline")
+    run, task, plan, grant = _repair_fixture(swarm)
+    before_baseline_config = dict(baseline.current_config())
+    before_baseline_revision = baseline.current_config()["revision"]
+    with baseline.tx() as db:
+        before_baseline_fence = store_fence = baseline.meta(db, "resource_fence")
+    result = swarm.execute("fixer-a", plan["id"], grant["id"], "apply-once")
     assert result["status"] == "applied"
-    assert store.baseline_config == before_baseline
-    assert store.current_config()["prompt_version"] == "healthy"
-    with store.tx() as db:
-        assert store.meta(db, "resource_fence") == fence
-    assert int(store.current_config()["revision"]) == int(run["injected_revision"]) + 1
+    assert baseline.current_config() == before_baseline_config
+    assert baseline.current_config()["revision"] == before_baseline_revision
+    with baseline.tx() as db:
+        assert baseline.meta(db, "resource_fence") == before_baseline_fence == store_fence
+    assert swarm.current_config()["prompt_version"] == "healthy"
+    assert int(swarm.current_config()["revision"]) == int(run["injected_revision"]) + 1
+
+
+def test_wrong_tested_config_hash_cannot_resolve_one_arm_or_mutate_other(tmp_path):
+    baseline = _store(tmp_path, "baseline", "run-baseline")
+    swarm = _store(tmp_path, "swarm", "run-swarm")
+    baseline.inject("prompt", "single", "baseline", 42, 4000, run_id="run-baseline")
+    run, _, plan, grant = _repair_fixture(swarm)
+    applied = swarm.execute("fixer-a", plan["id"], grant["id"], "apply-before-verify")
+    before_baseline = dict(baseline.current_config())
+    with baseline.tx() as db:
+        baseline_fence = baseline.meta(db, "resource_fence")
+    required = ["heldout_semantic_policy", "unaffected_product_fact", "terminal_tool_stops",
+                "cost_budget", "no_stalled_requests", "heldout_outside_return_window"]
+    result = swarm.verification("verifier", run["id"], {
+        "passed": True,
+        "tested_revision": applied["revision"],
+        "tested_config_hash": "deliberately-wrong-hash",
+        "checks": [{"name": name, "passed": True} for name in required],
+    })
+    assert result["passed"] is False
+    assert swarm.run(run["id"])["status"] == "failed"
+    assert baseline.current_config() == before_baseline
+    with baseline.tx() as db:
+        assert baseline.meta(db, "resource_fence") == baseline_fence
 
 
 def test_cross_arm_token_and_foreign_task_are_rejected_without_writes(tmp_path):
