@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     target = ROOT / 'data' / 'clean-start' / str(time.time_ns())
     target.mkdir(parents=True)
-    for directory in ('s9', 'scripts', 'assets/xiaozhi', 'integrations/gep', 'docs'):
+    for directory in ('s9', 'scripts', 'assets/xiaozhi', 'integrations/gep', 'integrations/support_agent', 'docs'):
         shutil.copytree(ROOT / directory, target / directory,
                         ignore=shutil.ignore_patterns('__pycache__', 'node_modules', '*.pyc'))
     for name in ('.env.example', 'uv.lock', 'pyproject.toml'):
@@ -63,7 +63,7 @@ def main():
         stopped = service('stop')
         report['stop_returncode'] = stopped.returncode
         report['stop_output'] = stopped.stdout + stopped.stderr
-        path = ROOT / 'artifacts/audit-remediation/clean-start.json'
+        path = ROOT / 'artifacts/audit-remediation' / f'clean-start-{target.name}.json'
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(report, ensure_ascii=False, indent=2))
         print(json.dumps({'passed': report.get('passed'), 'stop_returncode': stopped.returncode, 'evidence': str(path)}))

@@ -1,0 +1,17 @@
+{
+  "schema_version": "product-governance-evidence-v1",
+  "label": "browser-model-configuration-change-after-approval",
+  "incident_id": "incident_1790110056203467000",
+  "approval_id": "approval_1790110065614106000",
+  "original_approval_actor": "local-console-operator",
+  "test_change": {
+    "model_label": "evomap-gpt-5.6-luna-config-check",
+    "credential_revision_label_changed": true,
+    "credential_value_changed": false
+  },
+  "browser_result": "UI displayed configuration-changed rejection; no execution attempt was created.",
+  "http_status": 409,
+  "error_code": "CONFIGURATION_BINDING_MISMATCH",
+  "runtime_side_effect": "external runtime remained stopped; approval was rejected before any start or model call.",
+  "secret_values_recorded": false
+}

@@ -7,7 +7,7 @@ python3 scripts/init-local-config.py
 echo "Installing locked Python dependencies..."
 uv sync --locked
 echo "Installing locked JavaScript dependencies..."
-npm --prefix frontend ci
+npm --prefix frontend ci --include=dev
 npm --prefix integrations/gep ci
 if ! .venv/bin/python scripts/fetch-office-assets.py; then
   echo "warning: optional office assets unavailable; the UI fallback remains usable" >&2

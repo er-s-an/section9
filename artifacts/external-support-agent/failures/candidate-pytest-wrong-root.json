@@ -1,0 +1,11 @@
+{
+  "schema_version": "validation-failure-v1",
+  "check": "candidate-local-tests",
+  "attempted_command": ".runtime/external-projects/support-agent-adapted/.venv/bin/pytest -x --tb=short",
+  "initial_working_directory": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+  "result": "failed-before-candidate-tests",
+  "cause": "The command ran from the Section9 repository root, so pytest selected the Section9 configuration and collected Section9 async tests; the candidate environment does not include the Section9 pytest-asyncio plugin.",
+  "corrective_action": "Reran the candidate suite with the candidate worktree as its working directory.",
+  "corrected_result": "38 passed, 2 upstream dependency deprecation/configuration warnings; 1.29 seconds",
+  "secret_values_recorded": false
+}

@@ -49,11 +49,16 @@ class Core:
         self.model = model if model is not None else ModelClient(self.store, self.telemetry)
         self.victim = VictimApp(self.model, self.store.current_config, self.emit)
         from s9.memory import MemoryStore
+        from s9.product.service import ProductService
         self.memory = MemoryStore(self.data_dir / "memory")
         self.evaluation_memory = MemoryStore(self.data_dir / "evaluation-memory")
         # The evaluation retrieval snapshot stays frozen. Successful outcomes
         # are written to a separate real journal, never to the next trial's input.
         self.evaluation_results = MemoryStore(self.data_dir / "evaluation-results")
+        # Product registry is separate from the built-in lab authority.  It
+        # records declared external projects and evidence, but does not alter
+        # the lab's run/lease/fencing state.
+        self.product = ProductService(data_dir=self.data_dir, telemetry=self.telemetry)
         self.memory_candidates = {}
         self.children: dict[str, subprocess.Popen] = {}
         self.jobs: set[asyncio.Task] = set()
@@ -150,6 +155,11 @@ class Core:
                                          run_id=self.scope['run_id'], producer=aid)
         if self.attract_process and self.attract_process.poll() is None:
             self.attract_process.terminate()
+        if not self.scope:
+            try:
+                self.product.stop()
+            except Exception:
+                pass
         close = getattr(self.model, "close", None)
         if close:
             await close()

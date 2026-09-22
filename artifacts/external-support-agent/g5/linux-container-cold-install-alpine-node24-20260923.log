@@ -1,0 +1,1 @@
+Error: Required database environment variables are not set. Provide a postgres url for DATABASE_URL.

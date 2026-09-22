@@ -1,0 +1,11 @@
+{
+  "schema_version": "product-closure-failure-v1",
+  "label": "browser-g3-recovery-evidence-link-overwrite",
+  "incident_id": "incident_1790109431979365000",
+  "observed_recovery_status": "recovered",
+  "defect": "The incident snapshot retained only the earlier verification_bundle reference after observe(); the business-probe evidence written during observe was not linked from the final incident record.",
+  "durable_event_evidence": "The scoped incident event stream includes evidence.captured and product.external.business_probe events.",
+  "preserved_bundle": "artifacts/external-support-agent/incident_1790109431979365000/g3-recovery.json",
+  "acceptance_disposition": "This run is not counted as final G3 evidence-link acceptance; repair and rerun required.",
+  "secret_values_recorded": false
+}

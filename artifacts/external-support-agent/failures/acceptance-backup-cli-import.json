@@ -1,0 +1,10 @@
+{
+  "gate": "G5-backup-and-restore",
+  "status": "failed-before-backup",
+  "acceptance_report": "artifacts/external-support-agent/closure-runs/acceptance-20260922T213107Z-65002.json",
+  "closure_checks": "all 22 G0-G3 checks passed; model usage was bounded",
+  "failure_log": ".runtime/product-acceptance/20260922T213107Z-65002/backup-command.log",
+  "observed": "The one-command acceptance wrapper invoked scripts/product-lifecycle.py as a file, but the CLI had not inserted the repository root into sys.path and exited with ModuleNotFoundError: No module named s9.",
+  "impact": "No backup was created in this failed wrapper attempt; restore and verification did not run. The successful G0-G3 closure remains valid, but the wrapper as a whole failed.",
+  "correction": "scripts/product-lifecycle.py now adds the repository root to its import path. Backup, restore, and verification must be rerun against a fresh unique target; the failed wrapper record stays unchanged."
+}

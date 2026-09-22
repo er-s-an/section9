@@ -1,0 +1,16 @@
+{
+  "schema_version": "section9-failure-record-v1",
+  "failure_id": "browser-approval-snapshot",
+  "phase": "G2 browser approval to execute handoff",
+  "observed": {
+    "connect": "ready",
+    "business_probe": "returned order truth and tool trace",
+    "regression": "passed",
+    "approval_id": "approval_1790102316862479000",
+    "incident_id": "incident_1790102272642546000",
+    "execute": "not run; UI remained disabled"
+  },
+  "cause": "ProductRegistry.list filtered incident-bound records out of project-scope approval snapshots.",
+  "resolution": "Registry list now returns records bound to any incident within the selected project and environment; UI action state was not counted as an execution pass.",
+  "secret_values_included": false
+}

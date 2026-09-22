@@ -1,0 +1,4 @@
+Unable to find image 'node:22-bookworm' locally
+docker: error getting credentials - err: signal: interrupt, out: ``
+
+Run 'docker run --help' for more information

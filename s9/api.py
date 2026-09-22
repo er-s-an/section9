@@ -4,6 +4,7 @@ import asyncio
 import gzip
 import io
 import json
+import time
 import uvicorn
 from contextlib import asynccontextmanager, nullcontext
 from typing import Literal
@@ -17,6 +18,8 @@ from s9 import config
 from s9.contracts import (AgentStatusRequest, ChatRequest, ClaimRequest, ExecuteRequest, Injection,
                           MessageRequest, ModelRequest, PlanRequest, StrictModel, VerifyRequest)
 from s9.core import Core
+from s9.product.lifecycle import ProductBackup
+from s9.product.registry import ProductError
 from s9.store import ACTIVE, Rejected, Store, now
 
 
@@ -80,6 +83,11 @@ async def rejected(request, exc):
     return JSONResponse({"error": {"code": exc.code, "message": exc.message}}, status_code=exc.status)
 
 
+@app.exception_handler(ProductError)
+async def product_error(request, exc):
+    return JSONResponse({"error": {"code": exc.code, "message": exc.message}}, status_code=exc.status)
+
+
 @app.middleware("http")
 async def boundaries(request: Request, call_next):
     server_port = (request.scope.get("server") or (None, None))[1]
@@ -138,6 +146,37 @@ class IncidentRequest(StrictModel):
 
 class AttractRequest(StrictModel):
     enabled: bool
+
+
+class ProductConnectRequest(StrictModel):
+    project_id: str = Field(min_length=1, max_length=200)
+    environment_id: str = Field(min_length=1, max_length=200)
+    run_tests: bool = True
+
+
+class ProductScopeRequest(StrictModel):
+    project_id: str = Field(min_length=1, max_length=200)
+    environment_id: str = Field(min_length=1, max_length=200)
+
+
+class ProductBusinessProbeRequest(ProductScopeRequest):
+    sample: str = Field(default="order_truth", pattern="^(order_truth|refund_guardrail)$")
+
+
+class ProductIncidentRequest(ProductScopeRequest):
+    incident_id: str | None = Field(default=None, max_length=200)
+
+
+class ProductApprovalRequest(StrictModel):
+    project_id: str = Field(min_length=1, max_length=200)
+    environment_id: str = Field(min_length=1, max_length=200)
+    incident_id: str = Field(min_length=1, max_length=200)
+
+
+class ProductExecuteRequest(ProductScopeRequest):
+    incident_id: str = Field(min_length=1, max_length=200)
+    approval_id: str = Field(min_length=1, max_length=200)
+    idempotency_key: str = Field(min_length=1, max_length=200)
 
 
 @app.get("/api/state")
@@ -274,6 +313,176 @@ async def scoreboard(version: str | None = None, c: Core = Depends(core)):
 @app.get("/api/playbooks")
 async def playbooks(c: Core = Depends(core)):
     return {"items": c.playbooks(), "status": c.memory.status()}
+
+
+def _collaboration_event_history(c: Core, state: dict) -> list[dict]:
+    events = state.get("events") if isinstance(state.get("events"), list) else []
+    sequences = [int(event["sequence"]) for event in events
+                 if isinstance(event, dict) and str(event.get("sequence", "")).isdigit()]
+    latest = max(sequences, default=0)
+    # The live operator snapshot is intentionally a short window. Collaboration
+    # capabilities need durable proof across resets, so inspect a bounded
+    # 5,000-event audit window internally without returning raw events to the UI.
+    return c.store.events(after=max(0, latest - 5000), limit=5000)
+
+
+@app.get("/api/product/snapshot")
+async def product_snapshot(c: Core = Depends(core)):
+    state = c.snapshot()
+    history = _collaboration_event_history(c, state)
+    return {**c.product.snapshot(), "collaboration": _product_collaboration(state, history)}
+
+
+def _product_collaboration(state: dict, event_history: list[dict] | None = None) -> dict:
+    agents = state.get("agents") if isinstance(state.get("agents"), list) else []
+    runs = state.get("runs") if isinstance(state.get("runs"), list) else []
+    events = event_history if event_history is not None else state.get("events", [])
+    if not isinstance(events, list):
+        events = []
+    event_types = {event.get("event_type") for event in events}
+    stale_fence_runs = {event.get("run_id") for event in events
+                        if event.get("event_type") in {"action.rejected", "grant.rejected"}
+                        and (event.get("payload") or {}).get("code") == "FENCE_STALE"}
+    resumed_runs = {event.get("run_id") for event in events if event.get("event_type") == "agent.resumed"}
+    joined_expert = any(agent.get("role") == "cost" and agent.get("status") not in {"offline", "failed"}
+                        for agent in agents)
+    delivered_message = any(event.get("event_type") == "dialog.received"
+                            and all((event.get("payload") or {}).get(field) is not None
+                                    for field in ("generation", "task_epoch", "transport_epoch"))
+                            for event in events)
+    muted_drop = any(event.get("event_type") == "dialog.dropped"
+                     and (event.get("payload") or {}).get("reason") == "MUTED" for event in events)
+    reused_playbook = any(run.get("reuseapproved") is True and run.get("memory_used_id")
+                          for run in runs)
+    handoff_observed = bool(stale_fence_runs & resumed_runs)
+    local = {
+        "capability_discovery": {"status": "ready" if agents else "unknown", "detail": "Section9 本地能力目录来自持久 Agent 注册与心跳", "evidence": "GET /api/state"},
+        "expert_join": {"status": "ready" if joined_expert or "agent.joined" in event_types else "unknown",
+                        "detail": "已观察到本地专家加入" if joined_expert or "agent.joined" in event_types else "入口存在，尚无专家加入证据",
+                        "evidence": "POST /api/agents/join"},
+        "structured_messages": {"status": "ready" if delivered_message else "unknown",
+                                "detail": "已观察到带租约与作用域的真实消息" if delivered_message else "消息协议存在，尚无满足契约的交付记录",
+                                "evidence": "dialog.received"},
+        "handoff": {"status": "ready" if handoff_observed else "unknown",
+                    "detail": "已观察到过期执行者被 fence 拒绝并完成接管" if handoff_observed else "接管逻辑已实现，尚无完整 fence 拒绝与恢复记录",
+                    "evidence": "FENCE_STALE + agent.resumed"},
+        "communication_isolation": {"status": "ready" if muted_drop else "unknown",
+                                     "detail": "已观察到禁言时服务端丢弃消息" if muted_drop else "禁言策略已实现，尚无服务端隔离事件",
+                                     "evidence": "dialog.dropped / MUTED"},
+        "experience_reuse": {"status": "ready" if reused_playbook else "unknown",
+                              "detail": "已有经批准的经验复用运行" if reused_playbook else
+                              "经验资产已加载，但尚无运行满足复用批准与回写条件",
+                              "evidence": "run.memory_used_id + run.reuseapproved"},
+        "contradiction_review": {"status": "unknown", "detail": "当前本地实现保留独立验收，但没有宣称已形成通用反证目录", "evidence": "not_observed"},
+    }
+    official = {
+        "native_remote_session": {"status": "unsupported", "detail": "未配置官方远端会话身份；未伪造会话", "authorization": "required"},
+        "official_capability_discovery": {"status": "unsupported", "detail": "官方 Hub/A2A 目录适配未启用", "authorization": "required"},
+        "official_experience_exchange": {"status": "unsupported", "detail": "recipe/A2A 发布与接收未启用；本地经验不冒充远端收据", "authorization": "required"},
+    }
+    return {"scope": {"project_id": "section9-local", "environment_id": "local"}, "local": local, "official_remote": official,
+            "agents": [{"id": a.get("id"), "role": a.get("role"), "status": a.get("status"), "capabilities": a.get("capabilities", [])} for a in agents]}
+
+
+@app.get("/api/product/projects")
+async def product_projects(c: Core = Depends(core)):
+    manifest = c.product.manifest
+    return {"items": [{"id": manifest["project_id"], "name": manifest["name"], "environment_id": manifest["environment_id"],
+                       "source": {"repo_url": manifest["repo_url"], "commit": manifest["commit"], "license": manifest["license"]}}]}
+
+
+@app.post("/api/product/connect")
+async def product_connect(item: ProductConnectRequest, c: Core = Depends(core)):
+    if (item.project_id, item.environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    return await c.product.connect(run_tests=item.run_tests)
+
+
+@app.post("/api/product/business-probe")
+async def product_business_probe(item: ProductBusinessProbeRequest, c: Core = Depends(core)):
+    if (item.project_id, item.environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    return await c.product.business_probe(sample_name=item.sample)
+
+
+@app.post("/api/product/regression")
+async def product_regression(item: ProductScopeRequest, c: Core = Depends(core)):
+    if (item.project_id, item.environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    return await c.product.run_regression()
+
+
+@app.get("/api/product/incidents")
+async def product_incidents(project_id: str, environment_id: str, c: Core = Depends(core)):
+    if (project_id, environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    return {"items": c.product.registry.list("incident", project_id=project_id, environment_id=environment_id)}
+
+
+@app.get("/api/product/incidents/{incident_id}")
+async def product_incident(incident_id: str, project_id: str, environment_id: str, c: Core = Depends(core)):
+    if (project_id, environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    incident = c.product.registry.get("incident", incident_id, project_id=project_id, environment_id=environment_id)
+    if not incident:
+        raise ProductError("NOT_FOUND", "未找到外部项目事故", 404)
+    return {**incident, "events": c.product.registry.events(project_id=project_id, environment_id=environment_id, incident_id=incident_id)}
+
+
+@app.post("/api/product/approve")
+async def product_approve(item: ProductApprovalRequest, c: Core = Depends(core)):
+    if (item.project_id, item.environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    return c.product.approve(item.incident_id)
+
+
+@app.post("/api/product/execute")
+async def product_execute(item: ProductExecuteRequest, c: Core = Depends(core)):
+    if (item.project_id, item.environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    return await c.product.execute(item.incident_id, item.approval_id, item.idempotency_key)
+
+
+@app.post("/api/product/observe")
+async def product_observe(item: ProductIncidentRequest, c: Core = Depends(core)):
+    if (item.project_id, item.environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    if not item.incident_id:
+        raise ProductError("INCIDENT_REQUIRED", "需要明确事故作用域", 422)
+    return await c.product.observe(item.incident_id)
+
+
+@app.post("/api/product/stop")
+async def product_stop(item: ProductScopeRequest, c: Core = Depends(core)):
+    if (item.project_id, item.environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    return c.product.stop()
+
+
+@app.get("/api/product/capabilities")
+async def product_capabilities(c: Core = Depends(core)):
+    state = c.snapshot()
+    return _product_collaboration(state, _collaboration_event_history(c, state))
+
+
+@app.post("/api/product/collaboration/join")
+async def product_collaboration_join(c: Core = Depends(core)):
+    return await join(c)
+
+
+@app.post("/api/product/backup")
+async def product_backup(item: ProductScopeRequest, c: Core = Depends(core)):
+    if (item.project_id, item.environment_id) != (c.product.project_id, c.product.environment_id):
+        raise ProductError("SCOPE_FORBIDDEN", "当前操作者未选择该项目或环境", 403)
+    stamp = str(time.time_ns())
+    target = config.ROOT / "artifacts" / "external-support-agent" / "backups" / f"backup_{stamp}"
+    result = await asyncio.to_thread(ProductBackup(
+        config.DATA / "product.sqlite", config.DATA / "product-artifacts",
+        {"support-agent": c.product.runtime.data_path},
+    ).create, target)
+    c.product.registry.event("product.backup.created", {"backup_dir": str(target), "schema_version": result["manifest"]["schema_version"]},
+                             project_id=c.product.project_id, environment_id=c.product.environment_id)
+    return result
 
 
 @app.get("/agent/context")

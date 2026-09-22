@@ -1,0 +1,15 @@
+{
+  "schema_version": "section9-failure-record-v1",
+  "failure_id": "final-03-recovery-business-trace",
+  "phase": "G3 post-execution recovery observation",
+  "observed": {
+    "http_status": 200,
+    "candidate_tool": "track_shipment",
+    "business_result": "order 1001 delivered",
+    "expected_tool_before_correction": "get_order_status",
+    "checker_result": "unknown"
+  },
+  "cause": "The verifier treated one equivalent read-only tool path as the only acceptable trace, although the pinned source exposes both get_order_status and track_shipment over the same order status.",
+  "resolution": "Manifest now explicitly permits both read-only tool paths and still requires the expected delivered business result. Added a separate refund-ineligible sample and direct tests.",
+  "secret_values_included": false
+}

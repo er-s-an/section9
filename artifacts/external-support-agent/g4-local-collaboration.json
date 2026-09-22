@@ -1,0 +1,99 @@
+{
+  "schema_version": "product-collaboration-evidence-v1",
+  "captured_at": "2026-09-22T20:00:05+00:00",
+  "scope": {
+    "project_id": "section9-local",
+    "environment_id": "local"
+  },
+  "runs": [
+    {
+      "run_id": "run_5f13bf02f1754ddf",
+      "condition": "memory",
+      "status": "resolved",
+      "usage_tokens": 5882,
+      "token_budget": 16000,
+      "usage_unknown": false,
+      "budget_overrun": false,
+      "evidence_counts": {
+        "fence_stale_rejected": 0,
+        "agent_resumed": 0,
+        "muted_messages_dropped": 0,
+        "structured_messages": 0
+      },
+      "checks": {
+        "known_usage_within_budget": true,
+        "fencing_handoff": false,
+        "communication_isolation": false,
+        "structured_message_contract": false,
+        "approved_experience_reused": true
+      }
+    },
+    {
+      "run_id": "run_7c96e8205ce64435",
+      "condition": "muted",
+      "status": "resolved",
+      "usage_tokens": 8697,
+      "token_budget": 16000,
+      "usage_unknown": false,
+      "budget_overrun": false,
+      "evidence_counts": {
+        "fence_stale_rejected": 0,
+        "agent_resumed": 0,
+        "muted_messages_dropped": 0,
+        "structured_messages": 0
+      },
+      "checks": {
+        "known_usage_within_budget": true,
+        "fencing_handoff": false,
+        "communication_isolation": false,
+        "structured_message_contract": false,
+        "approved_experience_reused": false
+      }
+    },
+    {
+      "run_id": "run_f53cb04389b24031",
+      "condition": "swarm",
+      "status": "resolved",
+      "usage_tokens": 8358,
+      "token_budget": 16000,
+      "usage_unknown": false,
+      "budget_overrun": false,
+      "evidence_counts": {
+        "fence_stale_rejected": 1,
+        "agent_resumed": 1,
+        "muted_messages_dropped": 0,
+        "structured_messages": 7
+      },
+      "checks": {
+        "known_usage_within_budget": true,
+        "fencing_handoff": true,
+        "communication_isolation": false,
+        "structured_message_contract": true,
+        "approved_experience_reused": false
+      }
+    }
+  ],
+  "local_capability_status": {
+    "capability_discovery": "ready",
+    "expert_join": "unknown",
+    "structured_messages": "ready",
+    "handoff": "ready",
+    "communication_isolation": "unknown",
+    "experience_reuse": "ready",
+    "contradiction_review": "unknown"
+  },
+  "official_remote_status": {
+    "native_remote_session": "unsupported",
+    "official_capability_discovery": "unsupported",
+    "official_experience_exchange": "unsupported"
+  },
+  "checks": {
+    "all_requested_runs_present": true,
+    "all_known_usage_within_budget": true,
+    "fencing_observed": true,
+    "communication_isolation_observed": false,
+    "structured_messages_observed": true,
+    "approved_experience_reused": true,
+    "official_remote_not_overclaimed": true
+  }
+}

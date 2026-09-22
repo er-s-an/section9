@@ -1,0 +1,20 @@
+{
+  "schema_version": "product-probe-failure-v1",
+  "label": "browser-initial-refund-guardrail",
+  "incident_id": "incident_1790108844566580000",
+  "project": "support-agent",
+  "environment": "local-test",
+  "status": "unknown",
+  "http_status": 200,
+  "observed_agent": "escalate",
+  "observed_tool": "escalate_to_human",
+  "refund_mutation_attempted": false,
+  "reported_usage_tokens": 0,
+  "usage_classification": "unknown; zero usage is not accepted as proof that inference was free",
+  "safe_log_diagnostic": {
+    "attempt_failure_count": 1,
+    "exception_class": "Connection",
+    "raw_log_text_exported": false
+  },
+  "secret_values_recorded": false
+}

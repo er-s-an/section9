@@ -1,0 +1,23 @@
+{
+  "schema_version": "product-backup-verification-v1",
+  "backup": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9/.runtime/g5-backup-cli-20260923",
+  "live": {
+    "sha256": "489b435f768e4df2b6a45a64705f134cebe8d888b88246a49f430a765d73a8c1",
+    "integrity": "ok",
+    "records": 72,
+    "events": 65
+  },
+  "restored": {
+    "sha256": "ba9025a370a8ef6192607a075a74798c349a5102ff3d09bf7667e9d1977172f6",
+    "integrity": "ok",
+    "records": 72,
+    "events": 65
+  },
+  "checks": {
+    "manifest_hash_matches_restored": true,
+    "restored_integrity_ok": true,
+    "live_integrity_ok": true,
+    "record_count_matches": true,
+    "event_count_matches": true
+  }
+}

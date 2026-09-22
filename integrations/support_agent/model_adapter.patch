@@ -1,0 +1,51 @@
+--- a/src/llm.py
++++ b/src/llm.py
+@@ -7,6 +7,8 @@
+ 
+ DEFAULT_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+ GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
++SECTION9_MODEL = os.environ.get("SECTION9_MODEL", "gpt-5.6-luna")
++SECTION9_MODEL_URL = os.environ.get("SECTION9_MODEL_URL", "")
+ 
+ # Sticky index into the model pool, shared across all get_llm() calls in this
+ # process so a working model keeps getting used instead of re-trying exhausted
+@@ -60,10 +62,28 @@
+ 
+ def get_llm(model: str | None = None, temperature: float = 0.0) -> RotatingChatModel:
+     model_name = model or DEFAULT_MODEL
+-    models = [
++    models = []
++
++    section9_key = os.environ.get("SECTION9_MODEL_API_KEY")
++    if section9_key and SECTION9_MODEL_URL:
++        from langchain_openai import ChatOpenAI
++
++        base_url = SECTION9_MODEL_URL.rstrip("/")
++        if base_url.endswith("/chat/completions"):
++            base_url = base_url[: -len("/chat/completions")]
++        models.append(ChatOpenAI(
++            model=SECTION9_MODEL,
++            api_key=section9_key,
++            base_url=base_url,
++            temperature=temperature,
++            max_retries=0,
++            timeout=60,
++        ))
++
++    models.extend([
+         ChatGoogleGenerativeAI(model=model_name, google_api_key=key, temperature=temperature, max_retries=0)
+         for key in _load_gemini_keys()
+-    ]
++    ])
+ 
+     groq_key = os.environ.get("GROQ_API_KEY")
+     if groq_key:
+@@ -72,7 +92,7 @@
+         models.append(ChatGroq(model=GROQ_MODEL, api_key=groq_key, temperature=temperature, max_retries=0))
+ 
+     if not models:
+-        raise RuntimeError("No LLM configured. Set GEMINI_API_KEY, GEMINI_API_KEYS, or GROQ_API_KEY in .env")
++        raise RuntimeError("No LLM configured. Set SECTION9_MODEL_API_KEY with SECTION9_MODEL_URL, or the upstream Gemini/Groq variables")
+ 
+     return RotatingChatModel(models, state=_rotation_state)
+ 

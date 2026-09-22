@@ -1,0 +1,14 @@
+{
+  "schema_version": "section9-failure-record-v1",
+  "failure_id": "g4-event-window",
+  "phase": "G4 collaboration evidence after multiple browser runs and reset",
+  "observed": {
+    "muted_run_id": "run_7c96e8205ce64435",
+    "during_run": {"condition": "muted", "server_dropped_messages": 3, "usage_tokens": 8697, "token_budget": 16000},
+    "later_capability_snapshot": "communication_isolation unknown",
+    "local_verifier_report": "g4-local-collaboration.json"
+  },
+  "cause": "The operator state snapshot exposes only the latest 100 events, so the capability summary lost older but persisted per-run communication evidence after subsequent runs and reset.",
+  "resolution": "Capability derivation now reads a bounded 5000-event audit window internally, while the UI receives only capability statuses. The evidence verifier now reads each requested run's scoped event history.",
+  "secret_values_included": false
+}

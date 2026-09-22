@@ -1,0 +1,151 @@
+( 1/28) Installing ca-certificates (20260909-r0)
+( 2/28) Installing brotli-libs (1.2.0-r1)
+( 3/28) Installing c-ares (1.34.8-r0)
+( 4/28) Installing libunistring (1.4.2-r0)
+( 5/28) Installing libidn2 (2.3.8-r0)
+( 6/28) Installing nghttp2-libs (1.69.0-r0)
+( 7/28) Installing libpsl (0.21.5-r3)
+( 8/28) Installing zstd-libs (1.5.7-r2)
+( 9/28) Installing libcurl (8.22.0-r0)
+(10/28) Installing curl (8.22.0-r0)
+(11/28) Installing libexpat (2.8.4-r0)
+(12/28) Installing pcre2 (10.48-r0)
+(13/28) Installing git (2.54.0-r0)
+(14/28) Installing git-init-template (2.54.0-r0)
+(15/28) Installing libbz2 (1.0.8-r6)
+(16/28) Installing libffi (3.5.2-r1)
+(17/28) Installing gdbm (1.26-r0)
+(18/28) Installing xz-libs (5.8.4-r0)
+(19/28) Installing mpdecimal (4.0.1-r0)
+(20/28) Installing ncurses-terminfo-base (6.6_p20260516-r0)
+(21/28) Installing libncursesw (6.6_p20260516-r0)
+(22/28) Installing libpanelw (6.6_p20260516-r0)
+(23/28) Installing readline (8.3.3-r1)
+(24/28) Installing sqlite-libs (3.53.4-r0)
+(25/28) Installing python3 (3.14.7-r1)
+(26/28) Installing python3-pycache-pyc0 (3.14.7-r1)
+(27/28) Installing pyc (3.14.7-r1)
+(28/28) Installing python3-pyc (3.14.7-r1)
+Executing busybox-1.37.0-r31.trigger
+Executing ca-certificates-20260909-r0.trigger
+OK: 64.3 MiB in 48 packages
+(1/7) Installing ada-libs (3.3.0-r0)
+(2/7) Installing icu-data-en (78.1-r0)
+  Executing icu-data-en-78.1-r0.post-install
+  * If you need ICU with non-English locales and legacy charset support, install
+  * package icu-data-full.
+(3/7) Installing icu-libs (78.1-r0)
+(4/7) Installing simdjson (4.2.4-r0)
+(5/7) Installing simdutf (9.0.0-r0)
+(6/7) Installing nodejs (24.18.1-r0)
+(7/7) Installing npm (11.12.1-r0)
+Executing busybox-1.37.0-r31.trigger
+OK: 129.8 MiB in 55 packages
+downloading uv 0.12.17 aarch64-unknown-linux-musl-static
+installing to /usr/local/bin
+  uv
+  uvx
+everything's installed!
+Downloading cpython-3.12.14-linux-aarch64-musl (download) (27.3MiB)
+ Downloaded cpython-3.12.14-linux-aarch64-musl (download)
+Installed Python 3.12.14 in 7.07s
+ + cpython-3.12.14-linux-aarch64-musl (python3.12)
+warning: `/root/.local/bin` is not on your PATH. To use installed Python executables, add the directory to your PATH.
+clean_source_copy=created; developer_env_database_runtime_artifacts_excluded=true
+Initializing local configuration (secrets are never printed)...
+created .env (model key intentionally empty; values omitted)
+created infra/.env (compose_names=23; values omitted)
+check=pass; compose_names=23; values_not_printed
+Installing locked Python dependencies...
+Using CPython 3.12.14
+Creating virtual environment at: .venv
+Resolved 46 packages in 4ms
+Downloading ruff (9.6MiB)
+Downloading pydantic-core (2.1MiB)
+Downloading pygments (1.2MiB)
+ Downloaded pygments
+ Downloaded pydantic-core
+ Downloaded ruff
+Prepared 44 packages in 3.49s
+Installed 44 packages in 281ms
+ + annotated-doc==0.0.5
+ + annotated-types==0.8.0
+ + anyio==4.15.1
+ + attrs==26.1.0
+ + backoff==2.2.1
+ + certifi==2026.7.22
+ + charset-normalizer==3.5.1
+ + click==8.5.0
+ + fastapi==0.141.1
+ + googleapis-common-protos==1.75.3
+ + h11==0.16.0
+ + httpcore==1.0.9
+ + httpx==0.28.1
+ + idna==3.20
+ + iniconfig==2.3.0
+ + jsonschema==4.26.0
+ + jsonschema-specifications==2025.9.1
+ + langfuse==4.15.4
+ + opentelemetry-api==1.44.0
+ + opentelemetry-exporter-otlp-proto-common==1.44.0
+ + opentelemetry-exporter-otlp-proto-http==1.44.0
+ + opentelemetry-proto==1.44.0
+ + opentelemetry-sdk==1.44.0
+ + opentelemetry-semantic-conventions==0.65b0
+ + packaging==26.3
+ + pluggy==1.6.0
+ + protobuf==7.36.2
+ + pydantic==2.13.5
+ + pydantic-core==2.46.5
+ + pygments==2.21.0
+ + pytest==9.1.1
+ + pytest-asyncio==1.4.0
+ + python-dotenv==1.2.3
+ + pyyaml==6.0.3
+ + referencing==0.37.0
+ + requests==2.34.2
+ + rpds-py==2026.6.3
+ + ruff==0.16.8
+ + starlette==1.6.0
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.4
+ + urllib3==2.8.0
+ + uvicorn==0.53.0
+ + wrapt==2.4.1
+Installing locked JavaScript dependencies...
+
+added 74 packages, and audited 75 packages in 18s
+
+9 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+added 1 package, and audited 2 packages in 3s
+
+found 0 vulnerabilities
+Office character assets: 4 pinned local files verified
+Building the frontend (including available pinned assets)...
+
+> section9-laboratory@0.1.0 build
+> tsc -b && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 4587 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.46 kB │ gzip:   0.34 kB
+dist/assets/index-oZICkeOR.css   84.83 kB │ gzip:  18.09 kB
+dist/assets/index-g7k9k0P7.js   385.45 kB │ gzip: 115.10 kB
+✓ built in 7.80s
+Install complete. Run ./scripts/doctor.py, then ./scripts/start.sh.
+python_version=3.12.14
+v24.19.0
+................................                                         [100%]
+32 passed in 3.66s
+check=pass; compose_names=23; values_not_printed
+Startup failed; inspect /workspace/.runtime/server.log
+sanitized_startup_log_tail_begin
+INFO:     Started server process [263]\nINFO:     Waiting for application startup.\nERROR:    Traceback (most recent call last):\n  File "/workspace/.venv/lib/python3.12/site-packages/starlette/routing.py", line 648, in lifespan\n    async with self.lifespan_context(app) as maybe_state:\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/.local/share/uv/python/cpython-3.12.14-linux-aarch64-musl/lib/python3.12/contextlib.py", line 210, in __aenter__\n    return await anext(self.gen)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File "/workspace/.venv/lib/python3.12/site-packages/fastapi/routing.py", line 240, in merged_lifespan\n    async with original_context(app) as maybe_original_state:\n               ^^^^^^^^^^^^^^^^^^^^^\n  File "/root/.local/share/uv/python/cpython-3.12.14-linux-aarch64-musl/lib/python3.12/contextlib.py", line 210, in __aenter__\n    return await anext(self.gen)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File "/workspace/s9/api.py", line 46, in lifespan\n    await app.state.core.start()\n  File "/workspace/s9/core.py", line 100, in start\n    self.spawn(agent_id)\n  File "/workspace/s9/core.py", line 119, in spawn\n    command = worker_command(sys.executable, config.ROOT, self.agent_port,\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/workspace/s9/sandbox.py", line 84, in worker_command\n    raise RuntimeError("worker sandbox requires macOS sandbox-exec")\nRuntimeError: worker sandbox requires macOS sandbox-exec\n\nERROR:    Application startup failed. Exiting.
+sanitized_startup_log_tail_end

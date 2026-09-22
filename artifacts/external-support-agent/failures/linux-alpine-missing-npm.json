@@ -1,0 +1,10 @@
+{
+  "gate": "G5-linux-cold-install",
+  "status": "environment-image-prerequisite-missing",
+  "attempted_image": "langfuse/langfuse:4",
+  "platform": "linux/arm64",
+  "observed": "The cached Langfuse image contains Node v24.19.0 but no npm or corepack; scripts/install.sh therefore stopped before JavaScript dependency installation.",
+  "failure_log": "artifacts/external-support-agent/g5/linux-container-cold-install-alpine-node24-retry-20260923.log",
+  "impact": "Python dependencies installed in the disposable container; application startup and tests did not run.",
+  "correction": "The harness will install Alpine's npm package in the disposable container before invoking the repository installer."
+}

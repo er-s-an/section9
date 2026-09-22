@@ -1,0 +1,10 @@
+{
+  "gate": "G5-linux-cold-install",
+  "status": "cold-build-failure",
+  "attempted_image": "langfuse/langfuse:4",
+  "platform": "linux/arm64",
+  "observed": "A clean npm ci completed with only 4 packages and omitted build-time development dependencies; the frontend build then failed with tsc not found.",
+  "failure_log": "artifacts/external-support-agent/g5/linux-container-cold-install-alpine-node24-final-20260923.log",
+  "impact": "Python and JavaScript installation ran, but the frontend build, tests, API checks, and startup did not run.",
+  "correction": "scripts/install.sh now explicitly uses npm ci --include=dev for the frontend build toolchain; a fresh-container retry is required."
+}

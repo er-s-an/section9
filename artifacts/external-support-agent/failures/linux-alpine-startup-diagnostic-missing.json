@@ -1,0 +1,10 @@
+{
+  "gate": "G5-linux-cold-install",
+  "status": "startup-attempt-failed-diagnostic-not-retained",
+  "attempted_image": "langfuse/langfuse:4",
+  "platform": "linux/arm64",
+  "observed": "Clean source copy, install, frontend build, and 32 product/connector tests passed, but scripts/start.sh returned nonzero. Its diagnostic pointed at an inner .runtime/server.log that was deleted with the disposable container.",
+  "failure_log": "artifacts/external-support-agent/g5/linux-container-cold-install-alpine-node24-clean-rerun-20260923.log",
+  "impact": "Health, denial, reset, and stop checks did not run; root cause was not observable in this attempt.",
+  "correction": "The harness now emits a sanitized startup-log tail before the disposable container exits; a fresh retry is required."
+}

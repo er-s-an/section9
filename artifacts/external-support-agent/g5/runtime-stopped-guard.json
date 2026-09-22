@@ -1,0 +1,17 @@
+{
+  "schema_version": "runtime-degradation-evidence-v1",
+  "browser": "Ego Browser",
+  "project": "support-agent",
+  "environment": "local-test",
+  "runtime_before": "stopped",
+  "runtime_after": "stopped",
+  "incident_count_before": 32,
+  "incident_count_after": 32,
+  "ui_message": "外部运行时尚未连接，请先接入并核验版本，再运行业务探针。",
+  "product_probe_request_sent": false,
+  "new_incident_created": false,
+  "direct_api_guard": {"status_code": 409, "error_code": "EXTERNAL_RUNTIME_STOPPED", "new_incident_created": false},
+  "screenshot": "artifacts/external-support-agent/browser/runtime-stopped-probe-refused.png",
+  "check_passed": true,
+  "secret_values_recorded": false
+}

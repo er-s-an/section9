@@ -1,0 +1,11 @@
+{
+  "schema_version": "product-failure-record-v1",
+  "label": "final-01-reset-restart-initial-invocation",
+  "failure_stage": "acceptance harness import",
+  "error_type": "ModuleNotFoundError",
+  "module": "s9",
+  "http_requests_sent": 0,
+  "candidate_runtime_touched": false,
+  "model_requests_sent": 0,
+  "resolution": "The standalone script now adds the repository root to sys.path before importing the product redactor; --help and Ruff pass."
+}

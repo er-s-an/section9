@@ -1,0 +1,11 @@
+{
+  "gate": "G5-linux-container-runtime",
+  "status": "blocked-by-supported-platform-boundary",
+  "attempted_image": "langfuse/langfuse:4",
+  "platform": "linux/arm64 Alpine; Node v24.19.0; CPython 3.12.14",
+  "installation": "scripts/install.sh completed; production frontend build completed; tests/product and tests/connectors passed (32 tests).",
+  "observed": "The real service failed FastAPI lifespan startup when Core.start attempted to spawn a worker. s9.sandbox.worker_command intentionally rejects non-macOS because the only implemented process sandbox is /usr/bin/sandbox-exec.",
+  "failure_log": "artifacts/external-support-agent/g5/linux-container-cold-install-alpine-node24-final-retry-20260923.log",
+  "impact": "Linux runtime/API/browser checks, including scope denials and stopped-runtime guard, did not execute. Linux cold dependency/build/test validation is partial evidence only; Linux is not a supported runtime claim.",
+  "follow_up": "Retain macOS as the supported runtime for this handoff. A Linux runtime requires an independently reviewed sandbox with equivalent filesystem and network boundaries, not an unsandboxed worker fallback."
+}

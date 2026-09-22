@@ -1,0 +1,10 @@
+{
+  "gate": "G5-linux-cold-install",
+  "status": "failed-before-container-start",
+  "attempted_image": "node:22-bookworm",
+  "platform": "linux/arm64",
+  "observed": "The image was not cached; Docker Hub credential/network access timed out before a container was created.",
+  "failure_log": "artifacts/external-support-agent/g5/linux-container-cold-install-20260922T205401Z.log",
+  "impact": "This attempt did not execute installation or application checks.",
+  "fallback": "A separately labeled run will use the already-cached Linux ARM64 Node 24 Alpine image; it does not count as validation of the requested Node 22 Debian base."
+}

@@ -2,6 +2,8 @@
 
 仓库绝对路径：`/Users/xiejiachen/Documents/ChatGPT/rebuild/section9`。
 
+2026-09-23 外部应用产品增量（support-agent、G0–G5 状态、当前可复跑命令及阻塞）以[交付矩阵](PRODUCT_DELIVERY_MATRIX.md)和[外部应用演示/运维指南](PRODUCT_EXTERNAL_APP_DEMO.md)为准。下方的本地实验室与海报/录像记录是更早的 Section9 证据，不能替代本轮外部项目验收。
+
 启动与验收：
 
 ```sh

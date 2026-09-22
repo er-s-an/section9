@@ -1,0 +1,11 @@
+{
+  "schema_version": "validation-failure-v1",
+  "check": "browser-product-workspace-navigation",
+  "browser": "Ego Browser",
+  "page": "p1",
+  "result": "wait_timed_out",
+  "cause": "Reload restored the default live-monitor tab, so product-scope text was not rendered while the browser API itself remained available.",
+  "corrective_action": "Re-enter the Product Workspace tab and wait for the rendered support-agent scope before continuing.",
+  "product_api_failure": false,
+  "secret_values_recorded": false
+}

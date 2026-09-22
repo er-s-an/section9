@@ -1,0 +1,10 @@
+{
+  "gate": "G5-linux-cold-install",
+  "status": "harness-failure-before-install",
+  "attempted_image": "langfuse/langfuse:4",
+  "platform": "linux/arm64",
+  "observed": "The cached image's Langfuse default entrypoint ran before the supplied shell command and exited because DATABASE_URL was absent.",
+  "failure_log": "artifacts/external-support-agent/g5/linux-container-cold-install-alpine-node24-20260923.log",
+  "impact": "No installation or Section9 application checks ran in this attempt.",
+  "correction": "The cold-install harness now explicitly overrides the image entrypoint to /bin/sh before the retry."
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "product-closure-usage-summary-v1",
+  "label": "delivery-v1-run01-reset",
+  "source_report": "artifacts/external-support-agent/closure-runs/delivery-v1-run01-reset-20260923.json",
+  "usage_was_reconstructed_from": "the three retained per-step response.evidence.value.response.usage.total_tokens values; the original aggregate usage keys were over-redacted",
+  "model_token_budget": 16000,
+  "per_probe_reservation_tokens": 5000,
+  "samples": {
+    "order_truth": {"total_tokens": 724, "request_elapsed_s": 15.684},
+    "refund_guardrail": {"total_tokens": 760, "request_elapsed_s": 20.785},
+    "post_release_recovery": {"total_tokens": 626, "request_elapsed_s": 28.539}
+  },
+  "known_total_tokens": 2110,
+  "sum_of_all_recorded_step_http_elapsed_s": 77.284,
+  "recovery_health_observation_window_s": 4.299,
+  "all_closure_checks_passed": true
+}

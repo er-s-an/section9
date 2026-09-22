@@ -13,6 +13,7 @@ os.environ["NO_PROXY"] = ",".join(filter(None, [os.environ.get("NO_PROXY", ""), 
 MODEL = os.getenv("S9_MODEL", "evomap-gpt-5.6-luna")
 MODEL_URL = os.getenv("S9_MODEL_URL", "https://api.evomap.ai/v1/chat/completions")
 MODEL_KEY = os.getenv("EVOMAP_MODEL_API_KEY", "")
+MODEL_CREDENTIAL_REVISION = os.getenv("S9_CREDENTIAL_REVISION", "unversioned")
 
 
 def _text(name: str, default: str) -> str:

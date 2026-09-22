@@ -1,0 +1,13 @@
+{
+  "schema_version": "product-probe-failure-v1",
+  "label": "browser-refund-after-service-restart-without-reconnect",
+  "incident_id": "incident_1790109186478441000",
+  "project": "support-agent",
+  "environment": "local-test",
+  "result": "refused-before-model-inference",
+  "runtime_status": "stopped",
+  "cause": "The API accepted a business-probe request while the owned candidate process was stopped and recorded an insufficient-evidence incident.",
+  "model_request_sent": false,
+  "corrective_action": "Add backend and UI stopped-runtime guards before creating an incident or calling /chat.",
+  "secret_values_recorded": false
+}

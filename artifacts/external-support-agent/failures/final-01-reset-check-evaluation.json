@@ -1,0 +1,12 @@
+{
+  "schema_version": "product-failure-record-v1",
+  "label": "final-01-reset-check-evaluation",
+  "failure_stage": "acceptance result evaluation",
+  "observed_check": "lab_reset_passed=false",
+  "actual_reset_http_status": 200,
+  "actual_reset_boolean_checks": "all true",
+  "root_cause": "The harness applied all(...) to a mixed dictionary containing cancelled_requests=0, so a valid zero count was treated as false.",
+  "service_reset_state": "passed",
+  "product_closure_checks": "all passed except the harness-only reset boolean",
+  "resolution": "The harness now evaluates boolean reset checks as true, cancellation count as zero, and model cancellation remaining as zero. The failed report is preserved unchanged."
+}
