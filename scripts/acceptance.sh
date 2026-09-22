@@ -12,7 +12,10 @@ npm --prefix frontend run build
 # Browser operations, state changes and provider-backed probes; bounded calls.
 node scripts/browser-acceptance.mjs
 node scripts/browser-extra.mjs
+node scripts/browser-audit-remediation.mjs
+.venv/bin/python scripts/check-clean-start.py
 .venv/bin/python scripts/live-safety.py
+.venv/bin/python scripts/environments.py stop
 .venv/bin/python scripts/environments.py start
 EVALUATION_OUTPUT="artifacts/acceptance-$(date +%Y%m%d-%H%M%S)"
 .venv/bin/python -u scripts/evaluate.py --conditions swarm --scenarios prompt cost loop composite --max-runs 4 --output "$EVALUATION_OUTPUT"

@@ -72,6 +72,14 @@ def main():
                 command = subprocess.run(["ps", "-p", str(pid), "-o", "command="], capture_output=True, text=True).stdout
                 if str(ROOT) in command and "uvicorn" in command and str(port) in command:
                     os.kill(pid, signal.SIGTERM)
+                    for _ in range(150):
+                        try:
+                            os.kill(pid, 0)
+                        except ProcessLookupError:
+                            break
+                        time.sleep(.2)
+                    else:
+                        raise SystemExit("Evaluation is still shutting down; refused to start over its port")
             return
         if not running:
             env = dict(os.environ)

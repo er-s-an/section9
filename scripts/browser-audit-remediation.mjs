@@ -5,7 +5,7 @@ import { createRequire } from 'node:module'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(path.join(here, '../frontend/package.json'))
-const { chromium } = require('playwright')
+const { chromium } = require('@playwright/test')
 
 const BASE = process.env.BASE_URL || 'http://127.0.0.1:9019'
 const stamp = new Date().toISOString().replace(/[:.]/g, '-')
@@ -33,7 +33,7 @@ const postJson = async (request, endpoint, data) => {
   try { body = await response.json() } catch {}
   return { status: response.status(), body }
 }
-const isActive = state => Number(state?.dependencies?.model?.active_requests || 0) > 0 || Number(state?.dependencies?.victim?.active_requests || 0) > 0
+const isActive = state => Number(state?.dependencies?.model?.active_requests || 0) > 0 || Number(state?.victim?.active_requests || 0) > 0
 const waitFor = async (fn, timeout = 30000, interval = 250) => {
   const deadline = Date.now() + timeout
   while (Date.now() < deadline) {
@@ -99,7 +99,9 @@ try {
   const chatResponsePromise = page.waitForResponse(response => response.url().endsWith('/api/chat') && response.request().method() === 'POST', { timeout: 90000 }).catch(() => null)
   await page.locator('.chat-dock button').click()
   const chatResponse = await chatResponsePromise
-  check('post-reset chat request returns', Boolean(chatResponse) && chatResponse.ok(), { status: chatResponse?.status() })
+  const freshChat = chatResponse ? await chatResponse.json() : null
+  check('post-reset chat returns real business answer', Boolean(chatResponse?.ok()) && freshChat?.status === 'success' && Boolean(freshChat?.answer), { status: freshChat?.status, elapsed_s: freshChat?.elapsed_s })
+  await write('post-reset-chat.json', freshChat)
   await resetButton.click().catch(() => {})
   await waitFor(async () => !(await stateFrom(context.request))?.incident, 15000)
 
@@ -118,7 +120,7 @@ try {
   check('muted UI injection sends condition=muted', injectRequest?.postData?.includes('"condition":"muted"'), { post_data: injectRequest?.postData, status: injectResponse?.status() })
   const mutedState = await waitFor(async () => { const s = await stateFrom(context.request); return s?.incident?.run_id ? s : null }, 20000)
   const mutedRunId = mutedState?.incident?.run_id
-  const mutedRun = mutedRunId ? (await getJson(context.request, `/api/runs/${mutedRunId}`)).body : null
+  const mutedRun = mutedRunId ? await waitFor(async () => { const r = (await getJson(context.request, `/api/runs/${mutedRunId}`)).body; return r?.events?.some(e => e.event_type === 'dialog.dropped') ? r : null }, 60000) : null
   const mutedEvents = mutedRun?.events || []
   check('muted run persists muted condition', mutedRun?.condition === 'muted', { run_id: mutedRunId, condition: mutedRun?.condition })
   check('muted run drops dialog and receives none', mutedEvents.some(e => e.event_type === 'dialog.dropped') && !mutedEvents.some(e => e.event_type === 'dialog.received'), { run_id: mutedRunId, event_types: [...new Set(mutedEvents.map(e => e.event_type))] })
@@ -127,7 +129,7 @@ try {
   await waitFor(async () => !(await stateFrom(context.request))?.incident, 20000)
 
   // The UI must reject memory + muted before making an injection request; the backend must reject it too.
-  const memoryButton = page.getByRole('button', { name: /关闭 Playbook|记忆复用/ }).first()
+  const memoryButton = page.locator('.control-line').filter({hasText:'下轮 Playbook'}).getByRole('button')
   if ((await memoryButton.innerText()).includes('关闭')) await memoryButton.click()
   const communicationAfterReset = page.getByRole('button', { name: /正常通信|已禁言/ }).first()
   if ((await communicationAfterReset.innerText()).includes('正常通信')) await communicationAfterReset.click()
@@ -152,6 +154,8 @@ try {
   const currentScore = await getJson(context.request, '/api/scoreboard')
   check('current scoreboard identifies selected/current version', currentScore.status === 200 && currentScore.body?.selected_version === currentScore.body?.current_version, { selected: currentScore.body?.selected_version, current: currentScore.body?.current_version })
   const currentRows = currentScore.body?.rows || []
+  const currentUnknown = currentRows.reduce((n,r)=>n+(r.unknown_usage_runs||0),0)
+  check('current scoreboard exposes retained unknown usage', currentUnknown > 0 && await page.getByText(/未知usage/).count() > 0, {unknown_runs:currentUnknown})
   check('current version keeps unmeasured cells empty', currentRows.filter(r => (r.cells || []).some(c => c.n === 0 && (c.run_ids || []).length > 0)).length === 0)
   const options = await page.locator('#score-version option').evaluateAll(nodes => nodes.map(node => ({ value: node.value, label: node.textContent })))
   const legacy = options.find(option => option.value === 'legacy')
@@ -161,7 +165,8 @@ try {
     await page.waitForTimeout(500)
     const legacyScore = await getJson(context.request, '/api/scoreboard?version=legacy')
     check('legacy version selection requests legacy data', legacyScore.body?.selected_version === 'legacy' && report.requests.some(row => row.url.includes('/api/scoreboard?version=legacy')), { selected: legacyScore.body?.selected_version })
-    check('legacy scoreboard exposes unknown usage', await page.getByText(/未知usage|小计未知/).count() > 0)
+    const unknownRuns = (legacyScore.body?.rows || []).reduce((n,r)=>n+(r.unknown_usage_runs||0),0)
+    check('legacy unknown usage agrees with real records', unknownRuns === 0 || await page.getByText(/未知usage/).count() > 0, {unknown_runs:unknownRuns, positive_unknown_render_test:unknownRuns>0})
     const scoreRequestsAfter = report.requests.filter(row => row.url.includes('/api/scoreboard')).length
     await page.waitForTimeout(4000)
     const scoreRequestsFinal = report.requests.filter(row => row.url.includes('/api/scoreboard')).length
@@ -170,6 +175,8 @@ try {
     check('legacy version exists for unknown usage audit', false, { options })
   }
 
+  await page.screenshot({path:path.join(out, 'scoreboard-unknown-usage.png'), fullPage:true})
+  await page.getByRole('button', {name:'办公室', exact:true}).click()
   for (const [width, height] of [[1280, 800], [1440, 1000]]) {
     await page.setViewportSize({ width, height })
     await page.screenshot({ path: path.join(out, `layout-${width}x${height}.png`), fullPage: true })
@@ -183,6 +190,8 @@ try {
   report.failures.push({ name: 'audit exception', passed: false, error: String(error), stack: error?.stack })
   try { await page.screenshot({ path: path.join(out, 'failure.png'), fullPage: true }); report.screenshots.push('failure.png') } catch {}
 } finally {
+  await context.request.put(BASE + '/api/memory', {data:{enabled:false}}).catch(()=>{})
+  await context.request.post(BASE + '/api/reset', {data:{}}).catch(()=>{})
   report.finished_at = new Date().toISOString()
   report.console_errors = report.console.filter(item => item.type === 'error')
   await write('report.json', report)

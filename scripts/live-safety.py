@@ -17,6 +17,7 @@ from s9.store import digest
 from s9.victim import VictimApp
 
 ROOT = Path(__file__).resolve().parents[1]
+OUTPUT = ROOT / "artifacts" / "live-safety" / str(time.time_ns())
 
 
 async def case(name, partial):
@@ -37,7 +38,7 @@ async def case(name, partial):
         stored_run["manifest"]["source_identity_hash"] = digest(identity)
         store.save(db, "runs", stored_run)
     background = asyncio.create_task(victim.chat("查询不存在订单 S9-MISSING 的物流", run_id=run["id"], purpose="safety-loop")) if partial else None
-    output = ROOT / "artifacts" / "live-safety"
+    output = OUTPUT
     output.mkdir(parents=True, exist_ok=True)
     filename = output / (name + ".json")
     record = {"case": name, "test_passed": False, "origin": "live_model_and_production_state_machine",

@@ -1,4 +1,10 @@
 /* Compact Codex/browser viewport. Imported by the root app; desktop rules remain unchanged. */
+.left-column,.right-column,.panel,.incident-card,.plan{min-width:0}
+.plan{display:block;max-width:100%;overflow:hidden}
+.plan span,.plan small{display:block}
+.plan p,.plan small,.plan pre,.plan button{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+.plan pre{width:100%;max-height:170px;margin:0;overflow:auto;white-space:pre-wrap}
+.plan button{display:block;width:100%;margin-top:8px;white-space:normal}
 @media (max-width:1039px){
   html,body,#root{min-width:0!important;width:100%;max-width:100%;overflow-x:hidden}
   body{font-size:12px}
