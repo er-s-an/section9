@@ -61,6 +61,12 @@ def _manifest_check(run: dict[str, Any], expected: dict[str, Any] | None) -> dic
               "concurrency": manifest.get("request_concurrency_limit", manifest.get("concurrency")),
               "fixture_version": manifest.get("fixture_version"),
               "memory_snapshot": manifest.get("memory_condition", manifest.get("memory_snapshot"))}
+    observed_identity = manifest.get("source_identity") if isinstance(manifest.get("source_identity"), dict) else None
+    identity_keys = ("backend_source_hash", "frontend_build_hash", "dependency_lock_hash", "fixture_hash", "acceptance_contract_hash")
+    expected_identity = expected.get("identity") if isinstance(expected, dict) else None
+    identity_missing = [key for key in identity_keys if not observed_identity or not observed_identity.get(key)]
+    identity_ok = bool(expected_identity) and not identity_missing and all(observed_identity.get(key) == expected_identity.get(key) for key in identity_keys)
+    identity_status = "aligned" if identity_ok else ("unaligned_missing_identity" if identity_missing else "unaligned_hash_mismatch")
     check = {"run_id": run.get("id"), "environment": manifest.get("environment"),
              **fields,
              "environment_ok": manifest.get("environment") == "evaluation",
@@ -68,11 +74,14 @@ def _manifest_check(run: dict[str, Any], expected: dict[str, Any] | None) -> dic
              "budget_ok": expected is None or fields["total_token_budget"] == expected.get("total_token_budget"),
              "concurrency_ok": expected is None or fields["concurrency"] == expected.get("concurrency"),
              "fixture_ok": expected is None or fields["fixture_version"] == expected.get("fixture_version"),
-             "memory_snapshot_recorded": fields["memory_snapshot"] is not None}
+             "memory_snapshot_recorded": fields["memory_snapshot"] is not None,
+             "source_identity": {key: observed_identity.get(key) for key in identity_keys} if observed_identity else None,
+             "identity_status": identity_status, "identity_missing": identity_missing,
+             "identity_ok": identity_ok}
     # Memory is the treatment under evaluation.  It is recorded for audit but
     # does not make otherwise identical model/budget/runtime runs unfair.
     check["aligned"] = bool(check["environment_ok"] and check["model_ok"] and check["budget_ok"]
-                             and check["concurrency_ok"] and check["fixture_ok"])
+                             and check["concurrency_ok"] and check["fixture_ok"] and check["identity_ok"])
     return check
 
 
@@ -125,6 +134,8 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     planned = [(c, s, repeat) for c in conditions for s in scenarios for repeat in range(1, args.repeats + 1)]
     planned = planned[: args.max_runs]
     expected_by_scenario: dict[str, dict[str, Any]] = {}
+    identity_unset = object()
+    identity_baseline: dict[str, Any] | None | object = identity_unset
     errors: list[dict[str, Any]] = []
     started = _now()
     client = httpx.Client(base_url=args.base_url.rstrip("/"), trust_env=False,
@@ -163,11 +174,14 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
                               "usage": latest.get("usage", [])}
                 record["run"] = latest
                 manifest = latest.get("manifest") if isinstance(latest.get("manifest"), dict) else {}
+                if identity_baseline is identity_unset:
+                    identity_baseline = manifest.get("source_identity") if isinstance(manifest.get("source_identity"), dict) else None
                 expected = expected_by_scenario.setdefault(scenario, {
                     "model": manifest.get("model"), "total_token_budget": manifest.get("total_token_budget"),
                     "concurrency": manifest.get("request_concurrency_limit", manifest.get("concurrency")),
                     "fixture_version": manifest.get("fixture_version"),
                     "memory_snapshot": manifest.get("memory_condition", manifest.get("memory_snapshot")),
+                    "identity": identity_baseline,
                 })
                 _add_run(cells[key], latest, expected)
                 _write_json(raw_dir / f"{rid}.json", record)
@@ -192,7 +206,9 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         client.close()
     measured = [cell for cell in cells.values() if cell["n"]]
     alignment = [check for cell in measured for check in cell["manifest_checks"]]
+    measured_run_ids = [run_id for cell in cells.values() for run_id in cell.get("run_ids", []) if isinstance(run_id, str)]
     summary = {"started_at": started, "finished_at": _now(), "base_url": args.base_url,
+               "run_id": measured_run_ids[-1] if measured_run_ids else None, "run_ids": measured_run_ids,
                "conditions": list(CONDITIONS), "scenarios": list(SCENARIOS), "repeats": args.repeats,
                "max_runs": args.max_runs, "executed_runs": sum(c["n"] for c in cells.values()),
                "cells": list(cells.values()), "errors": errors,

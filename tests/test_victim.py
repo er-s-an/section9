@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from s9.victim import VictimApp, healthy_config
+from s9.victim import BOUNDARY_CONCLUSION, POSITIVE_CONCLUSION, PRODUCT_CONCLUSION, VictimApp, healthy_config
 
 
 class StrictJSONDouble:
@@ -22,11 +22,13 @@ class StrictJSONDouble:
         prompt_section = system.split("工具证据：", 1)[0]
         healthy = "激活后仍可退" in prompt_section and "唯一权威来源" not in prompt_section
         if "续航" in question:
-            body = {"battery_hours": 30, "answer": "X200 续航 30 小时。"}
+            body = {"battery_hours": 30, "answer": PRODUCT_CONCLUSION}
         elif "物流" in question:
-            body = {"answer": "该订单物流暂时无法查询。"}
+            body = {"found": False, "answer": "结论：未查到该订单。"}
+        elif "超过" in question:
+            body = {"eligible": False, "merchant_pays_shipping": False, "answer": BOUNDARY_CONCLUSION}
         else:
-            body = {"eligible": healthy, "merchant_pays_shipping": healthy, "answer": "按政策处理。"}
+            body = {"eligible": healthy, "merchant_pays_shipping": healthy, "answer": POSITIVE_CONCLUSION if healthy else "已激活商品不支持退货。"}
         out = {"content": json.dumps(body, ensure_ascii=False), "elapsed_s": 0.01, "model": "component-double", "trace_id": None}
         if self.usage:
             n = len(system) // 4
@@ -120,3 +122,13 @@ def test_verify_cases_are_not_the_detect_question():
     asyncio.run(detect_app.probe(suite="detect"))
     asyncio.run(verify_app.probe(suite="verify"))
     assert detect_model.calls[0][-1]["content"] != verify_model.calls[0][-1]["content"]
+
+
+def test_probe_templates_do_not_leak_boolean_truth_to_model():
+    detect_app, detect_model, _, _ = make_app()
+    verify_app, verify_model, _, _ = make_app()
+    asyncio.run(detect_app.probe(suite="detect"))
+    asyncio.run(verify_app.probe(suite="verify"))
+    questions = [call[-1]["content"] for call in detect_model.calls + verify_model.calls]
+    assert all("eligible=true" not in q.lower() and "eligible=false" not in q.lower() for q in questions)
+    assert all("merchant_pays_shipping=true" not in q.lower() and "merchant_pays_shipping=false" not in q.lower() for q in questions)

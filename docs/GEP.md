@@ -24,5 +24,9 @@ prevents the write and is surfaced in `status().validator_error`.
 
 This implementation is local-only. It does not register with, publish to, or
 claim a receipt from EvoMap Hub. Every playbook and result reports
-`publish_state: local_only`; status also exposes `pending_auth: true` after a
-local event exists. No credential files are read.
+`publish_state: local_only`; the return layer explicitly reports
+`hub_status: not_implemented`, `remote_publish_implemented: false`, and
+`needs_implementation: true`. A compatibility `pending_auth` field, when
+present in historical data, is not an OAuth waiting state and does not imply
+that logging in would enable publishing. No credential files are read and no
+Hub endpoint is called.

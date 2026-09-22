@@ -17,17 +17,34 @@ def setup(tmp_path):
         import json
         task = next(json.loads(r[0]) for r in db.execute("SELECT data FROM tasks") if json.loads(r[0])["kind"] == "repair")
     lease = s.claim("fixer-a", task["id"])
+    with s.tx() as db:
+        agent = s.get(db, "agents", "fixer-a")
+        run_view = s.get(db, "runs", run["id"])
+        transport_epoch = str(s.meta(db, "transport_epoch"))
     p = s.create_plan("fixer-a", {"run_id": run["id"], "task_id": task["id"], "task_epoch": lease["epoch"],
+        "instance_id": agent["instance_id"], "generation": run_view["generation"], "transport_epoch": transport_epoch,
         "expected_revision": s.current_config()["revision"], "actions": [{"type": "set_prompt_revision", "values": {"prompt_version": "healthy"}}], "rationale": "component fixture"})
     return s, run, lease, p
 
 
+def message_context(store, run_id, lease):
+    with store.tx() as db:
+        agent = store.get(db, "agents", "fixer-a")
+        run = store.get(db, "runs", run_id)
+        generation = str(store.meta(db, "generation"))
+        transport_epoch = str(store.meta(db, "transport_epoch"))
+    return {"run_id": run_id, "task_id": lease["task_id"], "task_epoch": lease["epoch"],
+            "instance_id": agent["instance_id"], "generation": run["generation"] if run else generation,
+            "transport_epoch": transport_epoch, "kind": "result", "content": "late", "evidence_ids": [], "confidence": .5}
+
+
 def test_reset_rejects_old_renew_completion_and_messages(tmp_path):
     s, r, lease, p = setup(tmp_path)
+    late_message = message_context(s, r["id"], lease)
     s.reset()
     calls = [lambda: s.renew("fixer-a", lease["task_id"], lease["epoch"]),
              lambda: s.complete_task("fixer-a", lease["task_id"], lease["epoch"], "late"),
-             lambda: s.message("fixer-a", {"run_id": r["id"], "kind": "result", "content": "late"})]
+             lambda: s.message("fixer-a", late_message)]
     for call in calls:
         with pytest.raises(Rejected):
             call()

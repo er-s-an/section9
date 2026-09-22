@@ -35,6 +35,9 @@ class PlanRequest(StrictModel):
     run_id: str
     task_id: str
     task_epoch: str
+    instance_id: str
+    generation: str
+    transport_epoch: str
     expected_revision: str
     actions: list[Action] = Field(min_length=1, max_length=4)
     rationale: str = Field(min_length=1, max_length=3000)
@@ -49,6 +52,11 @@ class ExecuteRequest(StrictModel):
 
 class MessageRequest(StrictModel):
     run_id: str
+    task_id: str
+    task_epoch: str
+    instance_id: str
+    generation: str
+    transport_epoch: str
     kind: Literal["challenge", "agree", "disagree", "build_on", "synthesize", "hypothesis", "result"]
     content: str = Field(min_length=1, max_length=6000)
     evidence_ids: list[str] = Field(default_factory=list)

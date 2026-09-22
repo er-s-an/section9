@@ -48,13 +48,24 @@ def test_muted_context_has_no_peer_messages_results_plan_or_memory(tmp_path: Pat
         task = next(json.loads(row[0]) for row in db.execute("SELECT data FROM tasks")
                     if json.loads(row[0])["kind"] == "repair")
     lease = store.claim("fixer-a", task["id"])
+    with store.tx() as db:
+        agent = store.get(db, "agents", "fixer-a")
+        run_view = store.get(db, "runs", run["id"])
+        transport_epoch = str(store.meta(db, "transport_epoch"))
     store.create_plan("fixer-a", {
         "run_id": run["id"], "task_id": task["id"], "task_epoch": lease["epoch"],
+        "instance_id": agent["instance_id"], "generation": run_view["generation"],
+        "transport_epoch": transport_epoch,
         "expected_revision": store.current_config()["revision"],
         "actions": [{"type": "set_prompt_revision", "values": {"prompt_version": "healthy"}}],
         "rationale": "projection fixture",
     })
-    store.message("fixer-a", {"run_id": run["id"], "kind": "result", "content": "peer result"})
+    store.message("fixer-a", {
+        "run_id": run["id"], "task_id": lease["task_id"], "task_epoch": lease["epoch"],
+        "instance_id": agent["instance_id"], "generation": run_view["generation"],
+        "transport_epoch": transport_epoch, "kind": "result", "content": "peer result",
+        "evidence_ids": [], "confidence": 0.5,
+    })
     store.set_muted(True)
 
     context = _core_for(store, tmp_path).context(store.authenticate(tokens["fixer-b"]))
@@ -177,8 +188,14 @@ def test_verifier_has_no_write_execution_authority(tmp_path: Path) -> None:
         task = next(json.loads(row[0]) for row in db.execute("SELECT data FROM tasks")
                     if json.loads(row[0])["kind"] == "repair")
     lease = store.claim("fixer-a", task["id"])
+    with store.tx() as db:
+        agent = store.get(db, "agents", "fixer-a")
+        run_view = store.get(db, "runs", run["id"])
+        transport_epoch = str(store.meta(db, "transport_epoch"))
     plan = store.create_plan("fixer-a", {
         "run_id": run["id"], "task_id": task["id"], "task_epoch": lease["epoch"],
+        "instance_id": agent["instance_id"], "generation": run_view["generation"],
+        "transport_epoch": transport_epoch,
         "expected_revision": store.current_config()["revision"],
         "actions": [{"type": "set_prompt_revision", "values": {"prompt_version": "healthy"}}],
         "rationale": "authority fixture",

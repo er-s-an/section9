@@ -203,7 +203,9 @@ class Store:
                 raise Rejected("RUN_ACTIVE", "请先完成当前事故或重置")
             config = self.set_config(db, {**DEFAULT_CONFIG, **mutations[scenario]})
             run_id = uid("run")
-            contract = {"version": "1", "suite": "xiaozhi-heldout-v1", "semantic": True, "unaffected_product": True,
+            contract = {"version": "2", "suite": "xiaozhi-heldout-v2",
+                        "cost_limits": {"input": 2000, "output": 1536, "total": 3536},
+                        "answer_consistency": True, "negative_boundary": True, "whole_run_budget": True, "semantic": True, "unaffected_product": True,
                         "no_stalled_requests": True, "same_revision": True, "bounded_cost": True}
             run = {"id": run_id, "run_id": run_id, "scenario": scenario, "condition": condition, "seed": seed,
                    "status": "injected", "generation": str(self.meta(db, "generation")), "injected_revision": config["revision"],
@@ -217,6 +219,8 @@ class Store:
                                 "environment": "demo", "evidence_origin": "live", "hardware_isolation": False}}
             db.execute("INSERT INTO runs VALUES(?,?)", (run_id, encode(run)))
             self.set_meta(db, "current_run", run_id)
+            if self.meta(db, "muted") != (condition == "muted"):
+                self.set_meta(db, "transport_epoch", self.meta(db, "transport_epoch") + 1)
             self.set_meta(db, "muted", condition == "muted")
             self.event(db, "chaos.injected", {"scenario": scenario, "revision": config["revision"], "summary": "故障配置已真实生效，等待独立探针"}, run_id=run_id, producer="operator")
             return run
@@ -251,7 +255,8 @@ class Store:
             return {"opened": first, "run_id": run["id"]}
 
     def _new_task(self, db, run_id, kind):
-        task = {"id": uid("task"), "run_id": run_id, "kind": kind, "status": "available", "epoch": "0", "holder": None, "lease_deadline": 0.0, "result_summary": None}
+        task = {"id": uid("task"), "run_id": run_id, "kind": kind, "status": "available", "epoch": "0", "holder": None, "lease_deadline": 0.0, "result_summary": None,
+                "generation": self.get(db, "runs", run_id)["generation"], "holder_instance_id": None}
         db.execute("INSERT INTO tasks VALUES(?,?,?)", (task["id"], run_id, encode(task)))
         return task
 
@@ -267,7 +272,7 @@ class Store:
             if t["status"] == "completed" or (t["status"] == "claimed" and t["lease_deadline"] > time.time()):
                 raise Rejected("ALREADY_CLAIMED", "任务仍由有效租约持有")
             old_holder = t["holder"]
-            t.update(holder=agent_id, epoch=str(int(t["epoch"]) + 1), status="claimed", lease_deadline=time.time() + 8)
+            t.update(holder=agent_id, holder_instance_id=a["instance_id"], epoch=str(int(t["epoch"]) + 1), status="claimed", lease_deadline=time.time() + 8)
             if t["kind"] in {"repair", "single"}:
                 fence = self.meta(db, "resource_fence") + 1
                 self.set_meta(db, "resource_fence", fence)
@@ -297,20 +302,46 @@ class Store:
             t.update(status="completed", result_summary=summary[:1000])
             self.save(db, "tasks", t)
             self.event(db, "task.completed", {"task_id": task_id, "summary": summary[:500]}, producer=agent_id, run_id=t["run_id"])
+            if summary.startswith("failed:"):
+                run.update(status="failed", failure_reason="WORKER_TASK_FAILED", closed_at=now(),
+                           elapsed_s=round(time.monotonic() - run["start_mono"], 3))
+                self.save(db, "runs", run)
+                self._revoke_run(db, run["id"], "WORKER_TASK_FAILED")
+                self.event(db, "incident.failed", {"code": "WORKER_TASK_FAILED", "summary": summary[:500]}, run_id=run["id"], producer=agent_id)
             return {"ok": True}
 
+    def _valid_context(self, db, agent, run, item):
+        if item.get("generation") != run["generation"]:
+            raise Rejected("RESET_GENERATION_STALE", "消息或方案属于旧轮次")
+        if item.get("instance_id") != agent["instance_id"]:
+            raise Rejected("INSTANCE_STALE", "工作进程身份已换代")
+        if item.get("transport_epoch") != str(self.meta(db, "transport_epoch")):
+            raise Rejected("CONTEXT_STALE", "推理开始时的通信上下文已失效")
+
     def message(self, agent_id, item):
-        with self.tx() as db:
-            run = self.get(db, "runs", item["run_id"])
-            if not run or run["generation"] != str(self.meta(db, "generation")) or run["status"] not in ACTIVE:
-                raise Rejected("RUN_STALE", "当前消息属于无效事故")
-            msg = {**item, "id": uid("msg"), "sender": agent_id, "at": now(), "generation": run["generation"], "transport_epoch": str(self.meta(db, "transport_epoch"))}
-            if self.meta(db, "muted"):
-                self.event(db, "dialog.dropped", {"message_id": msg["id"], "kind": msg["kind"], "summary": "通信已禁言，消息未交付", "reason": "MUTED"}, run_id=run["id"], producer=agent_id)
-                return {"id": msg["id"], "delivered": False}
-            db.execute("INSERT INTO messages VALUES(?,?,?)", (msg["id"], run["id"], encode(msg)))
-            self.event(db, "dialog.received", {**msg, "summary": msg["content"]}, run_id=run["id"], producer=agent_id)
-            return {"id": msg["id"], "delivered": True}
+        try:
+            with self.tx() as db:
+                run = self.get(db, "runs", item["run_id"])
+                agent = self.get(db, "agents", agent_id)
+                task = self.get(db, "tasks", item.get("task_id"))
+                self._valid_task(db, agent, task, run, item.get("task_epoch"))
+                self._valid_context(db, agent, run, item)
+                msg = {**item, "id": uid("msg"), "sender": agent_id, "at": now()}
+                if self.meta(db, "muted"):
+                    self.event(db, "dialog.dropped", {"message_id": msg["id"], "kind": msg["kind"], "summary": "通信已禁言，消息未交付", "reason": "MUTED"}, run_id=run["id"], producer=agent_id)
+                    return {"id": msg["id"], "delivered": False}
+                db.execute("INSERT INTO messages VALUES(?,?,?)", (msg["id"], run["id"], encode(msg)))
+                self.event(db, "dialog.received", {**msg, "summary": msg["content"]}, run_id=run["id"], producer=agent_id)
+                return {"id": msg["id"], "delivered": True}
+        except Rejected as exc:
+            self.emit("dialog.rejected", {"code": exc.code, "summary": exc.message, "task_id": item.get("task_id")},
+                      run_id=item.get("run_id"), producer=agent_id)
+            raise
+
+    @staticmethod
+    def _plan_hash(plan):
+        return digest({k: plan.get(k) for k in ["run_id", "holder", "instance_id", "actions", "expected_revision",
+                      "generation", "task_id", "task_epoch", "transport_epoch", "resource_fence"]})
 
     def create_plan(self, agent_id, item):
         with self.tx() as db:
@@ -320,6 +351,7 @@ class Store:
             run = self.get(db, "runs", item["run_id"])
             task = self.get(db, "tasks", item["task_id"])
             self._valid_task(db, a, task, run, item["task_epoch"])
+            self._valid_context(db, a, run, item)
             if item["expected_revision"] != self.current_config(db)["revision"]:
                 raise Rejected("PRECONDITION_FAILED", "提案依据的配置版本已变化")
             updates = self._action_updates(item["actions"])
@@ -328,7 +360,7 @@ class Store:
             plan = {**item, "id": uid("plan"), "holder": agent_id, "status": "proposed", "approved": False,
                     "generation": run["generation"], "resource_fence": str(self.meta(db, "resource_fence")), "created_at": now(),
                     "autonomy_revision": str(self.meta(db, "autonomy_revision")), "transport_epoch": str(self.meta(db, "transport_epoch"))}
-            plan["hash"] = digest({k: plan[k] for k in ["actions", "expected_revision", "generation", "task_id", "task_epoch"]})
+            plan["hash"] = self._plan_hash(plan)
             db.execute("INSERT INTO plans VALUES(?,?,?)", (plan["id"], run["id"], encode(plan)))
             run.update(plan=plan, status="awaiting_approval" if self.meta(db, "autonomy") != "L2" else "repairing")
             self.save(db, "runs", run)
@@ -360,7 +392,9 @@ class Store:
     def _valid_task(self, db, agent, task, run, epoch):
         if not run or run["generation"] != str(self.meta(db, "generation")):
             raise Rejected("RESET_GENERATION_STALE", "上轮执行身份已被重置作废")
-        if not task or task["epoch"] != epoch or task["holder"] != agent["id"]:
+        if task and (task["run_id"] != run["id"] or task.get("generation") != run["generation"]):
+            raise Rejected("TASK_RUN_MISMATCH", "任务租约不属于当前事故与轮次")
+        if not agent or not task or task["epoch"] != epoch or task["holder"] != agent["id"] or task.get("holder_instance_id") != agent["instance_id"]:
             raise Rejected("FENCE_STALE", "旧任务 epoch 或执行身份已失效")
         if task["status"] != "claimed" or task["lease_deadline"] < time.time():
             raise Rejected("LEASE_EXPIRED", "执行租约已到期")
@@ -389,10 +423,11 @@ class Store:
             run = self.get(db, "runs", p["run_id"])
             task = self.get(db, "tasks", p["task_id"])
             self._valid_task(db, a, task, run, p["task_epoch"])
+            self._valid_context(db, a, run, p)
             self._autonomy_check(db, p)
             if p["transport_epoch"] != str(self.meta(db, "transport_epoch")):
                 raise Rejected("CONTEXT_STALE", "通信上下文已变更，方案必须重新生成")
-            if p["hash"] != digest({k: p[k] for k in ["actions", "expected_revision", "generation", "task_id", "task_epoch"]}):
+            if p["hash"] != self._plan_hash(p):
                 raise Rejected("GRANT_MISMATCH", "方案内容与审批哈希不符", 403)
             if p["expected_revision"] != self.current_config(db)["revision"]:
                 raise Rejected("PRECONDITION_FAILED", "授权时配置版本已变化")
@@ -432,13 +467,6 @@ class Store:
                     raise Rejected("ROLE_FORBIDDEN", "写入口拒绝非授权身份", 403)
                 if g["generation"] != str(self.meta(db, "generation")):
                     raise Rejected("RESET_GENERATION_STALE", "旧轮次令牌已失效")
-                request_hash = digest([agent_id, plan_id, grant_id])
-                old = db.execute("SELECT data FROM actions WHERE idem=?", (idempotency_key,)).fetchone()
-                if old:
-                    data = json.loads(old[0])
-                    if data["request_hash"] != request_hash:
-                        raise Rejected("IDEMPOTENCY_CONFLICT", "幂等键已被不同请求使用")
-                    return {"action_id": data["id"], "revision": data["after_revision"], "status": "applied", "replayed_receipt": True}
                 run = self.get(db, "runs", run_id)
                 task = self.get(db, "tasks", g["task_id"])
                 if g["generation"] != str(self.meta(db, "generation")):
@@ -446,13 +474,20 @@ class Store:
                 if not task or g["task_epoch"] != task["epoch"] or g["resource_fence"] != str(self.meta(db, "resource_fence")):
                     raise Rejected("FENCE_STALE", "旧执行者被新的 epoch/fence 拒绝")
                 self._valid_task(db, a, task, run, g["task_epoch"])
-                if g["plan_id"] != plan_id or g["plan_hash"] != p["hash"] or p["hash"] != digest({k: p[k] for k in ["actions", "expected_revision", "generation", "task_id", "task_epoch"]}) or g["instance_id"] != a["instance_id"] or g["contract_hash"] != run["contract_hash"]:
+                if g.get("revoked_at") or g["run_id"] != run["id"] or p["generation"] != run["generation"] or p["task_id"] != g["task_id"] or p["task_epoch"] != g["task_epoch"] or p.get("instance_id") != a["instance_id"] or g["plan_id"] != plan_id or g["plan_hash"] != p["hash"] or p["hash"] != self._plan_hash(p) or g["instance_id"] != a["instance_id"] or g["contract_hash"] != run["contract_hash"]:
                     raise Rejected("GRANT_MISMATCH", "授权绑定内容不符", 403)
                 if g["expires_at"] <= time.time():
                     raise Rejected("GRANT_EXPIRED", "执行令牌已经过期")
                 if g["autonomy_revision"] != str(self.meta(db, "autonomy_revision")) or g["transport_epoch"] != str(self.meta(db, "transport_epoch")):
                     raise Rejected("POLICY_CHANGED", "自治或通信策略已变更，旧令牌失效")
                 self._autonomy_check(db, p)
+                request_hash = digest([agent_id, plan_id, grant_id])
+                old = db.execute("SELECT data FROM actions WHERE idem=?", (idempotency_key,)).fetchone()
+                if old:
+                    data = json.loads(old[0])
+                    if data["request_hash"] != request_hash:
+                        raise Rejected("IDEMPOTENCY_CONFLICT", "幂等键已被不同请求使用")
+                    return {"action_id": data["id"], "revision": data["after_revision"], "status": "applied", "replayed_receipt": True}
                 before = self.current_config(db)
                 if before["revision"] != g["expected_revision"]:
                     raise Rejected("PRECONDITION_FAILED", "实际配置版本与授权不符")
@@ -492,7 +527,11 @@ class Store:
             result = {**result, "id": uid("verify"), "contract_hash": run["contract_hash"], "at": now()}
             same = str(result.get("tested_revision")) == config["revision"] == run["last_action"]["after_revision"]
             result.setdefault("checks", []).append({"name": "revision_unchanged_at_close", "passed": same, "expected": result.get("tested_revision"), "actual": config["revision"]})
-            required = {"heldout_semantic_policy", "unaffected_product_fact", "terminal_tool_stops", "cost_budget", "no_stalled_requests"}
+            budget_ok = not run.get("usage_unknown") and not run.get("reserved_tokens") and run["usage_tokens"] <= run["token_budget"]
+            result["checks"].append({"name": "whole_run_budget", "passed": budget_ok,
+                                     "expected": run["token_budget"], "actual": {"known_tokens": run["usage_tokens"],
+                                     "unknown": run.get("usage_unknown"), "reserved": run.get("reserved_tokens", 0)}})
+            required = {"heldout_semantic_policy", "unaffected_product_fact", "terminal_tool_stops", "cost_budget", "no_stalled_requests", "heldout_outside_return_window"}
             complete = required.issubset({c["name"] for c in result["checks"]})
             result["checks"].append({"name": "acceptance_contract_complete", "passed": complete, "expected": sorted(required), "actual": sorted(c["name"] for c in result["checks"])})
             result["passed"] = bool(result.get("passed")) and same and complete and all(c.get("passed") for c in result["checks"])
@@ -502,6 +541,7 @@ class Store:
             else:
                 run.update(status="failed", closed_at=now(), elapsed_s=round(time.monotonic() - run["start_mono"], 3), failure_reason="VERIFICATION_FAILED")
             self.save(db, "runs", run)
+            self._revoke_run(db, run_id, run["status"])
             self.event(db, "verification.completed", {"verification_id": result["id"], "passed": result["passed"], "checks": result["checks"], "tested_revision": result.get("tested_revision"), "summary": "独立业务验收通过" if result["passed"] else "独立验收失败，事故未解决"}, run_id=run_id, producer=agent_id)
             self.event(db, "incident.closed" if result["passed"] else "incident.failed", {"elapsed_s": run["elapsed_s"], "verification_id": result["id"], "summary": "业务恢复，事故结案" if result["passed"] else "验收失败已保留记录"}, run_id=run_id, producer="authority")
             return result
@@ -529,7 +569,7 @@ class Store:
             self._valid_task(db, self.get(db, "agents", p["holder"]), self.get(db, "tasks", p["task_id"]), run, p["task_epoch"])
             if p["resource_fence"] != str(self.meta(db, "resource_fence")) or p["transport_epoch"] != str(self.meta(db, "transport_epoch")):
                 raise Rejected("CONTEXT_STALE", "批准依据的执行者或通信上下文已变化")
-            if p["hash"] != digest({k: p[k] for k in ["actions", "expected_revision", "generation", "task_id", "task_epoch"]}):
+            if p["hash"] != self._plan_hash(p):
                 raise Rejected("GRANT_MISMATCH", "方案内容与原始哈希不符", 403)
             p.update(approved=True, approval_revision=str(self.meta(db, "autonomy_revision")), status="approved")
             self.save(db, "plans", p)
@@ -539,12 +579,27 @@ class Store:
             self.event(db, "plan.approved", {"plan_id": plan_id, "hash": p["hash"], "summary": "操作者批准此版本与方案哈希"}, run_id=p["run_id"], producer="operator")
             return {"approved": True}
 
+    def _revoke_run(self, db, run_id, reason):
+        for row in db.execute("SELECT data FROM tasks WHERE run_id=?", (run_id,)).fetchall():
+            task = json.loads(row[0])
+            if task["status"] in {"available", "claimed"}:
+                task.update(status="revoked", revoked_at=now(), revoked_reason=reason, lease_deadline=0.0)
+                self.save(db, "tasks", task)
+        for row in db.execute("SELECT data FROM grants").fetchall():
+            grant = json.loads(row[0])
+            if grant.get("run_id") == run_id and not grant.get("revoked_at"):
+                grant.update(revoked_at=now(), revoked_reason=reason)
+                self.save(db, "grants", grant)
+        self.event(db, "authority.revoked", {"reason": reason, "summary": "事故终态撤销任务与执行授权"}, run_id=run_id)
+
     def reset(self):
         with self.tx() as db:
             old = self.get(db, "runs", self.meta(db, "current_run"))
             if old and old["status"] in ACTIVE:
                 old.update(status="reset", closed_at=now(), elapsed_s=round(time.monotonic() - old["start_mono"], 3), failure_reason="OPERATOR_RESET")
                 self.save(db, "runs", old)
+            if old:
+                self._revoke_run(db, old["id"], "reset")
             gen = self.meta(db, "generation") + 1
             self.set_meta(db, "generation", gen)
             self.set_meta(db, "resource_fence", self.meta(db, "resource_fence") + 1)
@@ -574,6 +629,7 @@ class Store:
             if run and run["status"] in ACTIVE:
                 run.update(status="failed", failure_reason=reason, closed_at=now(), elapsed_s=round(time.monotonic() - run["start_mono"], 3))
                 self.save(db, "runs", run)
+                self._revoke_run(db, run_id, reason)
                 self.event(db, "incident.failed", {"code": reason, "summary": "运行未通过，失败和消耗已保留", "elapsed_s": run["elapsed_s"]}, run_id=run_id)
 
     def reserve_usage(self, run_id, reservation, purpose):
@@ -594,7 +650,11 @@ class Store:
     def settle_usage(self, usage_id, actual, elapsed_s, error=None):
         with self.tx() as db:
             u = self.get(db, "usage", usage_id)
-            total = actual.get("total_tokens") if actual else None
+            if u["status"] != "reserved":
+                return  # Late duplicate settlement must not count usage twice.
+            total = actual.get("total_tokens") if isinstance(actual, dict) else None
+            if type(total) is not int or total < 0:
+                total = None
             u.update(usage=actual, elapsed_s=elapsed_s, error=error, status="failed" if error else "completed", unknown=total is None)
             self.save(db, "usage", u)
             if u["run_id"]:

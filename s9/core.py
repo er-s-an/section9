@@ -16,6 +16,7 @@ import httpx
 
 from s9 import config
 from s9.model import ModelClient
+from s9.provenance import capture_identity
 from s9.store import ACTIVE, DEFAULT_CONFIG, Rejected, Store, digest, now
 from s9.telemetry import Telemetry
 from s9.victim import VictimApp
@@ -23,6 +24,7 @@ from s9.victim import VictimApp
 
 class Core:
     def __init__(self):
+        self.identity = capture_identity()
         self.implementation_hash = digest({p.name: p.read_text() for p in sorted((config.ROOT / "s9").glob("*.py"))})
         self.store = Store(config.DATA / "section9.sqlite")
         self.telemetry = Telemetry()
@@ -37,6 +39,8 @@ class Core:
         self.memory_candidates = {}
         self.children: dict[str, subprocess.Popen] = {}
         self.jobs: set[asyncio.Task] = set()
+        self.job_generations = {}
+        self.worker_restarts = {}
         self.pending_detection: set[str] = set()
         self.probe_schedule = {}
         self.verifying: set[str] = set()
@@ -51,10 +55,12 @@ class Core:
         self.runtime = config.DATA / "runtime"
         self.runtime.mkdir(parents=True, exist_ok=True)
 
-    def job(self, coroutine):
+    def job(self, coroutine, generation=None):
         task = asyncio.create_task(coroutine)
         self.jobs.add(task)
+        self.job_generations[task] = generation
         task.add_done_callback(self.jobs.discard)
+        task.add_done_callback(lambda done: self.job_generations.pop(done, None))
         return task
 
     async def start(self):
@@ -137,6 +143,8 @@ class Core:
             item["manifest"]["model_timeout_s"] = config.MODEL_TIMEOUT
             item["manifest"]["worker_completion_cap"] = 1600
             item["manifest"]["implementation_hash"] = self.implementation_hash
+            item["manifest"]["source_identity"] = self.identity
+            item["manifest"]["source_identity_hash"] = digest(self.identity)
             item["manifest"]["probe_schedule"] = {"interval_s": 30, "max_detection_rounds": 3, "scope": "active_incident"}
             item["manifest"]["victim_config"] = self.store.current_config(db)
             memory_source = self.evaluation_memory if item["manifest"]["environment"] == "evaluation" else self.memory
@@ -147,8 +155,8 @@ class Core:
         self.pending_detection.add(run["id"])
         self.probe_schedule[run["id"]] = {"last_at": time.monotonic(), "rounds": 1}
         if scenario in {"loop", "composite"}:
-            self.job(self.victim.chat("查询不存在订单 S9-MISSING 的物流", run_id=run["id"], purpose="loop-workload"))
-        self.job(self.detect(run["id"]))
+            self.job(self.victim.chat("查询不存在订单 S9-MISSING 的物流", run_id=run["id"], purpose="loop-workload"), generation=run["generation"])
+        self.job(self.detect(run["id"]), generation=run["generation"])
         return {"run_id": run["id"], "revision": run["injected_revision"]}
 
     async def detect(self, run_id):
@@ -161,7 +169,7 @@ class Core:
                     # Missing model output is a dependency failure, never semantic proof.
                     if check["name"] == "semantic_policy" and not check.get("actual"):
                         continue
-                    if check["name"] == "cost_budget" and not all(isinstance(x, int) for x in check.get("actual", [])):
+                    if check["name"] == "cost_budget" and not check.get("actual", {}).get("failures"):
                         continue
                     self.store.emit("observation.probe", {"signal": mapping[check["name"]], "summary": "业务探针发现 " + check["name"], **check}, run_id=run_id, producer="probe")
             if not any(e["payload"].get("signal") for e in self.store.events(run_id=run_id, limit=1000)):
@@ -184,10 +192,11 @@ class Core:
             if run and run["status"] in ACTIVE - {"verifying"} and schedule and schedule["rounds"] < 3 and rid not in self.pending_detection and time.monotonic() - schedule["last_at"] > 30:
                 schedule.update(last_at=time.monotonic(), rounds=schedule["rounds"] + 1)
                 self.pending_detection.add(rid)
-                self.job(self.detect(rid))
+                self.job(self.detect(rid), generation=run["generation"])
             if run and run["status"] in ACTIVE and time.monotonic() - run["start_mono"] > config.RUN_TIMEOUT:
                 self.store.fail_run(rid, "RUN_TIMEOUT")
                 self.victim.cancel_all("timeout")
+                await self.model.cancel_generation(run["generation"])
             if run and run.get("fencing_paused") and not run.get("fencing_resumed") and (run.get("last_action") or run["status"] not in ACTIVE):
                 agent_id = run["fencing_original"]
                 await self.pause(agent_id, False)
@@ -195,7 +204,7 @@ class Core:
                     run = self.store.get(db, "runs", rid)
                     run["fencing_resumed"] = True
                     self.store.save(db, "runs", run)
-            for aid, child in self.children.items():
+            for aid, child in list(self.children.items()):
                 if child.poll() is not None:
                     with self.store.tx() as db:
                         a = self.store.get(db, "agents", aid)
@@ -203,6 +212,18 @@ class Core:
                             a.update(status="offline", detail=f"进程退出 ({child.returncode})")
                             self.store.save(db, "agents", a)
                             self.store.event(db, "agent.offline", {"summary": a["detail"]}, producer=aid, run_id=rid)
+                    # Terminate the affected incident explicitly; bounded restart
+                    # supplies a new instance for the next incident.
+                    if run and run["status"] in ACTIVE:
+                        self.store.fail_run(rid, "WORKER_EXIT:" + aid)
+                        await self.model.cancel_generation(run["generation"])
+                    recent = [t for t in self.worker_restarts.get(aid, []) if time.monotonic() - t < 60]
+                    if len(recent) < 2:
+                        self.worker_restarts[aid] = recent + [time.monotonic()]
+                        try:
+                            self.spawn(aid)
+                        except Exception as exc:
+                            self.store.emit("agent.restart_failed", {"summary": "工作进程重启失败", "error": type(exc).__name__}, producer=aid)
 
     async def pause(self, aid, paused):
         item = self.store.pause(aid, paused)
@@ -222,8 +243,18 @@ class Core:
             await self.pause(aid, True)
 
     async def reset(self):
-        result = self.store.reset()  # invalidate first; cancelled model results may arrive later
+        old_generation = self.store.current_config()["generation"]
+        result = self.store.reset()  # invalidate before cancelling queued or in-flight I/O
         result["checks"]["cancelled_requests"] = self.victim.cancel_all("reset")
+        old_jobs = [task for task, generation in self.job_generations.items() if generation == old_generation]
+        for task in old_jobs:
+            task.cancel()
+        result["model_cancellation"] = await self.model.cancel_generation(old_generation)
+        if old_jobs:
+            await asyncio.gather(*old_jobs, return_exceptions=True)
+        result["checks"]["model_requests_released"] = not result["model_cancellation"]["remaining"]
+        self.pending_detection.clear()
+        self.probe_schedule.clear()
         self.progress.clear()
         for child in self.children.values():
             if child.poll() is None:
@@ -251,7 +282,11 @@ class Core:
                 if not muted:
                     for row in db.execute("SELECT data FROM messages WHERE run_id=?", (rid,)):
                         msg = json.loads(row[0])
-                        if msg["transport_epoch"] == epoch:
+                        task = self.store.get(db, "tasks", msg.get("task_id"))
+                        sender = self.store.get(db, "agents", msg.get("sender"))
+                        if (msg.get("transport_epoch") == epoch and msg.get("generation") == run["generation"]
+                                and task and task["run_id"] == rid and task["epoch"] == msg.get("task_epoch")
+                                and sender and sender["instance_id"] == msg.get("instance_id")):
                             messages.append(msg)
             projected = {"revision": config_view["revision"], "generation": config_view["generation"]}
             if role in {"diagnoser", "single"}:
@@ -279,6 +314,7 @@ class Core:
         if run and run.get("last_action") and role in {"verifier", "single"}:
             last_action = {"id": run["last_action"]["id"], "revision": run["last_action"]["after_revision"]}
         return {"id": aid, "role": role, "paused": agent["paused"], "generation": config_view["generation"],
+                "instance_id": agent["instance_id"], "transport_epoch": epoch,
                 "config": projected, "observations": observations, "muted": muted, "detection_pending": rid in self.pending_detection,
                 "incident": {k: run[k] for k in ["id", "run_id", "status", "opened_at", "condition"]} if run else None,
                 "tasks": tasks, "messages": messages[-30:], "plan": own_plan, "last_action": last_action, "memory": candidate}
@@ -411,10 +447,22 @@ class Core:
                 "actions": run["actions"], "verification": run["verification"], "manifest": run["manifest"],
                 "limitations": ["推理使用远程 EvoMap API；业务应用与协作服务运行于本机", "本地受信任操作者环境，非多租户安全沙箱"]}
 
-    def scoreboard(self):
+    def scoreboard(self, version=None):
         rows = []
         source = self.evaluation_store()
         records = source.runs(10000) if source else []
+        hash_fields = ["backend_source_hash", "frontend_build_hash", "dependency_lock_hash", "fixture_hash", "acceptance_contract_hash"]
+        def version_of(identity):
+            if not identity or any(not identity.get(k) for k in hash_fields):
+                return "legacy"
+            return digest({k: identity[k] for k in hash_fields})
+        current_version = version_of(self.identity)
+        selected_version = version or current_version
+        versions = {current_version: {"id": current_version, "label": "当前运行版本 " + current_version[:10], "n": 0}}
+        for record in records:
+            key = version_of(record["manifest"].get("source_identity"))
+            versions.setdefault(key, {"id": key, "label": "历史证据 · 缺少完整来源绑定" if key == "legacy" else "历史版本 " + key[:10], "n": 0})["n"] += 1
+        records = [r for r in records if version_of(r["manifest"].get("source_identity")) == selected_version]
         conditions = [("single", "单 Agent"), ("muted", "蜂群禁言 · 通信依赖测试"), ("swarm", "蜂群 · LLM 协作"), ("memory", "蜂群 + Playbook"), ("memory_jev", "蜂群 + Playbook + Jev（未启用）")]
         if any(r["condition"] == "single_memory" for r in records):
             conditions.append(("single_memory", "单 Agent + Playbook（补充对照）"))
@@ -440,7 +488,7 @@ class Core:
                          "unknown_usage_runs": sum(r["usage_unknown"] for r in samples) if n else None,
                          "conditions": [{"run_id": r["id"], "manifest": r["manifest"]} for r in samples],
                          "run_ids": [r["id"] for r in samples], "cells": cells})
-        return {"rows": rows, "limitations": ["只统计独立 9024 进程及数据库中的 evaluation 运行；集成演练与导览不混入计分", "共享物理 Mac 与供应商；未控制供应商缓存，样本不足不能推断优势", "失败、重置、未知 usage 均保留；未知成本不算零成本"]}
+        return {"rows": rows, "versions": list(versions.values()), "current_version": current_version, "selected_version": selected_version, "limitations": ["按后端、前端、依赖、fixture、验收合同哈希分组；历史缺少绑定的证据单列", "只统计独立 9024 进程及数据库中的 evaluation 运行；集成演练与导览不混入计分", "共享物理 Mac 与供应商；未控制供应商缓存，样本不足不能推断优势", "失败、重置、未知 usage 均保留；未知成本不算零成本"]}
 
     async def set_attract(self, enabled):
         if os.getenv("S9_ENVIRONMENT") == "attract":

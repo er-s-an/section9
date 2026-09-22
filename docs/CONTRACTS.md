@@ -1,4 +1,4 @@
-# Section9 integration contract v1 (owner: root)
+# Section9 integration contract v2 (owner: root)
 
 All timestamps are UTC ISO strings; revision/generation/epoch serialize as decimal strings. Python 3.12+, FastAPI; frontend React/Vite/TypeScript. Shared schema, dependency/lock files, DB and root config are ROOT ONLY. Do not access .env or CLAIMS.md in coding-agent tasks. No key values in outputs.
 
@@ -88,3 +88,13 @@ CLI `python -m s9.workers --id sentry|diagnoser|fixer-a|fixer-b|verifier|cost|si
 Default roles: sentry kind detect; diagnoser kind diagnose; fixer-a and fixer-b kind repair; verifier kind verify; cost kind cost; single kind single. On normal run, primary fixer should have slight poll lead (standby delay0.8s) but no hardcoded dispatch. Workers independently read/claim. Diagnoser model produces hypothesis and sends a challenge/build_on/synthesize message. Fixer waits for diagnoser conclusion while collecting own observations; when muted, the same repair capability remains available but only its own projected observations are readable; it may attempt a repair or abstain, and no failure is forced. Once a plan applied, verifier independently calls verify. Single bypasses peer dependency and uses UNION same available facts/tools/model/budget. Context.condition selects applicable runtime roles (baseline disables normal diagnose/repair/verify workers for that run). After successful completion worker returns idle; no infinite model retries. Cost joins capability directory at runtime, gets actual cost task when an incident exists, read-only analysis and message, no execute right.
 
 Model calibration: GLM includes reasoning in completion budget. Healthy max_output_tokens is 1536, injected cost cap4096; worker completion cap1600. Values are recorded in manifests, no hidden upward override.
+
+## Audit remediation contract v2
+
+- Health publishes a captured-at-process-start identity: checkout, commit, dirty digest, backend source, frontend bundle, dependency locks, fixture and acceptance hashes. Runtime identity is never recomputed to disguise an old process.
+- PlanRequest and MessageRequest require `instance_id`, `generation`, `transport_epoch`, `task_id` and `task_epoch` captured before model inference. All task/plan/grant/run ownership is checked at the authority boundary. Terminal runs revoke tasks and grants; old message contexts are audited and rejected.
+- Reset invalidates generation first, cancels queued and in-flight model HTTP and Core jobs, and preserves unknown provider usage. `model_cancellation.remaining` must be zero.
+- Acceptance v2 uses four held-out business requests: 5-day activated return, 15-day non-quality return denial, X200 battery fact, and terminal missing-order query. Detection uses a separate 3-day request. The visible answer follows a symmetric constrained response grammar; only typography is normalized. This is not a general natural-language correctness judge.
+- Cost acceptance checks nonnegative integer input/output/total, input<=2000, output<=1536, total<=3536, total=input+output. Unknown usage fails. Closure also requires the entire run within budget, no unknown or pending reservation, and tested revision still current.
+- Scoreboard defaults to the current five-hash implementation group. `/api/scoreboard?version=...` selects historical groups, including `legacy` for records without full provenance. Unknown usage is shown beside known token subtotals.
+- `memory + muted` is unsupported and rejected at the console injection endpoint. A muted-only injection is valid and its manifest records condition `muted`.

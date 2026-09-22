@@ -50,6 +50,12 @@ def test_assets_are_officially_hashed_schema_validated_and_persisted(tmp_path):
     restored = MemoryStore(tmp_path)
     assert restored.status()["events"] == 3
     assert restored.list_playbooks()[-1]["source"] == "learned"
+    assert restored.status()["hub_status"] == "not_implemented"
+    assert restored.status()["remote_publish_implemented"] is False
+    assert restored.status()["needs_implementation"] is True
+    assert restored.status()["pending_auth"] is False
+    assert result["publish_state"] == "local_only"
+    assert result["remote_publish_implemented"] is False
 
 
 def test_verified_reuse_increments_count_and_references_prior_asset(tmp_path):

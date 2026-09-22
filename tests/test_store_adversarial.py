@@ -25,8 +25,13 @@ def _task(store: Store, run_id: str, kind: str) -> dict:
 
 def _plan(store: Store, fixer: str, run_id: str, task: dict) -> dict:
     config = store.current_config()
+    with store.tx() as db:
+        agent = store.get(db, "agents", fixer)
+        run = store.get(db, "runs", run_id)
+        transport_epoch = str(store.meta(db, "transport_epoch"))
     return store.create_plan(fixer, {
         "run_id": run_id, "task_id": task["id"], "task_epoch": task["epoch"],
+        "instance_id": agent["instance_id"], "generation": run["generation"], "transport_epoch": transport_epoch,
         "expected_revision": config["revision"],
         "actions": [{"type": "apply_retry_policy", "values": {"retry_limit": 2}}],
         "rationale": "component-test repair", "evidence_ids": [],
@@ -69,9 +74,14 @@ def test_l2_white_list_rejects_unknown_action(tmp_path):
     store, _, run_id = _incident(tmp_path)
     task = _task(store, run_id, "repair")
     claimed = store.claim("fixer-a", task["id"])
+    with store.tx() as db:
+        agent = store.get(db, "agents", "fixer-a")
+        run = store.get(db, "runs", run_id)
+        transport_epoch = str(store.meta(db, "transport_epoch"))
     with pytest.raises(Rejected) as denied:
         store.create_plan("fixer-a", {
             "run_id": run_id, "task_id": task["id"], "task_epoch": claimed["epoch"],
+            "instance_id": agent["instance_id"], "generation": run["generation"], "transport_epoch": transport_epoch,
             "expected_revision": store.current_config()["revision"],
             "actions": [{"type": "set_prompt_revision", "values": {"prompt_version": "evil"}}],
             "rationale": "must be rejected", "evidence_ids": [],
@@ -179,8 +189,17 @@ def test_mutated_plan_hash_cannot_bypass_grant_binding(tmp_path):
 
 def test_muted_message_is_not_delivered(tmp_path):
     store, _, run_id = _incident(tmp_path)
+    task = _task(store, run_id, "repair")
+    lease = store.claim("fixer-a", task["id"])
+    with store.tx() as db:
+        agent = store.get(db, "agents", "fixer-a")
+        run = store.get(db, "runs", run_id)
     store.set_muted(True)
-    result = store.message("fixer-a", {"run_id": run_id, "kind": "hypothesis", "content": "secret", "evidence_ids": [], "confidence": .7})
+    with store.tx() as db:
+        transport_epoch = str(store.meta(db, "transport_epoch"))
+    result = store.message("fixer-a", {"run_id": run_id, "task_id": lease["task_id"], "task_epoch": lease["epoch"],
+        "instance_id": agent["instance_id"], "generation": run["generation"], "transport_epoch": transport_epoch,
+        "kind": "hypothesis", "content": "secret", "evidence_ids": [], "confidence": .7})
     assert result["delivered"] is False
     with store.tx() as db:
         assert db.execute("SELECT count(*) FROM messages WHERE run_id=?", (run_id,)).fetchone()[0] == 0

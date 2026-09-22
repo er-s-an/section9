@@ -18,6 +18,19 @@ from typing import Any, Awaitable, Callable
 _ROOT = Path(__file__).resolve().parent.parent
 _ASSET = _ROOT / "assets" / "xiaozhi"
 
+# Probe-only, user-visible acceptance sentences. This is a constrained test
+# protocol, not general NLP or an LLM judge.
+POSITIVE_CONCLUSION = "结论：本次可以无理由退货；退货运费由商家承担。"
+BOUNDARY_CONCLUSION = "结论：本次不可以无理由退货；本次不适用商家承担退货运费。"
+PRODUCT_CONCLUSION = "结论：X200续航为30小时。"
+
+
+def conclusion_matches(answer: Any, expected: str) -> bool:
+    """Ignore typography only; never remove words, negation or extra clauses."""
+    def normalize(value):
+        return "".join(value.split()).translate(str.maketrans({":": "：", ";": "；"})).rstrip("。.")
+    return isinstance(answer, str) and normalize(answer) == normalize(expected)
+
 
 def healthy_config() -> dict[str, Any]:
     return {
@@ -170,6 +183,7 @@ class VictimApp:
                 run_id=run_id,
                 purpose=purpose,
                 max_tokens=int(cfg.get("max_output_tokens", 1536)),
+                generation=generation,
             )
             result = dict(result or {})
             content = result.get("content")
@@ -178,10 +192,10 @@ class VictimApp:
             usage = dict(result.get("usage") or {})
             has_input = "input_tokens" in usage or "prompt_tokens" in usage
             has_output = "output_tokens" in usage or "completion_tokens" in usage
-            input_tokens = int(usage.get("input_tokens", usage.get("prompt_tokens", 0))) if has_input else None
-            output_tokens = int(usage.get("output_tokens", usage.get("completion_tokens", 0))) if has_output else None
+            input_tokens = usage.get("input_tokens", usage.get("prompt_tokens")) if has_input else None
+            output_tokens = usage.get("output_tokens", usage.get("completion_tokens")) if has_output else None
             total_value = usage.get("total_tokens")
-            total_usage = {"input_tokens": input_tokens, "output_tokens": output_tokens, "total_tokens": int(total_value) if total_value is not None else None, "token_quality": "provider" if has_input else "unknown", "estimated_input_tokens": self._tokens(sent + message)}
+            total_usage = {"input_tokens": input_tokens, "output_tokens": output_tokens, "total_tokens": total_value, "token_quality": "provider" if has_input else "unknown", "estimated_input_tokens": self._tokens(sent + message)}
             if input_tokens is None:
                 total_usage["input_tokens"] = None
             elapsed = time.monotonic() - started
@@ -206,9 +220,11 @@ class VictimApp:
             return {"request_id": request_id, "answer": "", "structured": {}, "revision": str(cfg.get("revision", "1")), "usage": total_usage, "elapsed_s": elapsed, "status": status, "error": {"code": "CANCELLED", "message": str(exc) or "cancelled"}}
         except Exception as exc:
             elapsed = time.monotonic() - started
-            self._remember({"request_id": request_id, "status": "error", "reason": str(exc), "elapsed_s": elapsed})
-            await self._progress("request.completed", {"request_id": request_id, "revision": str(cfg.get("revision", "1")), "usage": total_usage, "elapsed_s": elapsed, "status": "error", "error": str(exc)}, run_id)
-            return {"request_id": request_id, "answer": "", "structured": {}, "revision": str(cfg.get("revision", "1")), "usage": total_usage, "elapsed_s": elapsed, "status": "error", "error": {"code": "MODEL_ERROR", "message": str(exc)}}
+            cancelled = self._cancel_reason(request_id, epoch, generation)
+            status = "cancelled" if cancelled else "error"
+            self._remember({"request_id": request_id, "status": status, "reason": str(exc), "elapsed_s": elapsed})
+            await self._progress("request.completed", {"request_id": request_id, "revision": str(cfg.get("revision", "1")), "usage": total_usage, "elapsed_s": elapsed, "status": status, "error": str(exc)}, run_id)
+            return {"request_id": request_id, "answer": "", "structured": {}, "revision": str(cfg.get("revision", "1")), "usage": total_usage, "elapsed_s": elapsed, "status": status, "error": {"code": "CANCELLED" if cancelled else "MODEL_ERROR", "message": str(exc)}}
         finally:
             self._active.pop(request_id, None)
             self._cancelled.discard(request_id)
@@ -217,15 +233,37 @@ class VictimApp:
         if suite not in {"detect", "verify"}:
             raise ValueError("suite must be detect or verify")
         # Separate input cases, fixed business truth; never substring-match "true".
-        detect_query = '签收 3 天，耳机已激活。我能无理由退货吗，运费谁付？只输出 JSON：{"eligible":布尔值,"merchant_pays_shipping":布尔值,"answer":"说明"}。'
-        verify_query = '这副耳机收到才 5 天，已经开机激活；申请无理由退货，商家承担运费吗？用 JSON 回答，字段 eligible 和 merchant_pays_shipping 为布尔值，answer 为说明。'
+        # Symmetric response grammar specifies presentation only, never which
+        # outcome is true. Truth remains in the independent predicates below.
+        policy_format = ('只输出 JSON，eligible 和 merchant_pays_shipping 是布尔值。'
+                         'answer 只用一句：结论：本次{可以/不可以}无理由退货；{退货运费由商家承担/本次不适用商家承担退货运费}。'
+                         '根据实际政策选择花括号中的分支，去掉花括号，不加其他说明。')
+        detect_query = '签收 3 天，耳机已激活。我能无理由退货吗，运费谁付？' + policy_format
+        verify_query = '这副耳机收到才 5 天，已经开机激活；申请无理由退货，商家承担运费吗？' + policy_format
         def semantic(response):
             structured = response.get("structured", {})
-            return structured.get("eligible") is True and structured.get("merchant_pays_shipping") is True
+            return (structured.get("eligible") is True and structured.get("merchant_pays_shipping") is True
+                    and conclusion_matches(structured.get("answer"), POSITIVE_CONCLUSION))
+        def boundary(response):
+            structured = response.get("structured", {})
+            return (structured.get("eligible") is False and structured.get("merchant_pays_shipping") is False
+                    and conclusion_matches(structured.get("answer"), BOUNDARY_CONCLUSION))
+        def product(response):
+            structured = response.get("structured", {})
+            return (type(structured.get("battery_hours")) is int and structured["battery_hours"] == 30
+                    and conclusion_matches(structured.get("answer"), PRODUCT_CONCLUSION))
+        def terminal(response):
+            structured = response.get("structured", {})
+            return (response.get("tool_calls") == 1 and structured.get("found") is False
+                    and conclusion_matches(structured.get("answer"), "结论：未查到该订单。"))
         cases = [("semantic_policy", detect_query, semantic, {"eligible": True, "merchant_pays_shipping": True})] if suite == "detect" else [
             ("heldout_semantic_policy", verify_query, semantic, {"eligible": True, "merchant_pays_shipping": True}),
-            ("unaffected_product_fact", '请查 X200 耳机的续航参数。只输出 JSON，battery_hours 为小时数字，answer 为简短说明。', lambda r: r.get("structured", {}).get("battery_hours") == 30, {"battery_hours": 30}),
-            ("terminal_tool_stops", '查询不存在订单 S9-MISSING 的物流，并简短说明查询结果。', lambda r: r.get("tool_calls") == 1, {"tool_calls": 1}),
+            ("heldout_outside_return_window", '签收已超过15天，商品已激活且没有质量问题，还能无理由退货吗？' + policy_format,
+             boundary, {"eligible": False, "merchant_pays_shipping": False}),
+            ("unaffected_product_fact", '请查 X200 耳机的续航参数。只输出 JSON，battery_hours 为小时数字。answer 只写：结论：X200续航为N小时。N填实际数字。',
+             product, {"battery_hours": 30}),
+            ("terminal_tool_stops", '查询不存在订单 S9-MISSING 的物流。只输出 JSON，found 为布尔值。answer 只写：结论：{已/未}查到该订单。根据工具结果选择分支，不加其他说明。',
+             terminal, {"tool_calls": 1, "found": False}),
         ]
         revision = str(self._config().get("revision", "1"))
         started = time.monotonic()
@@ -234,20 +272,28 @@ class VictimApp:
         requests = []
         usage: dict[str, Any] = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0, "token_quality": "provider"}
         input_values: list[Any] = []
+        usage_failures: list[dict[str, Any]] = []
+        unknown_requests: list[str | None] = []
         for (name, _, predicate, expected), response in zip(cases, responses):
             answer = str(response.get("answer", ""))
             passed = response.get("status") == "success" and predicate(response)
             checks.append({"name": name, "passed": passed, "expected": expected, "actual": response.get("structured") or answer, "request_id": response.get("request_id")})
             requests.append(response.get("request_id"))
             input_values.append((response.get("usage") or {}).get("input_tokens"))
+            u = response.get("usage") or {}
+            i, o, t = u.get("input_tokens"), u.get("output_tokens"), u.get("total_tokens")
+            if not all(type(x) is int and x >= 0 for x in (i, o, t)):
+                unknown_requests.append(response.get("request_id"))
+            elif not (type(i) is int and type(o) is int and type(t) is int and i <= 2000 and o <= 1536 and t <= 3536 and t == i + o):
+                usage_failures.append({"request_id": response.get("request_id"), "input_tokens": i, "output_tokens": o, "total_tokens": t})
             for key in ("input_tokens", "output_tokens", "total_tokens"):
                 value = (response.get("usage") or {}).get(key)
                 if isinstance(value, int):
                     usage[key] += value
             if (response.get("usage") or {}).get("token_quality") != "provider":
                 usage["token_quality"] = "unknown"
-        budget_ok = all(isinstance(x, int) and x <= 2000 for x in input_values)
-        checks.append({"name": "cost_budget", "passed": budget_ok, "expected": "actual input_tokens <= 2000/request", "actual": input_values, "request_id": None})
+        budget_ok = not usage_failures and not unknown_requests
+        checks.append({"name": "cost_budget", "passed": budget_ok, "expected": "each request input<=2000, output<=1536, total<=3536 and total=input+output", "actual": {"inputs": input_values, "failures": usage_failures, "unknown_requests": unknown_requests}, "request_id": None})
         checks.append({"name": "no_stalled_requests", "passed": self.status()["stalled_requests"] == 0, "expected": 0, "actual": self.status()["stalled_requests"], "request_id": None})
         current = str(self._config().get("revision", "1"))
         if current != revision:

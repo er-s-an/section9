@@ -5,7 +5,7 @@ import gzip
 import io
 import json
 import uvicorn
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, nullcontext
 from typing import Literal
 
 from fastapi import Depends, FastAPI, Request
@@ -27,6 +27,9 @@ async def lifespan(app):
     # supervisor, model gateway or application lifespan is started here.
     agent_server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=config.PORT + 2,
                                                 lifespan="off", access_log=False, log_level="warning"))
+    # Only the outer server owns OS signal handlers. The nested ingress shares
+    # its lifecycle and must not replace SIGTERM/SIGINT handling.
+    agent_server.capture_signals = nullcontext
     agent_task = asyncio.create_task(agent_server.serve())
     await app.state.core.start()
     yield
@@ -117,7 +120,7 @@ async def state(c: Core = Depends(core)):
 
 @app.get("/api/health")
 async def health(c: Core = Depends(core)):
-    return {"status": "running", "dependencies": c.snapshot()["dependencies"]}
+    return {"status": "running", "identity": c.identity, "dependencies": c.snapshot()["dependencies"]}
 
 
 @app.get("/api/events")
@@ -146,6 +149,9 @@ async def chat(item: ChatRequest, c: Core = Depends(core)):
 
 @app.post("/api/inject")
 async def inject(item: Injection, c: Core = Depends(core)):
+    with c.store.tx() as db:
+        if c.store.meta(db, "muted") and c.store.meta(db, "memory_enabled"):
+            raise Rejected("UNSUPPORTED_CONDITION", "暂不支持 Playbook 与禁言同时开启；请关闭其中一项", 422)
     return await c.inject(item.scenario, item.condition, item.seed)
 
 
@@ -234,8 +240,8 @@ async def rca(rid: str, c: Core = Depends(core)):
 
 
 @app.get("/api/scoreboard")
-async def scoreboard(c: Core = Depends(core)):
-    return c.scoreboard()
+async def scoreboard(version: str | None = None, c: Core = Depends(core)):
+    return c.scoreboard(version)
 
 
 @app.get("/api/playbooks")
@@ -293,7 +299,19 @@ async def model(item: ModelRequest, a=Depends(agent), c: Core = Depends(core)):
         c.store._valid_task(db, c.store.get(db, "agents", a["id"]), task,
                             c.store.get(db, "runs", item.run_id), task["epoch"])
     try:
-        return await c.model.complete(item.messages, run_id=item.run_id, purpose=item.purpose, max_tokens=item.max_tokens)
+        result = await c.model.complete(item.messages, run_id=item.run_id, purpose=item.purpose, max_tokens=item.max_tokens, generation=task["generation"])
+        try:
+            with c.store.tx() as db:
+                current_agent = c.store.get(db, "agents", a["id"])
+                if current_agent["instance_id"] != a["instance_id"]:
+                    raise Rejected("INSTANCE_STALE", "模型返回时工作进程身份已失效")
+                c.store._valid_task(db, current_agent, c.store.get(db, "tasks", task["id"]),
+                                   c.store.get(db, "runs", item.run_id), task["epoch"])
+        except Rejected as exc:
+            c.store.emit("model.source_stale", {"code": exc.code, "task_id": task["id"],
+                         "summary": "模型返回时来源租约已失效；真实消耗保留，结果不交付"}, run_id=item.run_id, producer=a["id"])
+            raise
+        return result
     except Rejected:
         raise
     except Exception as exc:

@@ -103,14 +103,15 @@ def test_readiness_waits_without_claiming_peer_or_detection(monkeypatch: pytest.
 @pytest.mark.asyncio
 async def test_policy_approval_retries_grant_without_second_model_call(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("S9_AGENT_TOKEN", "component-token")
-    calls = {"model": 0, "grant": 0}
+    calls = {"model": 0, "grant": 0, "plan": None}
 
     def handler(request: httpx.Request) -> httpx.Response:
         path = request.url.path
         if path == "/agent/model":
             calls["model"] += 1
-            return httpx.Response(200, json={"content": json.dumps({"rationale": "r", "actions": [{"type": "apply_retry_policy", "values": {"retry_limit": 2}}]})})
+            return httpx.Response(200, json={"content": json.dumps({"rationale": "r", "evidence_ids": [], "actions": [{"type": "apply_retry_policy", "values": {"retry_limit": 2}}]})})
         if path == "/agent/plan":
+            calls["plan"] = json.loads(request.content)
             return httpx.Response(200, json={"id": "p1"})
         if path == "/agent/grant":
             calls["grant"] += 1
@@ -127,10 +128,13 @@ async def test_policy_approval_retries_grant_without_second_model_call(monkeypat
         worker = Worker("single", "http://test", client=client, poll_interval=.001)
         await worker._start()
         lease = type("Lease", (), {"task_id": "t1", "epoch": "1", "run_id": "r1", "plan_id": None})()
-        result = await worker._fix({"config": {"revision": "1"}, "observations": [], "messages": [], "incident": {"run_id": "r1"}}, lease, True)
+        result = await worker._fix({"config": {"revision": "1", "generation": "g1"}, "generation": "g1", "transport_epoch": "te1", "instance_id": "inst1", "observations": [], "messages": [], "incident": {"run_id": "r1"}}, lease, True)
         await worker.close()
     assert result.startswith("executed")
-    assert calls == {"model": 1, "grant": 2}
+    assert calls["model"] == 1 and calls["grant"] == 2
+    assert calls["plan"]["instance_id"] == "inst1"
+    assert calls["plan"]["generation"] == "g1"
+    assert calls["plan"]["transport_epoch"] == "te1"
 
 
 @pytest.mark.asyncio

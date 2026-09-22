@@ -93,7 +93,11 @@ class MemoryStore:
         ]
 
     def list_playbooks(self) -> list[dict[str, Any]]:
-        return json.loads(json.dumps(self._playbooks, ensure_ascii=False))
+        items = json.loads(json.dumps(self._playbooks, ensure_ascii=False))
+        for item in items:
+            item.update({"hub_status": "not_implemented", "remote_publish_implemented": False,
+                         "needs_implementation": True})
+        return items
 
     def match(self, symptoms: list[str], config: dict[str, Any]) -> dict[str, Any] | None:
         observed = set(symptoms) & set(SIGNALS)
@@ -221,13 +225,21 @@ class MemoryStore:
             self._playbooks.append(learned)
         _atomic_json(self._playbooks_path, self._playbooks)
         self._append(list(assets.values()))
-        return {**assets, "playbook": json.loads(json.dumps(learned)), "publish_state": "local_only"}
+        playbook = json.loads(json.dumps(learned))
+        playbook.update({"hub_status": "not_implemented", "remote_publish_implemented": False,
+                         "needs_implementation": True})
+        return {**assets, "playbook": playbook, "publish_state": "local_only",
+                "hub_status": "not_implemented", "remote_publish_implemented": False,
+                "needs_implementation": True}
 
     def status(self) -> dict[str, Any]:
         events = 0
         if self._events_path.exists():
             events = sum(1 for line in self._events_path.read_text(encoding="utf-8").splitlines() if line.strip())
         return {"playbooks": len(self._playbooks), "learned": sum(p.get("source") == "learned" for p in self._playbooks),
-                "events": events, "publish_state": "local_only", "hub_status": "pending_auth",
-                "pending_auth": True if events else False,
+                "events": events, "publish_state": "local_only", "hub_status": "not_implemented",
+                "remote_publish_implemented": False, "needs_implementation": True,
+                # Kept only as a compatibility field; this is not an OAuth
+                # waiting state and must not imply that login enables publish.
+                "pending_auth": False,
                 "validator_error": self._error}
