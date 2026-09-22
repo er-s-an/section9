@@ -1,0 +1,5 @@
+{"scenario": "prompt", "pair_id": "pair_c94a9c38455348d6", "passed": true, "arms": {"swarm": {"status": "resolved", "elapsed_s": 39.035, "known_tokens": 5890, "unknown": 0}, "baseline": {"status": "resolved", "elapsed_s": 26.107, "known_tokens": 4463, "unknown": 0}}}
+{"scenario": "cost", "pair_id": "pair_ff221776dbe043cf", "passed": false, "arms": {"swarm": {"status": "resolved", "elapsed_s": 107.103, "known_tokens": 13670, "unknown": 0}, "baseline": {"status": "failed", "elapsed_s": 100.998, "known_tokens": 11244, "unknown": 0}}}
+{"scenario": "loop", "pair_id": "pair_a18c91360f4d4884", "passed": true, "arms": {"swarm": {"status": "resolved", "elapsed_s": 54.548, "known_tokens": 7478, "unknown": 0}, "baseline": {"status": "resolved", "elapsed_s": 41.231, "known_tokens": 5008, "unknown": 0}}}
+{"scenario": "composite", "pair_id": "pair_879bcee3fa084a59", "passed": true, "arms": {"swarm": {"status": "resolved", "elapsed_s": 102.814, "known_tokens": 9187, "unknown": 0}, "baseline": {"status": "resolved", "elapsed_s": 94.401, "known_tokens": 6128, "unknown": 0}}}
+{"evidence": "artifacts/showcase-cases/1790082184097163000", "passed": false}

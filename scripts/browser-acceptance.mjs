@@ -34,7 +34,7 @@ async function saveRun(id, label) {
 }
 async function reset() {
   const before = (await state()).generation;
-  await page.getByRole('button', { name: '重置实验室', exact: true }).click();
+  await page.getByRole('button', { name: '重新开始本轮', exact: true }).click();
   await waitFor(async () => (await state()).generation !== before, 'reset generation');
 }
 try {
@@ -53,8 +53,8 @@ try {
   assert(chat.answer.includes('30'));
   await fs.writeFile(path.join(out, 'healthy-chat.json'), JSON.stringify(chat, null, 2));
   report.checks.push({name:'one console chat input returns real fixture business fact',passed:true,request_id:chat.request_id});
-  await page.getByRole('button', { name: 'L0', exact: true }).click();
-  await page.getByRole('button', { name: '语义退化', exact: true }).click();
+  await page.getByRole('button', { name: '仅建议', exact: true }).click();
+  await page.getByRole('button', { name: '回答偏离预期', exact: true }).click();
   const planState = await waitFor(async () => { const s = await state(); return s.incident?.plan ? s : null; }, 'L0 real model plan');
   const id = planState.incident.id;
   const revision = planState.config.revision;
@@ -63,21 +63,22 @@ try {
   assert.equal((await state()).config.revision, revision);
   await screenshot('02-L0-denied');
   report.checks.push({ name: 'L0 actual write denial', passed: true, run_id: id, revision });
-  await page.getByRole('button', { name: 'L1', exact: true }).click();
+  await page.getByRole('button', { name: '确认后执行', exact: true }).click();
   await waitFor(async () => (await run(id)).events.some(e => e.event_type === 'grant.rejected' && e.payload.code === 'APPROVAL_REQUIRED'), 'L1 requires approval');
   assert.equal((await run(id)).actions.length, 0);
   await screenshot('03-L1-approval-required');
-  await page.getByRole('button', { name: '批准计划', exact: true }).click();
+  await page.getByRole('button', { name: '确认处理方案', exact: true }).click();
   await waitFor(async () => (await run(id)).status === 'resolved', 'L1 real verification');
   const approved = await saveRun(id, 'L0-L1-exact-approval');
   assert.equal(approved.verification.passed, true);
   assert.equal(approved.actions.length, 1);
   report.checks.push({ name: 'L1 approved exact plan and live business checks', passed: true, run_id: id });
-  await page.locator('.incident-head .severity').filter({hasText:'resolved'}).waitFor();
+  await page.locator('.incident-head .severity').filter({hasText:'已恢复'}).waitFor();
   await screenshot('04-L1-resolved');
   await reset();
-  await page.getByRole('button', { name: 'L2', exact: true }).click();
-  await page.getByRole('button', { name: '演示 fencing 剧本', exact: true }).click();
+  await page.getByRole('button', { name: '自动处理', exact: true }).click();
+  if(await page.locator('.rehearsal-details').getAttribute('open')===null)await page.locator('.rehearsal-details > summary').click();
+  await page.getByRole('button', { name: '模拟成员失联与接管', exact: true }).click();
   const f = await waitFor(async () => (await state()).incident, 'fencing incident');
   await waitFor(async () => (await run(f.id)).events.some(e => e.event_type === 'agent.paused'), 'A paused after original grant');
   await screenshot('05-A-paused');
@@ -89,7 +90,8 @@ try {
   report.checks.push({ name: 'actual OS pause, takeover and stale A rejection without write', passed: true, run_id: f.id, old_actor: fenced.fencing_original, new_actor: applied.holder });
   await screenshot('06-fence-rejected');
   await reset();
-  await page.getByRole('button', { name: '演示 fencing 剧本', exact: true }).click();
+  if(await page.locator('.rehearsal-details').getAttribute('open')===null)await page.locator('.rehearsal-details > summary').click();
+  await page.getByRole('button', { name: '模拟成员失联与接管', exact: true }).click();
   const stale = await waitFor(async () => (await state()).incident, 'reset-race incident');
   await waitFor(async () => (await run(stale.id)).fencing_paused, 'grant retained before reset');
   await reset();
@@ -106,12 +108,12 @@ try {
   await page.getByRole('button', { name: '已禁言', exact: true }).click();
   await waitFor(async () => !(await state()).muted, 'communication restored');
   report.checks.push({ name: 'communication control toggles server transport epoch', passed: true });
-  await page.getByRole('button', { name: '运行记录', exact: true }).click();
-  await page.getByText('查看详情 / RCA', { exact: true }).first().click();
+  await page.getByRole('button', { name: '处理记录', exact: true }).click();
+  await page.getByText('查看处理详情', { exact: true }).first().click();
   await page.getByRole('button', { name: '关闭', exact: true }).waitFor();
   await screenshot('08-real-rca');
   await page.getByRole('button', { name: '关闭', exact: true }).click();
-  await page.getByRole('button', { name: '五行计分', exact: true }).click();
+  await page.getByRole('button', { name: '验收评分', exact: true }).click();
   await screenshot('09-scoreboard');
   report.checks.push({ name: 'run detail and actual evidence drawer open', passed: true });
   assert.equal(errors.length, 0, errors.join('\n'));

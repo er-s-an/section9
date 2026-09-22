@@ -1,0 +1,39 @@
+{
+  "kind": "real_local_browser_no_inference",
+  "checks": [
+    {
+      "name": "primary and Pair scopes visible",
+      "passed": true
+    },
+    {
+      "name": "primary L0 does not mutate Pair spec",
+      "passed": true
+    },
+    {
+      "name": "primary reset preserves Pair identity and state",
+      "passed": true
+    },
+    {
+      "name": "1280 notebook has no horizontal page overflow",
+      "passed": true
+    },
+    {
+      "name": "complete evidence download is visible",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "identity": {
+    "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+    "git_commit": "eb79f972ed4aa3e85859a031750794054c09f487",
+    "dirty": true,
+    "dirty_diff_sha256": "72e72bd2cf7e24609bcc5d38b3e3d2a17aed6d3b92b691a32b11150b5330d199",
+    "backend_source_hash": "08c32d09aa0ef66cd5e4ef0979fa7ccd4c61f53d00f5643ccfaca65cde353e15",
+    "frontend_build_hash": "05658af38caf39a7e5c50ed0f758eaa4221e1045f4623710658f3bdebf58308c",
+    "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+    "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+    "acceptance_contract_hash": "87dd84e07468acbc8f0238d0c9281a3c78b7ecfcbdbedd02f0498068cdd7737b"
+  },
+  "pair_id": "pair_5675273ccdd14106",
+  "passed": true
+}

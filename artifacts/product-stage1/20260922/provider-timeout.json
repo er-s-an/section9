@@ -1,0 +1,99 @@
+{
+  "kind": "real_remote_model_connection_failure_retained",
+  "usage": {
+    "at": "2026-09-22T12:06:08.546+00:00",
+    "dispatched_at": "2026-09-22T12:06:08.553+00:00",
+    "elapsed_s": 10.007,
+    "error": "ConnectTimeout",
+    "id": "usage_9cf5f1e1edf6480a",
+    "provider_state": "sent",
+    "purpose": "user",
+    "reservation": 2355,
+    "run_id": null,
+    "status": "failed",
+    "unknown": true,
+    "usage": null
+  },
+  "events": [
+    {
+      "agent_instance_id": null,
+      "config_hash": "fa1cbbeafa1990d1e43b83a24c4518613c3d23f2f7f18a354e1a1b1c89cd1a8b",
+      "config_revision": "134",
+      "event_id": "ev_9b1529317cf94d3c",
+      "event_type": "model.admitted",
+      "generation": "66",
+      "incident_id": null,
+      "occurred_at": "2026-09-22T12:06:08.551+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "66",
+        "pair_id": null,
+        "purpose": "user",
+        "queue_ms": 5.857,
+        "request_id": "model_b2e7f039180f42e4b67ce2ba2f3dd602",
+        "run_id": null,
+        "summary": "共享模型槽位已准入",
+        "usage_id": "usage_9cf5f1e1edf6480a"
+      },
+      "producer": "model",
+      "run_id": null,
+      "scope": "system",
+      "sequence": "3134"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "fa1cbbeafa1990d1e43b83a24c4518613c3d23f2f7f18a354e1a1b1c89cd1a8b",
+      "config_revision": "134",
+      "event_id": "ev_99dbf9a18111470b",
+      "event_type": "model.provider_started",
+      "generation": "66",
+      "incident_id": null,
+      "occurred_at": "2026-09-22T12:06:08.554+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "66",
+        "pair_id": null,
+        "purpose": "user",
+        "request_id": "model_b2e7f039180f42e4b67ce2ba2f3dd602",
+        "run_id": null,
+        "summary": "远程模型请求已发起",
+        "usage_id": "usage_9cf5f1e1edf6480a"
+      },
+      "producer": "model",
+      "run_id": null,
+      "scope": "system",
+      "sequence": "3135"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "fa1cbbeafa1990d1e43b83a24c4518613c3d23f2f7f18a354e1a1b1c89cd1a8b",
+      "config_revision": "134",
+      "event_id": "ev_a99dcacaec334d65",
+      "event_type": "model.failed",
+      "generation": "66",
+      "incident_id": null,
+      "occurred_at": "2026-09-22T12:06:18.559+00:00",
+      "payload": {
+        "arm": null,
+        "elapsed_ms": 10013.058,
+        "error": "ConnectTimeout",
+        "generation": "66",
+        "pair_id": null,
+        "provider_called": true,
+        "provider_ms": 10007.0,
+        "purpose": "user",
+        "queue_ms": 5.857,
+        "request_id": "model_b2e7f039180f42e4b67ce2ba2f3dd602",
+        "returned_model": null,
+        "run_id": null,
+        "summary": "ConnectTimeout",
+        "usage_id": "usage_9cf5f1e1edf6480a",
+        "usage_unknown": true
+      },
+      "producer": "model",
+      "run_id": null,
+      "scope": "system",
+      "sequence": "3139"
+    }
+  ]
+}

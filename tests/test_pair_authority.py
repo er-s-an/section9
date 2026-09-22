@@ -44,6 +44,20 @@ def _repair_fixture(store):
     return run, task, plan, grant
 
 
+def _verification_job(store, run_id):
+    with store.tx() as db:
+        task = next(json.loads(row[0]) for row in db.execute("SELECT data FROM tasks WHERE run_id=?", (run_id,))
+                    if json.loads(row[0])["kind"] == "verify")
+        agent = store.get(db, "agents", "verifier")
+        run = store.get(db, "runs", run_id)
+        transport = str(store.meta(db, "transport_epoch"))
+    lease = store.claim("verifier", task["id"])
+    return store.begin_verification(agent, {"run_id": run_id, "task_id": lease["task_id"],
+        "task_epoch": lease["epoch"], "instance_id": agent["instance_id"],
+        "generation": run["generation"], "transport_epoch": transport,
+        "expected_revision": store.current_config()["revision"]})
+
+
 def test_pair_stores_have_same_frozen_baseline_content_hash(tmp_path):
     baseline = _store(tmp_path, "baseline", "run-baseline")
     injected = _store(tmp_path, "swarm", "run-swarm")
@@ -78,6 +92,7 @@ def test_wrong_tested_config_hash_cannot_resolve_one_arm_or_mutate_other(tmp_pat
     baseline.inject("prompt", "single", "baseline", 42, 4000, run_id="run-baseline")
     run, _, plan, grant = _repair_fixture(swarm)
     applied = swarm.execute("fixer-a", plan["id"], grant["id"], "apply-before-verify")
+    job = _verification_job(swarm, run["id"])
     before_baseline = dict(baseline.current_config())
     with baseline.tx() as db:
         baseline_fence = baseline.meta(db, "resource_fence")
@@ -88,7 +103,7 @@ def test_wrong_tested_config_hash_cannot_resolve_one_arm_or_mutate_other(tmp_pat
         "tested_revision": applied["revision"],
         "tested_config_hash": "deliberately-wrong-hash",
         "checks": [{"name": name, "passed": True} for name in required],
-    })
+    }, job=job)
     assert result["passed"] is False
     assert swarm.run(run["id"])["status"] == "failed"
     assert baseline.current_config() == before_baseline

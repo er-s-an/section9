@@ -85,6 +85,7 @@ class Core:
 
     async def start(self):
         # A process restart cannot safely retain leases or an unfinished proof.
+        self.store.recover_usage(reason="SERVER_RESTARTED")
         with self.store.tx() as db:
             current = self.store.meta(db, "current_run")
         if current and self.store.run(current)["status"] in ACTIVE:
@@ -375,22 +376,17 @@ class Core:
                 "memory": candidate if execution_enabled else None, "scope": dict(scope),
                 "execution_enabled": execution_enabled}
 
-    async def verify(self, agent, run_id):
-        if agent["role"] not in {"verifier", "single"}:
-            raise Rejected("ROLE_FORBIDDEN", "角色不能发起独立验收", 403)
+    async def verify(self, agent, item):
+        run_id = item["run_id"]
         if run_id in self.verifying:
             raise Rejected("VERIFY_RUNNING", "验收正在进行")
-        run = self.store.run(run_id)
-        if not run or run["status"] not in ACTIVE or not run["last_action"]:
-            raise Rejected("NO_APPLIED_ACTION", "尚无可验收的配置修改")
-        self.verifying.add(run_id)
         try:
-            self.store.emit("verify.started", {"summary": "独立验收开始", "suite": "verify"}, run_id=run_id, producer=agent["id"])
-            tested_config = self.store.current_config()
+            job = self.store.begin_verification(agent, item)
+            self.verifying.add(run_id)
+            run = self.store.run(run_id)
             result = await self.victim.probe(suite="verify", run_id=run_id)
-            if getattr(self, "scope", {}):
-                result['tested_config_hash'] = digest({k: tested_config[k] for k in DEFAULT_CONFIG})
-            result = self.store.verification(agent["id"], run_id, result)
+            result['tested_config_hash'] = job["config_hash"]
+            result = self.store.verification(agent["id"], run_id, result, job=job)
             if result["passed"]:
                 run = self.store.run(run_id)
                 candidate = self.memory_candidates.get(run_id)
@@ -405,6 +401,11 @@ class Core:
                 except Exception as exc:
                     self.store.emit("memory.failed", {"summary": "本地 GEP 回写失败", "error": str(exc)[:300]}, run_id=run_id, producer="memory")
             return result
+        except Rejected as exc:
+            self.store.emit("verify.rejected", {"code": exc.code, "task_id": item.get("task_id"),
+                            "summary": "验收授权失效，结果不写入结案；已发生消耗仍保留"},
+                            run_id=run_id, producer=agent["id"])
+            raise
         finally:
             self.verifying.discard(run_id)
 

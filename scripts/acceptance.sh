@@ -7,7 +7,7 @@ uv run python -m pytest -q
 npm --prefix frontend run build
 .venv/bin/python scripts/check-secrets.py
 ./scripts/reset.sh
-./scripts/stop.sh
+./scripts/stop.sh --app-only
 .venv/bin/python scripts/service.py start
 # Browser operations, state changes and provider-backed probes; bounded calls.
 node scripts/browser-acceptance.mjs

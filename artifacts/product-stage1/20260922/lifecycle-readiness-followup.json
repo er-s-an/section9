@@ -1,0 +1,69 @@
+{
+  "kind": "followup_to_lifecycle_probe_timeout",
+  "checks": [
+    {
+      "elapsed_s": 0.748,
+      "dependencies": {
+        "langfuse": "degraded",
+        "collector": "available"
+      }
+    },
+    {
+      "elapsed_s": 2.848,
+      "dependencies": {
+        "langfuse": "degraded",
+        "collector": "available"
+      }
+    },
+    {
+      "elapsed_s": 4.928,
+      "dependencies": {
+        "langfuse": "degraded",
+        "collector": "available"
+      }
+    },
+    {
+      "elapsed_s": 7.013,
+      "dependencies": {
+        "langfuse": "degraded",
+        "collector": "available"
+      }
+    },
+    {
+      "elapsed_s": 9.127,
+      "dependencies": {
+        "langfuse": "degraded",
+        "collector": "available"
+      }
+    },
+    {
+      "elapsed_s": 11.285,
+      "dependencies": {
+        "langfuse": "degraded",
+        "collector": "available"
+      }
+    },
+    {
+      "elapsed_s": 13.366,
+      "dependencies": {
+        "langfuse": "degraded",
+        "collector": "available"
+      }
+    },
+    {
+      "elapsed_s": 15.551,
+      "dependencies": {
+        "langfuse": "degraded",
+        "collector": "available"
+      }
+    },
+    {
+      "elapsed_s": 17.716,
+      "dependencies": {
+        "langfuse": "available",
+        "collector": "available"
+      }
+    }
+  ],
+  "passed": true
+}

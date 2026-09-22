@@ -50,6 +50,16 @@ class ExecuteRequest(StrictModel):
     idempotency_key: str = Field(min_length=1, max_length=128)
 
 
+class VerifyRequest(StrictModel):
+    run_id: str
+    task_id: str
+    task_epoch: str
+    instance_id: str
+    generation: str
+    transport_epoch: str
+    expected_revision: str
+
+
 class MessageRequest(StrictModel):
     run_id: str
     task_id: str

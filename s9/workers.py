@@ -81,6 +81,13 @@ def _validate_repair(value: dict[str, Any]) -> tuple[dict[str, Any] | None, str 
     if not isinstance(evidence, list) or any(not isinstance(item, str) for item in evidence):
         return None, "evidence_ids must be a list of strings"
     actions = value.get("actions")
+    decision = value.get("decision", "repair")
+    if decision not in {"repair", "abstain"}:
+        return None, "decision must be repair or abstain"
+    if decision == "abstain":
+        if actions != []:
+            return None, "an abstention must have empty actions"
+        return value, None
     if not isinstance(actions, list) or not 1 <= len(actions) <= 4:
         return None, "actions must contain 1 to 4 objects"
     for index, action in enumerate(actions):
@@ -278,13 +285,11 @@ class Worker:
         return cause
 
     async def _fix(self, context: dict[str, Any], lease: Lease, single: bool = False) -> str:
-        messages = context.get("messages", [])
-        if not single and context.get("muted"):
-            return "blocked: missing peer evidence while communication is muted"
+        messages = [] if context.get("muted") else context.get("messages", [])
         if not single and not self._ready(context, self.id):
             return "waiting: peer conclusion or detection completion required"
         facts = {"role": self.role, "config": context.get("config", {}),
-                 "known_good": context.get("known_good", {}), "memory": context.get("memory"),
+                 "known_good": context.get("known_good", {}), "memory": None if context.get("muted") else context.get("memory"),
                  "observations": context.get("observations", []),
                  "messages": messages if single or not context.get("muted") else []}
         schema = {"allowed_action_types": sorted(ACTION_TYPES), "action_example": {"type": "apply_retry_policy", "values": {"retry_limit": 2}},
@@ -293,12 +298,12 @@ class Worker:
                                     "apply_retry_policy": {"retry_limit": "int 0..6", "retry_on_terminal": "boolean"},
                                     "apply_config_bundle": "union of these fields; do not add other fields"}}
         result = await self._model(context, "single" if single else "repair", [
-            {"role": "system", "content": "Propose a minimal valid repair as JSON with rationale (non-empty string), evidence_ids (array of strings), and actions (1 to 4 action objects). No null fields. Repair observed behavior, never disable safety. Allowed action schema: " + json.dumps(schema, ensure_ascii=False)},
+            {"role": "system", "content": "Decide from your available raw facts and any delivered evidence. Return JSON with decision (repair or abstain), rationale (non-empty string), evidence_ids (array of strings), and actions (1 to 4 action objects for repair, empty array for abstain). Abstain with a reason if evidence is insufficient; lack of peer messages alone does not require abstention. No null fields. Repair observed behavior, never disable safety. Allowed action schema: " + json.dumps(schema, ensure_ascii=False)},
             {"role": "user", "content": json.dumps(facts, ensure_ascii=False)}])
         answer, error = _validate_repair(_json_content(str(result.get("content", ""))))
         if error:
             result = await self._model(context, "single" if single else "repair", [
-                {"role": "system", "content": "Repair the schema error: " + error + ". Return only JSON with rationale (non-empty string), evidence_ids (string array), actions (1 to 4 objects). Allowed schema: " + json.dumps(schema)},
+                {"role": "system", "content": "Repair the schema error: " + error + ". Return only JSON with decision (repair or abstain), rationale (non-empty string), evidence_ids (string array), actions (1 to 4 objects for repair, empty for abstain). Allowed schema: " + json.dumps(schema)},
                 {"role": "user", "content": json.dumps({"facts": facts, "previous_output": result.get("content", "")}, ensure_ascii=False)}])
             answer, error = _validate_repair(_json_content(str(result.get("content", ""))))
         if error or answer is None:
@@ -310,6 +315,10 @@ class Worker:
         evidence = answer["evidence_ids"]
         rationale = answer["rationale"]
         actions = answer["actions"]
+        if answer.get("decision") == "abstain":
+            summary = "failed: model_abstained: " + rationale
+            await self._message(context, lease, "result", summary, evidence, .0)
+            return summary
         await self._message(context, lease, "build_on" if messages else "hypothesis", rationale, evidence, .7)
         await self._message(context, lease, "synthesize", json.dumps({"actions": actions, "rationale": rationale}, ensure_ascii=False), evidence, .7)
         incident = context.get("incident") or {}
@@ -367,7 +376,13 @@ class Worker:
     async def _verify(self, context: dict[str, Any], lease: Lease) -> str:
         if not context.get("last_action"):
             return "waiting: no last_action to verify"
-        result = await self._request("POST", "/agent/verify", {"run_id": lease.run_id})
+        result = await self._request("POST", "/agent/verify", {
+            "run_id": lease.run_id, "task_id": lease.task_id, "task_epoch": lease.epoch,
+            "instance_id": str(context.get("instance_id", "")),
+            "generation": str(context.get("generation", "")),
+            "transport_epoch": str(context.get("transport_epoch", "")),
+            "expected_revision": str(context.get("config", {}).get("revision", "")),
+        })
         summary = "verified" if result.get("passed") else "verification failed: " + str(result.get("summary", result))
         # The verification endpoint emits the authoritative business result;
         # a second message would race terminal closure and create RUN_STALE noise.

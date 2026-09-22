@@ -25,8 +25,18 @@ ROOT_VARS = (
     "EVOMAP_MODEL_API_KEY",
     "S9_PORT",
     "S9_MODEL_CONCURRENCY",
+    "S9_MODEL_TIMEOUT",
+    "S9_RUN_TIMEOUT",
+    "S9_RUN_TOKEN_BUDGET",
 )
 ROOT_REQUIRED_VARS = ("EVOMAP_MODEL_API_KEY",)
+NUMERIC_RULES = {
+    "S9_PORT": (1, 65533, int),
+    "S9_MODEL_CONCURRENCY": (1, 1024, int),
+    "S9_MODEL_TIMEOUT": (0.1, 86400, float),
+    "S9_RUN_TIMEOUT": (0.1, 86400, float),
+    "S9_RUN_TOKEN_BUDGET": (1, 10_000_000, int),
+}
 
 
 def compose_vars(root: Path) -> list[str]:
@@ -117,11 +127,24 @@ def names_only(path: Path) -> set[str]:
     return names
 
 
+def values_only(path: Path) -> dict[str, str]:
+    """Read local values for validation without ever printing them."""
+    values: dict[str, str] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        name, value = stripped.split("=", 1)
+        if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name.strip()):
+            values[name.strip()] = value.strip().strip('"').strip("'")
+    return values
+
+
 def mode(path: Path) -> str:
     return oct(stat.S_IMODE(path.stat().st_mode))
 
 
-def check(root: Path, required: list[str]) -> int:
+def check(root: Path, required: list[str], *, require_model_key: bool = True) -> int:
     root_env = root / ".env"
     infra_env = root / "infra" / ".env"
     problems: list[str] = []
@@ -135,6 +158,19 @@ def check(root: Path, required: list[str]) -> int:
         missing = set(ROOT_REQUIRED_VARS) - names_only(root_env)
         if missing:
             problems.append(".env missing names: " + ",".join(sorted(missing)))
+        values = values_only(root_env)
+        if require_model_key and not values.get("EVOMAP_MODEL_API_KEY", "").strip():
+            problems.append("EVOMAP_MODEL_API_KEY is empty (business readiness is unavailable)")
+        for name, (lower, upper, parser) in NUMERIC_RULES.items():
+            raw = values.get(name, "")
+            if not raw:
+                continue
+            try:
+                number = parser(raw)
+                if not lower <= number <= upper:
+                    raise ValueError
+            except (TypeError, ValueError):
+                problems.append(f"{name} must be {parser.__name__} in [{lower}, {upper}]")
     if infra_env.is_file():
         if mode(infra_env) != "0o600":
             problems.append(f"infra/.env mode {mode(infra_env)} (expected 0o600)")
@@ -144,19 +180,21 @@ def check(root: Path, required: list[str]) -> int:
     if problems:
         print("check=fail; " + "; ".join(problems))
         return 1
-    print(f"check=pass; compose_names={len(required)}; values_not_inspected")
+    print(f"check=pass; compose_names={len(required)}; values_not_printed")
     return 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--check", action="store_true", help="check names and permissions without writing")
+    parser.add_argument("--check", action="store_true", help="strict read-only check, including a non-empty model key")
+    parser.add_argument("--check-runtime", action="store_true", help="read-only startup check; an empty model key is allowed")
+    parser.add_argument("--require-model-key", action="store_true", help="fail when the model key is empty")
     args = parser.parse_args()
     root = args.root.expanduser().resolve()
     required = compose_vars(root)
-    if args.check:
-        return check(root, required)
+    if args.check or args.check_runtime:
+        return check(root, required, require_model_key=args.check and not args.check_runtime or args.require_model_key)
 
     root_env = root / ".env"
     infra_env = root / "infra" / ".env"
@@ -174,7 +212,7 @@ def main() -> int:
             raise SystemExit("generator missing compose names: " + ",".join(sorted(missing)))
         write_new(infra_env, values)
         print(f"created infra/.env (compose_names={len(required)}; values omitted)")
-    return check(root, required)
+    return check(root, required, require_model_key=False)
 
 
 if __name__ == "__main__":

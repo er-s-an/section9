@@ -144,7 +144,14 @@ def test_verification_cannot_close_when_tested_revision_changes(tmp_path):
     plan = _plan(store, "fixer-a", run_id, {**task, "epoch": claimed["epoch"]})
     grant = store.grant("fixer-a", plan["id"])
     applied = store.execute("fixer-a", plan["id"], grant["grant_id"], "verify-revision")
-    result = store.verification("verifier", run_id, {"passed": True, "tested_revision": str(int(applied["revision"]) - 1), "checks": []})
+    lease = store.claim("verifier", _task(store, run_id, "verify")["id"])
+    with store.tx() as db:
+        agent = store.get(db, "agents", "verifier")
+        transport_epoch = str(store.meta(db, "transport_epoch"))
+    job = store.begin_verification(agent, {"run_id": run_id, "task_id": lease["task_id"], "task_epoch": lease["epoch"],
+        "instance_id": agent["instance_id"], "generation": store.run(run_id)["generation"],
+        "transport_epoch": transport_epoch, "expected_revision": applied["revision"]})
+    result = store.verification("verifier", run_id, {"passed": True, "tested_revision": str(int(applied["revision"]) - 1), "checks": []}, job=job)
     assert result["passed"] is False
     assert store.run(run_id)["status"] == "failed"
 

@@ -5,7 +5,7 @@ cd "$PROJECT_DIR"
 .venv/bin/python -m pytest -q
 npm --prefix frontend run build
 .venv/bin/python scripts/check-secrets.py
-./scripts/stop.sh
+./scripts/stop.sh --app-only
 .venv/bin/python scripts/service.py start
 .venv/bin/python scripts/verify-pair-reset.py
 node scripts/browser-acceptance.mjs

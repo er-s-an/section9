@@ -2,14 +2,9 @@
 set -eu
 PROJECT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$PROJECT_DIR"
-uv sync --locked
-.venv/bin/python scripts/init-local-config.py
-.venv/bin/python scripts/fetch-office-assets.py
-# Reconcile installed JavaScript dependencies with their committed locks before
-# the build; this prevents a stale node_modules tree from producing a different
-# frontend identity.
-npm --prefix frontend ci
-npm --prefix integrations/gep ci
-npm --prefix frontend run build
-./scripts/infra-start.sh
+if [ ! -x .venv/bin/python ] || [ ! -f frontend/dist/index.html ]; then
+  echo "Section9 is not installed. Run ./scripts/install.sh first." >&2
+  exit 2
+fi
+.venv/bin/python scripts/init-local-config.py --check-runtime
 exec .venv/bin/python scripts/service.py start

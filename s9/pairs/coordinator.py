@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import io
 import json
 import time
+import zipfile
 
 from s9.pairs.catalog import PairCatalog
 from s9.pairs.contracts import ARMS, FAULTS, content_config, freeze_spec
@@ -34,14 +37,14 @@ class PairCoordinator:
     async def boot(self):
         # A restart never resumes old worker leases or replaces one arm in place.
         for pair in self.catalog.list():
+            for arm in ARMS:
+                runtime = self.runtime(pair, arm)
+                runtime.store.recover_usage(reason='SERVER_RESTARTED')
             if pair['status'] in {'preparing', 'ready', 'running'} or any(
                     (self.runtime(pair, arm).store.run(pair[arm + '_run_id']) or {}).get('status') in ACTIVE for arm in ARMS):
                 for arm in ARMS:
                     runtime = self.runtime(pair, arm)
                     runtime.store.fail_run(pair[arm + '_run_id'], 'SERVER_RESTARTED')
-                    for usage in runtime.store.usage_records(pair[arm + '_run_id']):
-                        if usage['status'] == 'reserved':
-                            runtime.store.settle_usage(usage['id'], None, 0, 'SERVER_RESTARTED_USAGE_UNKNOWN')
                     runtime.store.emit('pair.interrupted', {'summary': '服务重启中断原 Pair；完整重跑需新建 Pair'}, run_id=pair[arm + '_run_id'])
                     self.journal.ingest(pair, arm, runtime.store)
                 self.catalog.update(pair['pair_id'], status='setup_failed' if pair['status'] == 'preparing' else 'interrupted',
@@ -146,7 +149,7 @@ class PairCoordinator:
         if pair['status'] == 'running':
             runs = [self.runtime(pair, arm).store.run(pair[arm + '_run_id']) for arm in ARMS]
             if all(r and r['status'] not in ACTIVE for r in runs):
-                responses = {arm: [e['payload'] for e in self.journal.read(pair_id, arm)
+                responses = {arm: [e['payload'] for e in self.journal.read_all(pair_id, arm)
                                    if e['event_type'] == 'model.completed' and e['payload'].get('request_id')]
                              for arm in ARMS}
                 returned_models = {e.get('returned_model') for rows in responses.values() for e in rows} - {None}
@@ -205,13 +208,74 @@ class PairCoordinator:
         rid = pair[arm + '_run_id']
         with runtime.store.tx() as db:
             agents = [json.loads(r[0]) for r in db.execute('SELECT data FROM agents')]
-        cursor = self.journal.cursor(pair_id)
-        events = self.journal.read(pair_id, arm)
+        watermark = self.journal.watermark(pair_id, arm)
+        events = self.journal.read_all(pair_id, arm, watermark=watermark)
         # All reads are synchronous on the authority event loop; nothing can
         # mutate between journal import, run read and cursor publication.
-        return project_arm(pair, arm, runtime.store.run(rid), events, config=runtime.store.current_config(), agents=agents,
+        projected = project_arm(pair, arm, runtime.store.run(rid), events, config=runtime.store.current_config(), agents=agents,
                            usage=runtime.store.usage_records(rid), dependencies=runtime.core.snapshot()['dependencies'] if runtime.core else {},
-                           as_of_sequence=cursor)
+                           as_of_sequence=watermark)
+        tail = events[-200:]
+        projected['events'] = tail
+        projected['log_page'] = {'range_start': int(tail[0]['sequence']) if tail else watermark,
+                                 'range_end': int(tail[-1]['sequence']) if tail else watermark,
+                                 'next_after': int(tail[-1]['sequence']) if tail else watermark,
+                                 'has_more': bool(tail and int(tail[0]['sequence']) > 0 and len(events) > len(tail)),
+                                 'watermark': watermark, 'view': 'tail'}
+        return projected
+
+    @staticmethod
+    def _export_redact(value):
+        sensitive = ('token_hash', 'access_token', 'refresh_token', 'secret', 'credential',
+                     'password', 'authorization', 'api_key', 'apikey', 'private_key')
+        if isinstance(value, dict):
+            return {k: ('[REDACTED]' if any(x in str(k).lower() for x in sensitive)
+                        else PairCoordinator._export_redact(v)) for k, v in value.items()}
+        if isinstance(value, list):
+            return [PairCoordinator._export_redact(v) for v in value]
+        return value
+
+    def export_zip(self, pair_id):
+        """Build a bounded, deterministic, read-only evidence export in memory."""
+        pair = self.refresh(pair_id)
+        files = {}
+        def add(path, value):
+            files[path] = json.dumps(self._export_redact(value), ensure_ascii=False, sort_keys=True, indent=2).encode()
+        add('pair.json', {'pair_id': pair_id, 'status': pair.get('status'), 'created_at': pair.get('created_at'),
+                          'started_at': pair.get('started_at'), 'ended_at': pair.get('ended_at'),
+                          'comparison_integrity': pair.get('comparison_integrity'),
+                          'source_identity': pair['immutable_spec']['source_identity']})
+        add('spec.json', pair.get('immutable_spec', {}))
+        counts = {}
+        for arm in ARMS:
+            runtime = self.runtime(pair, arm)
+            rid = pair[arm + '_run_id']
+            watermark = self.journal.watermark(pair_id, arm)
+            events = self.journal.read_all(pair_id, arm, watermark=watermark)
+            add(f'{arm}/run.json', runtime.store.run(rid) or {})
+            add(f'{arm}/config.json', runtime.store.current_config())
+            usage = runtime.store.usage_records(rid)
+            add(f'{arm}/usage.json', usage)
+            for page, start in enumerate(range(0, len(events), 500)):
+                add(f'{arm}/events-{page:04d}.json', events[start:start + 500])
+            counts[arm] = {'events': len(events), 'usage_records': len(usage),
+                           'event_pages': (len(events) + 499) // 500, 'watermark': watermark,
+                           'range_start': int(events[0]['sequence']) if events else watermark,
+                           'range_end': int(events[-1]['sequence']) if events else watermark}
+        hashes = {name: hashlib.sha256(data).hexdigest() for name, data in sorted(files.items())}
+        manifest = {'schema_version': '1', 'pair_id': pair_id, 'spec': {'file': 'spec.json'},
+                    'run': {arm: f'{arm}/run.json' for arm in ARMS},
+                    'config': {arm: f'{arm}/config.json' for arm in ARMS},
+                    'usage': {arm: f'{arm}/usage.json' for arm in ARMS}, 'counts': counts,
+                    'hashes': hashes, 'source_identity': self._export_redact(
+                        (pair.get('immutable_spec') or {}).get('source_identity', pair.get('source_identity', {}))),
+                    'export': {'read_only': True, 'model_calls': False, 'events_page_size': 500}}
+        add('manifest.json', manifest)
+        output = io.BytesIO()
+        with zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
+            for name in sorted(files):
+                archive.writestr(name, files[name])
+        return output.getvalue(), f'{pair_id}-evidence.zip'
 
     def authenticate(self, token):
         for runtime in self.runtimes.values():

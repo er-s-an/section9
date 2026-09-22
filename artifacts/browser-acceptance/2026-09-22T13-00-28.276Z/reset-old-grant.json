@@ -1,0 +1,1354 @@
+{
+  "budget_overrun": false,
+  "closed_at": "2026-09-22T13:02:23.296+00:00",
+  "condition": "swarm",
+  "contract": {
+    "answer_consistency": true,
+    "bounded_cost": true,
+    "cost_limits": {
+      "input": 2000,
+      "output": 1536,
+      "total": 3536
+    },
+    "negative_boundary": true,
+    "no_stalled_requests": true,
+    "same_revision": true,
+    "semantic": true,
+    "suite": "xiaozhi-heldout-v2",
+    "unaffected_product": true,
+    "version": "2",
+    "whole_run_budget": true
+  },
+  "contract_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+  "elapsed_s": 19.18,
+  "failure_reason": "OPERATOR_RESET",
+  "fencing_demo": true,
+  "fencing_original": "fixer-a",
+  "fencing_pause_at": 1790082142.968844,
+  "fencing_paused": true,
+  "generation": "70",
+  "id": "run_2833fb33be5d4ca8",
+  "initial_config_hash": "fa1cbbeafa1990d1e43b83a24c4518613c3d23f2f7f18a354e1a1b1c89cd1a8b",
+  "initial_config_revision": "1",
+  "injected_config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+  "injected_revision": "143",
+  "last_action": null,
+  "manifest": {
+    "cache_condition": "not_controlled_provider_cache",
+    "condition": "swarm",
+    "environment": "demo",
+    "evidence_origin": "live",
+    "fixture_version": "xiaozhi-s9-v1",
+    "hardware_isolation": false,
+    "implementation_hash": "5747895675dbc7ad3fda9240827ac0459f9753b3267af98f56fe94937c56b551",
+    "jev_enabled": false,
+    "memory_condition": "off",
+    "memory_snapshot_hash": null,
+    "model": "evomap-gpt-5.6-luna",
+    "model_timeout_s": 60,
+    "probe_schedule": {
+      "interval_s": 30,
+      "max_detection_rounds": 3,
+      "scope": "active_incident"
+    },
+    "request_concurrency_limit": 2,
+    "scenario_seed": 42,
+    "scope": {},
+    "source_identity": {
+      "acceptance_contract_hash": "87dd84e07468acbc8f0238d0c9281a3c78b7ecfcbdbedd02f0498068cdd7737b",
+      "backend_source_hash": "08c32d09aa0ef66cd5e4ef0979fa7ccd4c61f53d00f5643ccfaca65cde353e15",
+      "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+      "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+      "dirty": true,
+      "dirty_diff_sha256": "0094275ff475e66b75461a06d0b27f1c00e946b3f970f352cfa1fed6af44bf5f",
+      "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+      "frontend_build_hash": "9dd570607d0d1982a3c1eccf7e1e862ac74b5982471bcf74d26e889cdb00cb33",
+      "git_commit": "eb79f972ed4aa3e85859a031750794054c09f487"
+    },
+    "source_identity_hash": "1ae83ef1923159a3b27119e64b6eade909db978650d84ee06a5c4b335f883a54",
+    "total_token_budget": 16000,
+    "transport_mode": "local",
+    "verification_suite_hash": "1b1c1dc0b52aad16299968e82488a340f03c7b4b67efe1b32924c63ec7ef1e49",
+    "victim_config": {
+      "context_multiplier": 1,
+      "generation": "70",
+      "max_output_tokens": 1536,
+      "prompt_version": "degraded",
+      "retry_limit": 3,
+      "retry_on_terminal": false,
+      "revision": "143"
+    },
+    "worker_completion_cap": 1600
+  },
+  "model": "evomap-gpt-5.6-luna",
+  "opened_at": "2026-09-22T13:02:04.116+00:00",
+  "plan": {
+    "actions": [
+      {
+        "type": "set_prompt_revision",
+        "values": {
+          "prompt_version": "healthy"
+        }
+      }
+    ],
+    "approved": false,
+    "autonomy_revision": "35",
+    "created_at": "2026-09-22T13:02:22.957+00:00",
+    "evidence_ids": [
+      "ev_fe05fb6d83dd470f",
+      "msg_6881e538e1ae4be1"
+    ],
+    "expected_config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+    "expected_revision": "143",
+    "generation": "70",
+    "hash": "00793db431d0079b48f739443458a55f429782a31557480c765a92ad9cea7314",
+    "holder": "fixer-a",
+    "id": "plan_e0445cc1e7344605",
+    "instance_id": "instance_765821d078de4b37",
+    "rationale": "The semantic_policy probe failed: the observed response incorrectly denied no-reason returns and merchant-paid shipping, while the expected result allows both. The delivered diagnosis identifies the degraded prompt revision as the likely cause and recommends restoring the known healthy prompt behavior. Set the prompt revision to healthy and re-run the probe to verify recovery.",
+    "resource_fence": "117",
+    "run_id": "run_2833fb33be5d4ca8",
+    "status": "proposed",
+    "task_epoch": "1",
+    "task_id": "task_ae211095e0e348ad",
+    "transport_epoch": "90"
+  },
+  "reserved_tokens": 0,
+  "run_id": "run_2833fb33be5d4ca8",
+  "scenario": "prompt",
+  "seed": 42,
+  "start_mono": 884737.130841333,
+  "status": "reset",
+  "symptoms": [
+    "quality_mismatch"
+  ],
+  "token_budget": 16000,
+  "usage_tokens": 2935,
+  "usage_unknown": false,
+  "verification": null,
+  "events": [
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_12c0a3d074a440d2",
+      "event_type": "chaos.injected",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:04.116+00:00",
+      "payload": {
+        "revision": "143",
+        "scenario": "prompt",
+        "summary": "故障配置已真实生效，等待独立探针"
+      },
+      "producer": "operator",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3394"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_2a77e08b1c3b4312",
+      "event_type": "request.progress",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:04.144+00:00",
+      "payload": {
+        "request_id": "9c1e5823-4ff5-4c2c-8365-6f195ccd8c40",
+        "revision": "143",
+        "state": "tool_call",
+        "state_digest": "49d15a0b11883c150dd1de6560aed79194ddc572e64f0de7cd4dd6c01832d909",
+        "step_index": 1,
+        "tool": "policy_search",
+        "tool_call_hash": "b7b0cac6c390f4e24beb5da0cba69ae7ca1c107c48c7e3317ecf9629409bd1f0"
+      },
+      "producer": "victim",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3395"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_60d7fbe59f78499f",
+      "event_type": "model.queued",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:04.574+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "70",
+        "pair_id": null,
+        "purpose": "probe:detect",
+        "request_id": "model_03c24ac534b54feea2c88ea292b3bb6d",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "等待模型预算及共享准入"
+      },
+      "producer": "model",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3396"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_941d8922d4694a0d",
+      "event_type": "model.admitted",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:04.594+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "70",
+        "pair_id": null,
+        "purpose": "probe:detect",
+        "queue_ms": 20.047,
+        "request_id": "model_03c24ac534b54feea2c88ea292b3bb6d",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "共享模型槽位已准入",
+        "usage_id": "usage_96c524c19f124f7e"
+      },
+      "producer": "model",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3397"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_25eac3741bdf4db6",
+      "event_type": "model.provider_started",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:04.599+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "70",
+        "pair_id": null,
+        "purpose": "probe:detect",
+        "request_id": "model_03c24ac534b54feea2c88ea292b3bb6d",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "远程模型请求已发起",
+        "usage_id": "usage_96c524c19f124f7e"
+      },
+      "producer": "model",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3398"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_767c8fe7bb5043a4",
+      "event_type": "agent.status",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:05.271+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3399"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_dd137f84e95b4264",
+      "event_type": "agent.status",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:05.311+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3400"
+    },
+    {
+      "agent_instance_id": "instance_6120c91c53524d9a",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_a3a3840656a24eac",
+      "event_type": "agent.status",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:05.323+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "single",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3401"
+    },
+    {
+      "agent_instance_id": "instance_63c6a9a363cc4e07",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_244ec07fdf384b2d",
+      "event_type": "agent.status",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:05.327+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "fixer-b",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3402"
+    },
+    {
+      "agent_instance_id": "instance_a16abf282c924348",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_0bca9e4a11dc4484",
+      "event_type": "agent.status",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:05.530+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "verifier",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3403"
+    },
+    {
+      "agent_instance_id": "instance_9c1e2de6dea14501",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_5eb008d7cb10462d",
+      "event_type": "agent.status",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:06.097+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "sentry",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3404"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_2cf16a496bb14f93",
+      "event_type": "model.completed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:07.659+00:00",
+      "payload": {
+        "elapsed_s": 3.066,
+        "error": null,
+        "purpose": "probe:detect",
+        "summary": "probe:detect 模型调用完成",
+        "usage": {
+          "completion_tokens": 80,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 31,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 11,
+            "engine_ttft_ms": 90,
+            "engine_ttlt_ms": 964,
+            "pre_inference_ms": 85,
+            "service_tbt_ms": 11,
+            "service_ttft_ms": 637,
+            "service_ttlt_ms": 1506,
+            "user_visible_ttft_ms": 551
+          },
+          "prompt_tokens": 695,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 775
+        }
+      },
+      "producer": "model",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3405"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_e471b8ae2c3f4535",
+      "event_type": "model.completed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:07.661+00:00",
+      "payload": {
+        "arm": null,
+        "elapsed_ms": 3086.206,
+        "error": null,
+        "generation": "70",
+        "pair_id": null,
+        "provider_called": true,
+        "provider_ms": 3066,
+        "purpose": "probe:detect",
+        "queue_ms": 20.047,
+        "request_id": "model_03c24ac534b54feea2c88ea292b3bb6d",
+        "returned_model": "gpt-5.6-luna",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "模型响应已返回",
+        "usage_id": "usage_96c524c19f124f7e",
+        "usage_unknown": false
+      },
+      "producer": "model",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3406"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_9ff89220689e4954",
+      "event_type": "request.completed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:07.664+00:00",
+      "payload": {
+        "answer": "结论：本次不可以无理由退货；本次不适用商家承担退货运费。",
+        "elapsed_s": 3.5276920419419184,
+        "purpose": "probe:detect",
+        "question": "签收 3 天，耳机已激活。我能无理由退货吗，运费谁付？只输出 JSON，eligible 和 merchant_pays_shipping 是布尔值。answer 只用一句：结论：本次{可以/不可以}无理由退货；{退货运费由商家承担/本次不适用商家承担退货运费}。根据实际政策选择花括号中的分支，去掉花括号，不加其他说明。",
+        "request_id": "9c1e5823-4ff5-4c2c-8365-6f195ccd8c40",
+        "revision": "143",
+        "status": "success",
+        "structured": {
+          "answer": "结论：本次不可以无理由退货；本次不适用商家承担退货运费。",
+          "eligible": false,
+          "merchant_pays_shipping": false
+        },
+        "usage": {
+          "estimated_input_tokens": 257,
+          "input_tokens": 695,
+          "output_tokens": 80,
+          "token_quality": "provider",
+          "total_tokens": 775
+        }
+      },
+      "producer": "victim",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3407"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_443242c8841d4d8f",
+      "event_type": "probe.completed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:07.666+00:00",
+      "payload": {
+        "result": {
+          "checks": [
+            {
+              "actual": {
+                "answer": "结论：本次不可以无理由退货；本次不适用商家承担退货运费。",
+                "eligible": false,
+                "merchant_pays_shipping": false
+              },
+              "expected": {
+                "eligible": true,
+                "merchant_pays_shipping": true
+              },
+              "name": "semantic_policy",
+              "passed": false,
+              "request_id": "9c1e5823-4ff5-4c2c-8365-6f195ccd8c40"
+            },
+            {
+              "actual": {
+                "failures": [],
+                "inputs": [
+                  695
+                ],
+                "unknown_requests": []
+              },
+              "expected": "each request input<=2000, output<=1536, total<=3536 and total=input+output",
+              "name": "cost_budget",
+              "passed": true,
+              "request_id": null
+            },
+            {
+              "actual": 0,
+              "expected": 0,
+              "name": "no_stalled_requests",
+              "passed": true,
+              "request_id": null
+            }
+          ],
+          "elapsed_s": 3.531171292066574,
+          "passed": false,
+          "requests": [
+            "9c1e5823-4ff5-4c2c-8365-6f195ccd8c40"
+          ],
+          "tested_revision": "143",
+          "usage": {
+            "input_tokens": 695,
+            "output_tokens": 80,
+            "token_quality": "provider",
+            "total_tokens": 775
+          }
+        },
+        "suite": "detect",
+        "summary": "检测集请求完成，保留原始业务结果"
+      },
+      "producer": "probe",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3408"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_fe05fb6d83dd470f",
+      "event_type": "observation.probe",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:07.667+00:00",
+      "payload": {
+        "actual": {
+          "answer": "结论：本次不可以无理由退货；本次不适用商家承担退货运费。",
+          "eligible": false,
+          "merchant_pays_shipping": false
+        },
+        "expected": {
+          "eligible": true,
+          "merchant_pays_shipping": true
+        },
+        "name": "semantic_policy",
+        "passed": false,
+        "request_id": "9c1e5823-4ff5-4c2c-8365-6f195ccd8c40",
+        "signal": "quality_mismatch",
+        "summary": "业务探针发现 semantic_policy"
+      },
+      "producer": "probe",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3409"
+    },
+    {
+      "agent_instance_id": "instance_9c1e2de6dea14501",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_7235cd736e534cf8",
+      "event_type": "incident.opened",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:08.294+00:00",
+      "payload": {
+        "evidence_ids": [
+          "ev_fe05fb6d83dd470f"
+        ],
+        "summary": "哨兵根据实际观测立案",
+        "symptoms": [
+          "quality_mismatch"
+        ]
+      },
+      "producer": "sentry",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3410"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_f22d123c31424cf2",
+      "event_type": "task.claimed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:08.471+00:00",
+      "payload": {
+        "epoch": "1",
+        "kind": "diagnose",
+        "previous_holder": null,
+        "summary": "自主认领 diagnose，epoch 1",
+        "task_id": "task_cfed6d7effb64b8a"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3411"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_1aa91211819e4f83",
+      "event_type": "model.queued",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:08.479+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "70",
+        "pair_id": null,
+        "purpose": "diagnose",
+        "request_id": "model_4f420fbb6d054148a8641dda0394c539",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "等待模型预算及共享准入"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3412"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_4dea23260ac845a7",
+      "event_type": "model.admitted",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:08.484+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "70",
+        "pair_id": null,
+        "purpose": "diagnose",
+        "queue_ms": 4.018,
+        "request_id": "model_4f420fbb6d054148a8641dda0394c539",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "共享模型槽位已准入",
+        "usage_id": "usage_0898921fc4a14ea7"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3413"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_d83cb2683da74a69",
+      "event_type": "model.provider_started",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:08.490+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "70",
+        "pair_id": null,
+        "purpose": "diagnose",
+        "request_id": "model_4f420fbb6d054148a8641dda0394c539",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "远程模型请求已发起",
+        "usage_id": "usage_0898921fc4a14ea7"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3414"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_6c5c34ff2d144e6a",
+      "event_type": "agent.status",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:09.577+00:00",
+      "payload": {
+        "status": "working",
+        "summary": "处理已认领任务",
+        "task_id": "task_cfed6d7effb64b8a"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3415"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_5f9c23bc122f4ce3",
+      "event_type": "model.completed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:16.331+00:00",
+      "payload": {
+        "elapsed_s": 7.846,
+        "error": null,
+        "purpose": "diagnose",
+        "summary": "diagnose 模型调用完成",
+        "usage": {
+          "completion_tokens": 382,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 81,
+            "rejected_prediction_tokens": 0
+          },
+          "latency_checkpoint": {
+            "engine_tbt_ms": 14,
+            "engine_ttft_ms": 194,
+            "engine_ttlt_ms": 5564,
+            "pre_inference_ms": 130,
+            "service_tbt_ms": 14,
+            "service_ttft_ms": 422,
+            "service_ttlt_ms": 5788,
+            "user_visible_ttft_ms": 292
+          },
+          "prompt_tokens": 370,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 752
+        }
+      },
+      "producer": "model",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3416"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_91f450a691ea481e",
+      "event_type": "model.completed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:16.334+00:00",
+      "payload": {
+        "arm": null,
+        "elapsed_ms": 7850.254,
+        "error": null,
+        "generation": "70",
+        "pair_id": null,
+        "provider_called": true,
+        "provider_ms": 7846,
+        "purpose": "diagnose",
+        "queue_ms": 4.018,
+        "request_id": "model_4f420fbb6d054148a8641dda0394c539",
+        "returned_model": "gpt-5.6-luna",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "模型响应已返回",
+        "usage_id": "usage_0898921fc4a14ea7",
+        "usage_unknown": false
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3417"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_639aff6156ca4324",
+      "event_type": "dialog.received",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:16.348+00:00",
+      "payload": {
+        "at": "2026-09-22T13:02:16.347+00:00",
+        "confidence": 0.99,
+        "content": "{\"root_cause\": \"当前生效的 prompt_version 为 degraded，对应 system.v1.4.3.b1.md，其策略为“激活不退，人工审核”，覆盖了已知正常版本 healthy 的“7天无理由，激活仍可退，商家承担运费”策略，导致业务探针判定不可无理由退货且商家不承担运费。\", \"proposed_checks\": [{\"check\": \"确认运行时实际加载的 prompt 版本是否为 degraded/system.v1.4.3.b1.md，而不是 known-good 的 healthy/system.v1.4.2.md。\"}, {\"check\": \"将同一 semantic_policy 请求分别使用 healthy 与 degraded prompt 重放，比较 eligible 和 merchant_pays_shipping 字段。\"}, {\"check\": \"检查 revision 143、generation 70 的发布绑定和回滚配置，确认是否误将 degraded 版本设为生效版本。\"}, {\"check\": \"修复或回滚到 healthy 版本后重新执行业务探针，确认结果为允许无理由退货且商家承担退货运费。\"}]}",
+        "evidence_ids": [
+          "ev_fe05fb6d83dd470f"
+        ],
+        "generation": "70",
+        "id": "msg_6881e538e1ae4be1",
+        "instance_id": "instance_17a12cd1598c4529",
+        "kind": "hypothesis",
+        "run_id": "run_2833fb33be5d4ca8",
+        "sender": "diagnoser",
+        "summary": "{\"root_cause\": \"当前生效的 prompt_version 为 degraded，对应 system.v1.4.3.b1.md，其策略为“激活不退，人工审核”，覆盖了已知正常版本 healthy 的“7天无理由，激活仍可退，商家承担运费”策略，导致业务探针判定不可无理由退货且商家不承担运费。\", \"proposed_checks\": [{\"check\": \"确认运行时实际加载的 prompt 版本是否为 degraded/system.v1.4.3.b1.md，而不是 known-good 的 healthy/system.v1.4.2.md。\"}, {\"check\": \"将同一 semantic_policy 请求分别使用 healthy 与 degraded prompt 重放，比较 eligible 和 merchant_pays_shipping 字段。\"}, {\"check\": \"检查 revision 143、generation 70 的发布绑定和回滚配置，确认是否误将 degraded 版本设为生效版本。\"}, {\"check\": \"修复或回滚到 healthy 版本后重新执行业务探针，确认结果为允许无理由退货且商家承担退货运费。\"}]}",
+        "task_epoch": "1",
+        "task_id": "task_cfed6d7effb64b8a",
+        "transport_epoch": "90"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3418"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_59985dcc53a04b3b",
+      "event_type": "dialog.received",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:16.360+00:00",
+      "payload": {
+        "at": "2026-09-22T13:02:16.359+00:00",
+        "confidence": 0.89,
+        "content": "{\"challenge\": \"请核对该假设并寻找反例：当前生效的 prompt_version 为 degraded，对应 system.v1.4.3.b1.md，其策略为“激活不退，人工审核”，覆盖了已知正常版本 healthy 的“7天无理由，激活仍可退，商家承担运费”策略，导致业务探针判定不可无理由退货且商家不承担运费。\", \"evidence_ids\": [\"ev_fe05fb6d83dd470f\"]}",
+        "evidence_ids": [
+          "ev_fe05fb6d83dd470f"
+        ],
+        "generation": "70",
+        "id": "msg_1a99e7559b294fa7",
+        "instance_id": "instance_17a12cd1598c4529",
+        "kind": "challenge",
+        "run_id": "run_2833fb33be5d4ca8",
+        "sender": "diagnoser",
+        "summary": "{\"challenge\": \"请核对该假设并寻找反例：当前生效的 prompt_version 为 degraded，对应 system.v1.4.3.b1.md，其策略为“激活不退，人工审核”，覆盖了已知正常版本 healthy 的“7天无理由，激活仍可退，商家承担运费”策略，导致业务探针判定不可无理由退货且商家不承担运费。\", \"evidence_ids\": [\"ev_fe05fb6d83dd470f\"]}",
+        "task_epoch": "1",
+        "task_id": "task_cfed6d7effb64b8a",
+        "transport_epoch": "90"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3419"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_dcd3fc8df70e40fd",
+      "event_type": "task.completed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:16.376+00:00",
+      "payload": {
+        "summary": "当前生效的 prompt_version 为 degraded，对应 system.v1.4.3.b1.md，其策略为“激活不退，人工审核”，覆盖了已知正常版本 healthy 的“7天无理由，激活仍可退，商家承担运费”策略，导致业务探针判定不可无理由退货且商家不承担运费。",
+        "task_id": "task_cfed6d7effb64b8a"
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3420"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_07edcad2e63a4e5f",
+      "event_type": "task.claimed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:16.957+00:00",
+      "payload": {
+        "epoch": "1",
+        "kind": "repair",
+        "previous_holder": null,
+        "summary": "自主认领 repair，epoch 1",
+        "task_id": "task_ae211095e0e348ad"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3421"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_a60d2984ee2c4d50",
+      "event_type": "model.queued",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:16.975+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "70",
+        "pair_id": null,
+        "purpose": "repair",
+        "request_id": "model_d69b91e4f9f445448e788f73641e86ba",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "等待模型预算及共享准入"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3422"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_83ba826805084077",
+      "event_type": "model.admitted",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:16.981+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "70",
+        "pair_id": null,
+        "purpose": "repair",
+        "queue_ms": 6.327,
+        "request_id": "model_d69b91e4f9f445448e788f73641e86ba",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "共享模型槽位已准入",
+        "usage_id": "usage_296ddc6d6df242b8"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3423"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_ca2fd37bdabb41d4",
+      "event_type": "model.provider_started",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:16.988+00:00",
+      "payload": {
+        "arm": null,
+        "generation": "70",
+        "pair_id": null,
+        "purpose": "repair",
+        "request_id": "model_d69b91e4f9f445448e788f73641e86ba",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "远程模型请求已发起",
+        "usage_id": "usage_296ddc6d6df242b8"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3424"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_d03638bc7ee8480b",
+      "event_type": "agent.status",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:17.661+00:00",
+      "payload": {
+        "status": "working",
+        "summary": "处理已认领任务",
+        "task_id": "task_ae211095e0e348ad"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3426"
+    },
+    {
+      "agent_instance_id": "instance_17a12cd1598c4529",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_7a6a062764c14845",
+      "event_type": "agent.status",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:17.830+00:00",
+      "payload": {
+        "status": "idle",
+        "summary": "等待协作任务",
+        "task_id": null
+      },
+      "producer": "diagnoser",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3427"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_5d3e6971ffee4c82",
+      "event_type": "model.completed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:22.911+00:00",
+      "payload": {
+        "elapsed_s": 5.929,
+        "error": null,
+        "purpose": "repair",
+        "summary": "repair 模型调用完成",
+        "usage": {
+          "completion_tokens": 231,
+          "completion_tokens_details": {
+            "reasoning_tokens": 75
+          },
+          "prompt_tokens": 1177,
+          "prompt_tokens_details": {
+            "cache_write_tokens": 1174
+          },
+          "total_tokens": 1408
+        }
+      },
+      "producer": "model",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3428"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_02d55e41cecc4b61",
+      "event_type": "model.completed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:22.913+00:00",
+      "payload": {
+        "arm": null,
+        "elapsed_ms": 5935.442,
+        "error": null,
+        "generation": "70",
+        "pair_id": null,
+        "provider_called": true,
+        "provider_ms": 5929,
+        "purpose": "repair",
+        "queue_ms": 6.327,
+        "request_id": "model_d69b91e4f9f445448e788f73641e86ba",
+        "returned_model": "gpt-5.6-luna",
+        "run_id": "run_2833fb33be5d4ca8",
+        "summary": "模型响应已返回",
+        "usage_id": "usage_296ddc6d6df242b8",
+        "usage_unknown": false
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3429"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_e5d9780d264a4c59",
+      "event_type": "dialog.received",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:22.924+00:00",
+      "payload": {
+        "at": "2026-09-22T13:02:22.924+00:00",
+        "confidence": 0.7,
+        "content": "The semantic_policy probe failed: the observed response incorrectly denied no-reason returns and merchant-paid shipping, while the expected result allows both. The delivered diagnosis identifies the degraded prompt revision as the likely cause and recommends restoring the known healthy prompt behavior. Set the prompt revision to healthy and re-run the probe to verify recovery.",
+        "evidence_ids": [
+          "ev_fe05fb6d83dd470f",
+          "msg_6881e538e1ae4be1"
+        ],
+        "generation": "70",
+        "id": "msg_22e03279dd3f450a",
+        "instance_id": "instance_765821d078de4b37",
+        "kind": "build_on",
+        "run_id": "run_2833fb33be5d4ca8",
+        "sender": "fixer-a",
+        "summary": "The semantic_policy probe failed: the observed response incorrectly denied no-reason returns and merchant-paid shipping, while the expected result allows both. The delivered diagnosis identifies the degraded prompt revision as the likely cause and recommends restoring the known healthy prompt behavior. Set the prompt revision to healthy and re-run the probe to verify recovery.",
+        "task_epoch": "1",
+        "task_id": "task_ae211095e0e348ad",
+        "transport_epoch": "90"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3430"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_7005c3da67bf43c2",
+      "event_type": "dialog.received",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:22.931+00:00",
+      "payload": {
+        "at": "2026-09-22T13:02:22.930+00:00",
+        "confidence": 0.7,
+        "content": "{\"actions\": [{\"type\": \"set_prompt_revision\", \"values\": {\"prompt_version\": \"healthy\"}}], \"rationale\": \"The semantic_policy probe failed: the observed response incorrectly denied no-reason returns and merchant-paid shipping, while the expected result allows both. The delivered diagnosis identifies the degraded prompt revision as the likely cause and recommends restoring the known healthy prompt behavior. Set the prompt revision to healthy and re-run the probe to verify recovery.\"}",
+        "evidence_ids": [
+          "ev_fe05fb6d83dd470f",
+          "msg_6881e538e1ae4be1"
+        ],
+        "generation": "70",
+        "id": "msg_ea495e15930c4308",
+        "instance_id": "instance_765821d078de4b37",
+        "kind": "synthesize",
+        "run_id": "run_2833fb33be5d4ca8",
+        "sender": "fixer-a",
+        "summary": "{\"actions\": [{\"type\": \"set_prompt_revision\", \"values\": {\"prompt_version\": \"healthy\"}}], \"rationale\": \"The semantic_policy probe failed: the observed response incorrectly denied no-reason returns and merchant-paid shipping, while the expected result allows both. The delivered diagnosis identifies the degraded prompt revision as the likely cause and recommends restoring the known healthy prompt behavior. Set the prompt revision to healthy and re-run the probe to verify recovery.\"}",
+        "task_epoch": "1",
+        "task_id": "task_ae211095e0e348ad",
+        "transport_epoch": "90"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3431"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_d0ba2a8c449740b5",
+      "event_type": "plan.proposed",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:22.958+00:00",
+      "payload": {
+        "actions": [
+          {
+            "type": "set_prompt_revision",
+            "values": {
+              "prompt_version": "healthy"
+            }
+          }
+        ],
+        "hash": "00793db431d0079b48f739443458a55f429782a31557480c765a92ad9cea7314",
+        "plan_id": "plan_e0445cc1e7344605",
+        "summary": "The semantic_policy probe failed: the observed response incorrectly denied no-reason returns and merchant-paid shipping, while the expected result allows both. The delivered diagnosis identifies the degraded prompt revision as the likely cause and recommends restoring the known healthy prompt behavior. Set the prompt revision to healthy and re-run the probe to verify recovery."
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3432"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_5d26162ff4b84cc2",
+      "event_type": "execution.granted",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:22.965+00:00",
+      "payload": {
+        "epoch": "1",
+        "fence": "117",
+        "grant_id": "grant_5d5ad471c5f3425a",
+        "plan_id": "plan_e0445cc1e7344605",
+        "summary": "确定性策略签发有限执行授权"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3433"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_d340a37b35764748",
+      "event_type": "agent.paused",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:22.969+00:00",
+      "payload": {
+        "grant_id": "grant_5d5ad471c5f3425a",
+        "summary": "故障注入：已持有旧令牌，进程停止推进与续租"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3434"
+    },
+    {
+      "agent_instance_id": null,
+      "config_hash": "9a549cf6b5842a3619ffeb1d737562b5f14cb9d00b9152cab2c33f29163607b9",
+      "config_revision": "143",
+      "event_id": "ev_f9427bec85044b98",
+      "event_type": "authority.revoked",
+      "generation": "70",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:23.297+00:00",
+      "payload": {
+        "reason": "reset",
+        "summary": "事故终态撤销任务与执行授权"
+      },
+      "producer": "system",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3435"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "fa1cbbeafa1990d1e43b83a24c4518613c3d23f2f7f18a354e1a1b1c89cd1a8b",
+      "config_revision": "144",
+      "event_id": "ev_7205bdbdf8fc48f5",
+      "event_type": "action.rejected",
+      "generation": "71",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:23.597+00:00",
+      "payload": {
+        "code": "RESET_GENERATION_STALE",
+        "current_fence": "118",
+        "grant_id": "grant_5d5ad471c5f3425a",
+        "old_epoch": "1",
+        "old_fence": "117",
+        "plan_id": "plan_e0445cc1e7344605",
+        "revision": "144",
+        "summary": "旧轮次令牌已失效"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3437"
+    },
+    {
+      "agent_instance_id": "instance_765821d078de4b37",
+      "config_hash": "fa1cbbeafa1990d1e43b83a24c4518613c3d23f2f7f18a354e1a1b1c89cd1a8b",
+      "config_revision": "144",
+      "event_id": "ev_feccbc26208a4d41",
+      "event_type": "dialog.rejected",
+      "generation": "71",
+      "incident_id": "run_2833fb33be5d4ca8",
+      "occurred_at": "2026-09-22T13:02:23.607+00:00",
+      "payload": {
+        "code": "RESET_GENERATION_STALE",
+        "summary": "上轮执行身份已被重置作废",
+        "task_id": "task_ae211095e0e348ad"
+      },
+      "producer": "fixer-a",
+      "run_id": "run_2833fb33be5d4ca8",
+      "scope": "run",
+      "sequence": "3439"
+    }
+  ],
+  "actions": [],
+  "usage": [
+    {
+      "at": "2026-09-22T13:02:04.577+00:00",
+      "dispatched_at": "2026-09-22T13:02:04.597+00:00",
+      "elapsed_s": 3.066,
+      "error": null,
+      "id": "usage_96c524c19f124f7e",
+      "provider_state": "sent",
+      "purpose": "probe:detect",
+      "reservation": 2050,
+      "run_id": "run_2833fb33be5d4ca8",
+      "status": "completed",
+      "unknown": false,
+      "usage": {
+        "completion_tokens": 80,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 31,
+          "rejected_prediction_tokens": 0
+        },
+        "latency_checkpoint": {
+          "engine_tbt_ms": 11,
+          "engine_ttft_ms": 90,
+          "engine_ttlt_ms": 964,
+          "pre_inference_ms": 85,
+          "service_tbt_ms": 11,
+          "service_ttft_ms": 637,
+          "service_ttlt_ms": 1506,
+          "user_visible_ttft_ms": 551
+        },
+        "prompt_tokens": 695,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 775
+      }
+    },
+    {
+      "at": "2026-09-22T13:02:08.480+00:00",
+      "dispatched_at": "2026-09-22T13:02:08.488+00:00",
+      "elapsed_s": 7.846,
+      "error": null,
+      "id": "usage_0898921fc4a14ea7",
+      "provider_state": "sent",
+      "purpose": "diagnose",
+      "reservation": 2165,
+      "run_id": "run_2833fb33be5d4ca8",
+      "status": "completed",
+      "unknown": false,
+      "usage": {
+        "completion_tokens": 382,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 81,
+          "rejected_prediction_tokens": 0
+        },
+        "latency_checkpoint": {
+          "engine_tbt_ms": 14,
+          "engine_ttft_ms": 194,
+          "engine_ttlt_ms": 5564,
+          "pre_inference_ms": 130,
+          "service_tbt_ms": 14,
+          "service_ttft_ms": 422,
+          "service_ttlt_ms": 5788,
+          "user_visible_ttft_ms": 292
+        },
+        "prompt_tokens": 370,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "total_tokens": 752
+      }
+    },
+    {
+      "at": "2026-09-22T13:02:16.977+00:00",
+      "dispatched_at": "2026-09-22T13:02:16.985+00:00",
+      "elapsed_s": 5.929,
+      "error": null,
+      "id": "usage_296ddc6d6df242b8",
+      "provider_state": "sent",
+      "purpose": "repair",
+      "reservation": 3253,
+      "run_id": "run_2833fb33be5d4ca8",
+      "status": "completed",
+      "unknown": false,
+      "usage": {
+        "completion_tokens": 231,
+        "completion_tokens_details": {
+          "reasoning_tokens": 75
+        },
+        "prompt_tokens": 1177,
+        "prompt_tokens_details": {
+          "cache_write_tokens": 1174
+        },
+        "total_tokens": 1408
+      }
+    }
+  ]
+}

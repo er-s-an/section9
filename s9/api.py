@@ -15,7 +15,7 @@ from pydantic import Field
 
 from s9 import config
 from s9.contracts import (AgentStatusRequest, ChatRequest, ClaimRequest, ExecuteRequest, Injection,
-                          MessageRequest, ModelRequest, PlanRequest, StrictModel)
+                          MessageRequest, ModelRequest, PlanRequest, StrictModel, VerifyRequest)
 from s9.core import Core
 from s9.store import ACTIVE, Rejected, Store, now
 
@@ -364,8 +364,8 @@ async def execute(item: ExecuteRequest, a=Depends(agent), c: Core = Depends(core
 
 
 @app.post("/agent/verify")
-async def verify(item: RunId, a=Depends(agent), c: Core = Depends(core)):
-    return await c.verify(a, item.run_id)
+async def verify(item: VerifyRequest, a=Depends(agent), c: Core = Depends(core)):
+    return await c.verify(a, item.model_dump())
 
 
 @app.post("/api/telemetry/v1/traces")

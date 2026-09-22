@@ -1,5 +1,6 @@
 """Transactional regression proofs; these are not live-model acceptance records."""
 from concurrent.futures import ThreadPoolExecutor
+import json
 
 import pytest
 
@@ -117,7 +118,19 @@ def test_empty_acceptance_cannot_close_even_with_current_revision(tmp_path):
     s, r, lease, p = setup(tmp_path)
     g = s.grant("fixer-a", p["id"])
     result = s.execute("fixer-a", p["id"], g["id"], "apply")
-    proof = s.verification("verifier", r["id"], {"passed": True, "checks": [], "tested_revision": result["revision"]})
+    with s.tx() as db:
+        task = next(json.loads(row[0]) for row in db.execute("SELECT data FROM tasks WHERE run_id=?", (r["id"],))
+                    if json.loads(row[0])["kind"] == "verify")
+        agent = s.get(db, "agents", "verifier")
+        run = s.get(db, "runs", r["id"])
+        transport = str(s.meta(db, "transport_epoch"))
+    verify_lease = s.claim("verifier", task["id"])
+    job = s.begin_verification(agent, {"run_id": r["id"], "task_id": verify_lease["task_id"],
+        "task_epoch": verify_lease["epoch"], "instance_id": agent["instance_id"],
+        "generation": run["generation"], "transport_epoch": transport,
+        "expected_revision": s.current_config()["revision"]})
+    proof = s.verification("verifier", r["id"], {"passed": True, "checks": [],
+        "tested_revision": result["revision"], "tested_config_hash": job["config_hash"]}, job=job)
     assert not proof["passed"]
     assert s.run(r["id"])["status"] != "resolved"
 

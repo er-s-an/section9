@@ -20,7 +20,7 @@ try{
  await wait(async()=>/支持|可以|7 天|7天/.test(await p.locator('.chat-log').innerText().catch(()=>'')),'real customer response');
  await p.screenshot({path:path.join(out,'01-healthy-chat.png'),fullPage:true});
  report.checks.push({name:'real customer request from browser',passed:true});
- await p.getByRole('button',{name:'复合故障',exact:true}).click();
+ await p.getByRole('button',{name:'多项情况同时发生',exact:true}).click();
  const incident=await wait(async()=>(await state()).incident,'injected composite');
  const r=await wait(async()=>{const x=await(await p.request.get(url+'/api/runs/'+incident.id)).json();return ['resolved','failed'].includes(x.status)?x:null},'actual business close');
  assert.equal(r.status,'resolved');assert.ok(r.verification.passed);
@@ -30,12 +30,12 @@ try{
  report.run={id:r.id,elapsed_s:r.elapsed_s,status:r.status,backend_trace_ids:detail.events.filter(e=>e.event_type==='telemetry.span_received').map(e=>e.payload.trace_id)};
  report.checks.push({name:'composite real restore and collector control persistence',passed:true});
  await p.screenshot({path:path.join(out,'02-composite-resolved.png'),fullPage:true});
- await p.getByRole('button',{name:'五行计分',exact:true}).click();await p.locator('.matrix-cell').first().waitFor();
+ await p.getByRole('button',{name:'验收评分',exact:true}).click();await p.locator('.matrix-cell').first().waitFor();
  await p.locator('.matrix-cell:not([disabled])').first().click();await p.locator('.run-picker').waitFor();await p.locator('.run-picker button').nth(1).click();await p.locator('.drawer-body').waitFor();
  const ids=await p.locator('.detail-event').evaluateAll(es=>es.map(e=>e.querySelector('span')?.textContent));assert.equal(ids.length,new Set(ids).size);
  await p.screenshot({path:path.join(out,'03-score-evidence.png'),fullPage:true});
  await p.locator('.drawer-head button').click();await p.locator('.run-picker-head button').click();await p.screenshot({path:path.join(out,'04-scoreboard.png'),fullPage:true});
- await p.getByRole('button',{name:'办公室',exact:true}).click();await p.getByRole('button',{name:'重置实验室',exact:true}).click();await wait(async()=>!(await state()).incident,'final reset');
+ await p.getByRole('button',{name:'实时监护',exact:true}).click();await p.getByRole('button',{name:'重新开始本轮',exact:true}).click();await wait(async()=>!(await state()).incident,'final reset');
  await p.setViewportSize({width:1280,height:800});await p.waitForTimeout(600);assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
  await p.screenshot({path:path.join(out,'05-laptop-1280.png'),fullPage:true});
  await p.setViewportSize({width:1440,height:1000});await p.screenshot({path:path.join(out,'06-ready-home.png'),fullPage:true});

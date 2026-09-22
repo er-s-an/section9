@@ -1,0 +1,208 @@
+S9
+SECTION 9
+客服代理实验室 / OPERATIONS FLOOR
+控制链路在线
+SSE CONNECTING
+GEN 73
+REV 148
+办公室
+运行记录
+Playbook
+五行计分
+evomap-gpt-5.6-luna
+只重置 primary
+LIVE CONTROL ROOM
+可观测协作现场
+MONITORING
+01
+小智客服
+真实会话进入控制室
+→
+02
+异常
+等待事件信号
+→
+03
+协作
+待命
+→
+04
+验收
+未测
+MONITORING / 监测
+CONSULT / 会诊与修复
+SECTION 9 / 机房
+STANDBY / 待命室
+GEN 73 · LIVE ·
+ARCHIVE
+CASE FILES / READ ONLY
+哨兵
+待命
+21:27:10
+诊断员
+待命
+21:27:10
+修复员 A
+待命
+21:27:10
+修复员 B
+待命
+21:27:10
+复核员
+待命
+21:27:10
+单 Agent 基线
+待命
+21:27:10
+成本分析师
+离线
+12:43:50
+角色位置按职责与实时状态映射：工作中靠近本人工作桌/机房，待命回到对应工位，暂停回到本人待命点。
+CHAOS INJECTOR
+
+作用于 primary；触发真实运行并回传事件。
+
+语义退化
+成本膨胀
+工具死循环
+复合故障
+客服窗口
+尚无本次会话。发送一条真实问题开始。
+发送
+事件时间线
+3569
+dependency.changed
+langfuse available
+21:26:54
+3568
+dependency.changed
+collector available
+21:26:46
+3567
+dependency.changed
+collector degraded
+21:26:33
+3566
+dependency.changed
+langfuse degraded
+21:26:30
+3565
+dependency.changed
+langfuse available
+21:23:02
+3564
+dependency.changed
+langfuse degraded
+21:22:54
+3563
+agent.status
+等待协作任务
+21:17:48
+3562
+agent.status
+等待协作任务
+21:17:48
+3561
+agent.status
+等待协作任务
+21:17:48
+3560
+agent.status
+等待协作任务
+21:17:48
+PRIMARY SCOPE
+原实验室控制
+仅 primary · 当前 L2
+
+以下写操作只影响原实验室 primary；不会修改成对实验。
+
+控制台
+自主等级 → primary
+L0
+L1
+L2
+消息层 → primary
+正常通信
+下轮 Playbook → primary
+关闭
+Attract 循环 → primary
+关闭
+模型推理
+configured · 远程 EvoMap API
+代理状态
+哨兵sentry
+等待协作任务 · 21:27:10
+idle
+诊断员diagnoser
+等待协作任务 · 21:27:10
+idle
+修复员 Afixer
+等待协作任务 · 21:27:10
+idle
+修复员 Bfixer
+等待协作任务 · 21:27:10
+idle
+复核员verifier
+等待协作任务 · 21:27:10
+idle
+单 Agent 基线single
+等待协作任务 · 21:27:10
+idle
+成本分析师cost
+心跳失联 31401 秒 · 12:43:50
+offline
+成本专家加入
+暂停 A
+恢复 A
+当前异常
+当前没有活动异常
+可从左侧注入器开始一次真实运行。
+演示 fencing 剧本 · primary
+PAIR SCOPE
+成对实验控制
+固定 L2 · 独立 Pair / arm
+
+Pair 固定 L2；primary 自治、消息和 Playbook 设置不作用于 Pair。每个写按钮都会标明具体 Pair 或 arm。
+
+成对实验控制 · Pair 固定 L2
+复合故障
+语义退化
+成本膨胀
+工具死循环
+创建 Pair
+启动 Pair
+pair_879bcee3fa084a59 · completed · L2
+读取 SWARM · pair_879bcee3fa084a59
+读取 BASELINE · pair_879bcee3fa084a59
+重置 Pair · pair_879bcee3fa084a59
+重置 SWARM arm
+重置 BASELINE arm
+历史 Pair
+pair_879bcee3fa084a59 · completed · L2
+pair_a18c91360f4d4884 · completed · L2
+pair_ff221776dbe043cf · completed · L2
+pair_c94a9c38455348d6 · completed · L2
+pair_5675273ccdd14106 · completed · L2
+pair_2ad7ee2118e74219 · completed · L2
+pair_a02217a7c65e4626 · completed · L2
+pair_eae71235e7994294 · completed · L2
+pair_f29b0ee70e894cfe · completed · L2
+pair_f986ccf5a4334436 · completed · L2
+pair_2eaa2893690f4c2d · interrupted · L2
+pair_18d6ce5b3fee4e63 · interrupted · L2
+pair_6f80e439cf324e48 · interrupted · L2
+pair_492144569b624bec · completed · L2
+pair_5009eaf5f3dd4bef · completed · L2
+依赖健康
+model
+远程 EvoMap API
+langfuse
+HTTP 200
+collector
+HTTP 200
+evomap
+Section9 自建本地协作；官方 GEP SDK 资产
+jev
+P2：无真实压缩产物，未启用
+SECTION 9 / LOCAL OPERATOR CONSOLE
+状态来源：GET /api/state + SSE /api/events · 未测状态不会生成分数

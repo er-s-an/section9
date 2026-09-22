@@ -17,22 +17,23 @@ const state = async () => (await page.request.get(url + '/api/state')).json();
 const run = async id => (await page.request.get(url + '/api/runs/' + id)).json();
 async function wait(check, label, limit = 100000) { const start = Date.now(); while (Date.now() - start < limit) { const r = await check(); if (r) return r; await page.waitForTimeout(500); } throw new Error('Timeout: ' + label); }
 const shot = name => page.screenshot({ path: path.join(out, name + '.png'), fullPage: true });
-async function reset() { const gen = (await state()).generation; await page.getByRole('button', { name: '重置实验室', exact: true }).click(); await wait(async () => (await state()).generation !== gen, 'reset'); }
+async function reset() { const gen = (await state()).generation; await page.getByRole('button', { name: '重新开始本轮', exact: true }).click(); await wait(async () => (await state()).generation !== gen, 'reset'); }
 const compose = (action, service) => execFileSync('docker', ['compose', '--project-name', 'section9-observe', '--env-file', 'infra/.env', '-f', 'infra/docker-compose.yml', action, service], { cwd: root, stdio: 'pipe', timeout: 45000 });
 let collectorStopped = false;
 try {
   await page.goto(url, { waitUntil: 'networkidle' });
   await reset();
-  await page.getByRole('button', { name: '成本膨胀', exact: true }).click();
+  await page.getByRole('button', { name: '处理成本升高', exact: true }).click();
   const incident = await wait(async () => { const s = await state(); return s.incident?.symptoms?.length ? s.incident : null; }, 'cost observed');
-  await page.getByRole('button', { name: '成本专家加入', exact: true }).click();
+  if(await page.locator('.team-details').getAttribute('open')===null)await page.locator('.team-details > summary').click();
+  await page.getByRole('button', { name: '邀请成本专家', exact: true }).click();
   await wait(async () => { const r = await run(incident.id); return r.status === 'resolved' && r.events.some(e => e.event_type === 'task.claimed' && e.producer === 'cost') && r.events.some(e => e.event_type === 'dialog.received' && e.producer === 'cost'); }, 'capability join and real cost contribution');
   const joined = await run(incident.id);
   await fs.writeFile(path.join(out, 'cost-expert.json'), JSON.stringify(joined, null, 2));
   report.checks.push({ name: 'cost specialist discovered, autonomously claimed, real model message', passed: true, run_id: incident.id });
   await shot('cost-expert-joined');
   await reset();
-  await page.getByRole('button', { name: '工具死循环', exact: true }).click();
+  await page.getByRole('button', { name: '重复操作未结束', exact: true }).click();
   const loop = await wait(async () => { const s = await state(); return s.incident?.scenario === 'loop' ? s.incident : null; }, 'loop injected');
   await wait(async () => (await run(loop.id)).events.some(e => e.event_type === 'request.progress' && e.payload.step_index >= 4), 'actual loop progress');
   await reset();

@@ -22,7 +22,7 @@ def main():
               "fresh_image_download_measured": False, "volumes_preserved": True}
     with (OUT / "startup.log").open("w") as log:
         command([str(ROOT / ".venv/bin/python"), "scripts/environments.py", "stop"], log)
-        command(["./scripts/stop.sh"], log)
+        command(["./scripts/stop.sh", "--app-only"], log)
         command(["docker", "compose", "--project-name", "section9-observe", "--env-file", "infra/.env", "-f", "infra/docker-compose.yml", "stop"], log)
         start = time.monotonic()
         command(["./scripts/start.sh"], log)

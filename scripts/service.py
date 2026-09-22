@@ -40,7 +40,7 @@ def alive():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["start", "stop", "status", "reset"])
+    parser.add_argument("command", choices=["start", "stop", "stop-app", "status", "reset"])
     args = parser.parse_args()
     RUNTIME.mkdir(exist_ok=True)
     if args.command == "status":
@@ -51,7 +51,7 @@ def main():
         with OPENER.open(request, timeout=10) as response:
             print(response.read().decode())
         return 0
-    if args.command == "stop":
+    if args.command in {"stop", "stop-app"}:
         if PID_FILE.exists():
             pid = int(PID_FILE.read_text())
             command = subprocess.run(["ps", "-p", str(pid), "-o", "command="], capture_output=True, text=True).stdout
@@ -68,6 +68,13 @@ def main():
                 print("Section9 stopped")
             else:
                 print("PID no longer belongs to this Section9 checkout; left untouched")
+        guard_file = RUNTIME / "caffeinate.pid"
+        if guard_file.exists():
+            try:
+                os.kill(int(guard_file.read_text()), signal.SIGTERM)
+            except (ValueError, ProcessLookupError, PermissionError):
+                pass
+            guard_file.unlink(missing_ok=True)
         return 0
     expected = capture_identity()
     existing = listener_health()
@@ -100,7 +107,7 @@ def main():
             mismatches = identity_mismatches(expected, ready["identity"])
             if mismatches:
                 raise SystemExit("Started listener identity does not match this checkout: " + ", ".join(sorted(mismatches)))
-            print("Ready: " + url())
+            print("service_alive: " + url() + " (business_unchecked; use scripts/readiness.py --business explicitly)")
             return 0
         if child.poll() is not None:
             break

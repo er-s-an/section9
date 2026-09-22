@@ -552,21 +552,51 @@ class Store:
             raise rejection
         return result
 
-    def verification(self, agent_id, run_id, result):
+    def _verification_authority(self, db, agent_id, item):
+        agent = self.get(db, "agents", agent_id)
+        if not agent or agent["role"] not in {"verifier", "single"}:
+            raise Rejected("ROLE_FORBIDDEN", "只有复核入口可提交独立验收", 403)
+        run = self.get(db, "runs", item["run_id"])
+        task = self.get(db, "tasks", item["task_id"])
+        self._valid_task(db, agent, task, run, item["task_epoch"])
+        self._valid_context(db, agent, run, item)
+        expected_kind = "single" if agent["role"] == "single" else "verify"
+        if task["kind"] != expected_kind:
+            raise Rejected("VERIFY_TASK_REQUIRED", "验收必须持有本角色的验收任务", 403)
+        if not run.get("last_action"):
+            raise Rejected("NO_APPLIED_ACTION", "尚无可验收的动作")
+        return run
+
+    def begin_verification(self, agent, item):
+        """Capture server-owned authority and the exact object being tested."""
         with self.tx() as db:
-            a = self.get(db, "agents", agent_id)
-            if a["role"] not in {"verifier", "single"}:
-                raise Rejected("ROLE_FORBIDDEN", "只有复核入口可提交独立验收", 403)
-            run = self.get(db, "runs", run_id)
+            if item["instance_id"] != agent["instance_id"]:
+                raise Rejected("INSTANCE_STALE", "验收请求不属于认证进程")
+            run = self._verification_authority(db, agent["id"], item)
             config = self.current_config(db)
-            if not run or run["generation"] != str(self.meta(db, "generation")):
-                raise Rejected("RESET_GENERATION_STALE", "验收属于旧轮次")
-            if run["status"] not in ACTIVE or not run["last_action"]:
-                raise Rejected("NO_APPLIED_ACTION", "尚无可验收的动作")
-            result = {**result, "id": uid("verify"), "contract_hash": run["contract_hash"], "at": now()}
+            if item["expected_revision"] != config["revision"] or config["revision"] != run["last_action"]["after_revision"]:
+                raise Rejected("PRECONDITION_FAILED", "验收对象的配置版本已变化")
+            job = {**item, **self.scope, "id": uid("verify_job"), "agent_id": agent["id"],
+                   "config_hash": digest({k: config[k] for k in DEFAULT_CONFIG}),
+                   "contract_hash": run["contract_hash"], "action_id": run["last_action"]["id"]}
+            self.event(db, "verify.started", {**job, "summary": "独立验收开始", "suite": "verify"},
+                       run_id=run["id"], producer=agent["id"])
+            return job
+
+    def verification(self, agent_id, run_id, result, *, job):
+        with self.tx() as db:
+            if job["agent_id"] != agent_id or job["run_id"] != run_id:
+                raise Rejected("VERIFY_JOB_MISMATCH", "验收授权对象不匹配", 403)
+            self._valid_scope(job)
+            run = self._verification_authority(db, agent_id, job)
+            if job["contract_hash"] != run["contract_hash"] or job["action_id"] != run["last_action"]["id"]:
+                raise Rejected("VERIFY_JOB_STALE", "验收契约或被测动作已变化")
+            config = self.current_config(db)
+            result = {**result, "id": uid("verify"), "job_id": job["id"], "authority": job,
+                      "contract_hash": run["contract_hash"], "at": now()}
             same = str(result.get("tested_revision")) == config["revision"] == run["last_action"]["after_revision"]
-            if getattr(self, 'scope', {}):
-                same = same and result.get('tested_config_hash') == digest({k: config[k] for k in DEFAULT_CONFIG})
+            same = same and config["revision"] == job["expected_revision"]
+            same = same and result.get('tested_config_hash') == job["config_hash"] == digest({k: config[k] for k in DEFAULT_CONFIG})
             result['current_config_hash'] = digest({k: config[k] for k in DEFAULT_CONFIG})
             result.setdefault("checks", []).append({"name": "revision_unchanged_at_close", "passed": same, "expected": result.get("tested_revision"), "actual": config["revision"]})
             budget_ok = not run.get("usage_unknown") and not run.get("reserved_tokens") and run["usage_tokens"] <= run["token_budget"]
@@ -685,32 +715,63 @@ class Store:
                     raise Rejected("TOKEN_BUDGET_EXHAUSTED", "本轮总 token 预算不足", 429)
                 run["reserved_tokens"] += reservation
                 self.save(db, "runs", run)
-            usage = {**getattr(self, "scope", {}), "id": usage_id, "run_id": run_id, "reservation": reservation, "purpose": purpose, "status": "reserved", "at": now()}
+            usage = {**getattr(self, "scope", {}), "id": usage_id, "run_id": run_id, "reservation": reservation, "purpose": purpose,
+                     "status": "reserved", "provider_state": "not_sent", "at": now()}
             db.execute("INSERT INTO usage VALUES(?,?,?)", (usage_id, run_id, encode(usage)))
             return usage_id
 
-    def settle_usage(self, usage_id, actual, elapsed_s, error=None):
+    def mark_usage_sent(self, usage_id):
+        # Write ahead of the network await. A crash after this commit is
+        # conservatively unknown, even if the provider never received bytes.
         with self.tx() as db:
             u = self.get(db, "usage", usage_id)
-            if u["status"] != "reserved":
-                return  # Late duplicate settlement must not count usage twice.
-            total = actual.get("total_tokens") if isinstance(actual, dict) else None
-            if type(total) is not int or total < 0:
-                total = None
-            u.update(usage=actual, elapsed_s=elapsed_s, error=error, status="failed" if error else "completed", unknown=total is None)
+            if not u or u["status"] != "reserved":
+                raise Rejected("USAGE_STALE", "模型预算预留已失效")
+            u.update(provider_state="sent", dispatched_at=now())
             self.save(db, "usage", u)
-            if u["run_id"]:
-                run = self.get(db, "runs", u["run_id"])
-                if run:
-                    run["reserved_tokens"] = max(0, run["reserved_tokens"] - u["reservation"])
-                    run["usage_tokens"] += int(total or 0)
-                    run["usage_unknown"] |= total is None
-                    if total is None:
-                        run["unknown_reserved_tokens"] = run.get("unknown_reserved_tokens", 0) + u["reservation"]
-                    run["budget_overrun"] = run["usage_tokens"] > run["token_budget"]
-                    self.save(db, "runs", run)
-            self.event(db, "model.completed" if not error else "model.failed", {"purpose": u["purpose"], "usage": actual, "elapsed_s": elapsed_s, "error": error,
-                                                                                "summary": f"{u['purpose']} 模型调用" + ("失败" if error else "完成")}, run_id=u["run_id"], producer="model")
+
+    def recover_usage(self, run_id=None, reason="SERVER_RESTARTED"):
+        counts = {"recovered": 0, "known_zero": 0, "unknown": 0}
+        with self.tx() as db:
+            rows = db.execute("SELECT data FROM usage" + (" WHERE run_id=?" if run_id else ""),
+                              (run_id,) if run_id else ()).fetchall()
+            for row in rows:
+                u = json.loads(row[0])
+                if u["status"] != "reserved":
+                    continue
+                not_sent = u.get("provider_state") == "not_sent"
+                actual = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0} if not_sent else None
+                self._settle_usage(db, u, actual, None, reason + ("_BEFORE_PROVIDER" if not_sent else "_USAGE_UNKNOWN"))
+                counts["recovered"] += 1
+                counts["known_zero" if not_sent else "unknown"] += 1
+            if counts["recovered"]:
+                self.event(db, "model.recovered", {**counts, "reason": reason, "summary": "重启遗留模型预算已结算"}, run_id=run_id)
+        return counts
+
+    def settle_usage(self, usage_id, actual, elapsed_s, error=None):
+        with self.tx() as db:
+            return self._settle_usage(db, self.get(db, "usage", usage_id), actual, elapsed_s, error)
+
+    def _settle_usage(self, db, u, actual, elapsed_s, error=None):
+        if u["status"] != "reserved":
+            return  # Late duplicate settlement must not count usage twice.
+        total = actual.get("total_tokens") if isinstance(actual, dict) else None
+        if type(total) is not int or total < 0:
+            total = None
+        u.update(usage=actual, elapsed_s=elapsed_s, error=error, status="failed" if error else "completed", unknown=total is None)
+        self.save(db, "usage", u)
+        if u["run_id"]:
+            run = self.get(db, "runs", u["run_id"])
+            if run:
+                run["reserved_tokens"] = max(0, run["reserved_tokens"] - u["reservation"])
+                run["usage_tokens"] += int(total or 0)
+                run["usage_unknown"] |= total is None
+                if total is None:
+                    run["unknown_reserved_tokens"] = run.get("unknown_reserved_tokens", 0) + u["reservation"]
+                run["budget_overrun"] = run["usage_tokens"] > run["token_budget"]
+                self.save(db, "runs", run)
+        self.event(db, "model.completed" if not error else "model.failed", {"purpose": u["purpose"], "usage": actual, "elapsed_s": elapsed_s, "error": error,
+                                                                            "summary": f"{u['purpose']} 模型调用" + ("失败" if error else "完成")}, run_id=u["run_id"], producer="model")
 
     def usage_records(self, run_id):
         with self.tx() as db:

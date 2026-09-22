@@ -15,14 +15,14 @@ page.on('pageerror',e=>errors.push(String(e)));
 const report={started_at:new Date().toISOString(),runs:[],checks:[],errors};
 const state=async()=>(await page.request.get(url+'/api/state')).json();
 async function wait(fn,label,timeout=90000){const start=Date.now();while(Date.now()-start<timeout){const r=await fn();if(r)return r;await page.waitForTimeout(400)}throw new Error('Timeout: '+label)}
-async function reset(){const before=(await state()).generation;const start=Date.now();await page.getByRole('button',{name:'重置实验室',exact:true}).click();await wait(async()=>(await state()).generation!==before,'reset');return (Date.now()-start)/1000}
+async function reset(){const before=(await state()).generation;const start=Date.now();await page.getByRole('button',{name:'重新开始本轮',exact:true}).click();await wait(async()=>(await state()).generation!==before,'reset');return (Date.now()-start)/1000}
 try{
  await page.goto(url,{waitUntil:'networkidle'});
  await reset();
- if(!(await state()).memory_enabled)await page.locator('.control-line').filter({hasText:'下轮 Playbook'}).getByRole('button').click();
+ if(!(await state()).memory_enabled)await page.locator('.control-line').filter({hasText:'处置经验'}).getByRole('button').click();
  await wait(async()=>(await state()).memory_enabled,'real memory toggle');
  for(let i=0;i<2;i++){
-  await page.getByRole('button',{name:'语义退化',exact:true}).click();
+  await page.getByRole('button',{name:'回答偏离预期',exact:true}).click();
   const current=await wait(async()=>(await state()).incident,'new incident');
   const r=await wait(async()=>{const r=await (await page.request.get(url+'/api/runs/'+current.id)).json();return ['resolved','failed'].includes(r.status)?r:null},'real memory close');
   await wait(async()=>{const x=await(await page.request.get(url+'/api/runs/'+r.id)).json();return x.events.some(e=>e.event_type==='memory.recorded')?x:null},'official local GEP record');
@@ -34,7 +34,7 @@ try{
   report.checks.push({name:`round ${i+1} real match, model decision, execution, external verification and GEP write`,passed:true});
   report.reset_s=await reset();
  }
- await page.getByRole('button',{name:'Playbook',exact:true}).click();
+ await page.getByRole('button',{name:'处置经验',exact:true}).click();
  await page.locator('.playbook-card').first().waitFor();
  const books=await(await page.request.get(url+'/api/playbooks')).json();
  const used=books.items.find(x=>x.id===report.runs[1].selected_id);

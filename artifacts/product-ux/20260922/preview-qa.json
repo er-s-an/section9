@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "scope": "Synthetic interactive preview; no backend or model validation claimed",
+  "checks": [
+    "step 1: product copy and expert visibility",
+    "step 2: product copy and expert visibility",
+    "step 3: product copy and expert visibility",
+    "step 4: product copy and expert visibility",
+    "step 5: product copy and expert visibility",
+    "step 6: product copy and expert visibility",
+    "expert details, stage, Escape, focus return",
+    "connection pause, frozen controls, resume",
+    "event details and archive record",
+    "layout 1440: scroll, no overflow, controls",
+    "layout 1280: scroll, no overflow, controls",
+    "layout 390: scroll, no overflow, controls"
+  ],
+  "errors": []
+}

@@ -102,3 +102,13 @@ Model calibration: GLM includes reasoning in completion budget. Healthy max_outp
 ## Paired Showcase (schema 1)
 
 The single active run constraint above now applies per runtime, not to the entire backend. The original console is unchanged in scope. PairCoordinator owns two additional isolated stores for each explicit paired experiment. Pair/run/arm/spec scope is persisted and bound into agent identity, tasks, plan hashes and grants. Pair verification additionally binds tested_config_hash to the current arm configuration. See [SHOWCASE_ARCHITECTURE.md](SHOWCASE_ARCHITECTURE.md) for immutable specification, shared admission, reset, restart and read-only event contracts. Historical independent runs are never migrated into paired data.
+
+## Local product revision (2026-09-22)
+
+`POST /agent/verify` now requires `{run_id,task_id,task_epoch,instance_id,generation,transport_epoch,expected_revision}` (all strings; extra fields rejected). Only the live holder of a verifier task, or the single role holding its single task, can start. The server captures a verification job bound to scope, action, configuration hash/revision and acceptance-contract hash. It rechecks identity, task lease, generation and communication epoch transactionally before persisting any terminal result. Losing authority rejects the result and retains actual usage.
+
+Usage reservation has a durable `provider_state`: `not_sent` until write-ahead dispatch marks `sent`. Restart recovery settles `not_sent` at known zero; `sent` and legacy missing markers become unknown with conservative reserved-token accounting. Recovery is idempotent and scoped to each Store. Unknown does not imply the provider charged its entire reservation.
+
+Repair model output accepts `decision: repair|abstain`, defaulting to repair for existing responses. Repair requires 1–4 actions; abstain requires zero actions and a nonempty rationale. Both normal and muted workers make the same bounded model decision; mute removes peer messages/memory and does not preset the outcome. A model abstention is a retained failed run, not a successful repair.
+
+Primary control/reset applies only to primary. Each Pair arm has its own fixed L2 policy; Pair/arm reset must name its target. See EVIDENCE_EXPORT.md for fixed-watermark pagination and portable export.

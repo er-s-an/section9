@@ -1,0 +1,233 @@
+...............FFFFF                                                     [100%]
+=================================== FAILURES ===================================
+_ test_http_verify_contract_fences_before_probe_and_allows_valid_terminal_commit _
+
+tmp_path = PosixPath('/private/var/folders/9k/v2vrmd_53jj3gjk3chdvqhz40000gn/T/pytest-of-xiejiachen/pytest-307/test_http_verify_contract_fenc0')
+
+    @pytest.mark.asyncio
+    async def test_http_verify_contract_fences_before_probe_and_allows_valid_terminal_commit(tmp_path):
+        from s9 import api
+    
+        store, run, verifier, _, _, request, tokens = _fixture(tmp_path, with_token=True)
+        calls = 0
+        class Victim:
+            async def probe(self, **kwargs):
+                nonlocal calls
+                calls += 1
+                return {"passed": True, "tested_revision": store.current_config()["revision"],
+                        "checks": [{"name": name, "passed": True} for name in REQUIRED_CHECKS]}
+        core = Core.__new__(Core)
+        core.store, core.victim, core.verifying = store, Victim(), set()
+        api.app.state.core = core
+        api.app.dependency_overrides[api.core] = lambda: core
+        transport = httpx.ASGITransport(app=api.app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://127.0.0.1:9021") as client:
+            old = await client.post("/agent/verify", headers={"authorization": "Bearer " + tokens[verifier]}, json={"run_id": run["id"]})
+            assert old.status_code == 422 and calls == 0
+            before = list(store.usage_records(run["id"]))
+            bad = dict(request, expected_revision="stale")
+            denied = await client.post("/agent/verify", headers={"authorization": "Bearer " + tokens[verifier]}, json=bad)
+>           assert denied.status_code in {400, 403} and calls == 0
+E           assert (409 in {400, 403})
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/test_product_authority.py:182: AssertionError
+_______ test_http_verify_rechecks_authority_after_probe_started[paused] ________
+
+tmp_path = PosixPath('/private/var/folders/9k/v2vrmd_53jj3gjk3chdvqhz40000gn/T/pytest-of-xiejiachen/pytest-307/test_http_verify_rechecks_auth0')
+loss = 'paused'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("loss", ["paused", "reregistered", "reset", "transport"])
+    async def test_http_verify_rechecks_authority_after_probe_started(tmp_path, loss):
+        from s9 import api
+    
+        store, run, verifier, _, _, request, tokens = _fixture(tmp_path, with_token=True)
+        started, release = asyncio.Event(), asyncio.Event()
+        calls = 0
+        class Victim:
+            async def probe(self, **kwargs):
+                nonlocal calls
+                calls += 1
+                started.set()
+                await release.wait()
+                return {"passed": True, "tested_revision": store.current_config()["revision"],
+                        "checks": [{"name": name, "passed": True} for name in REQUIRED_CHECKS]}
+        core = Core.__new__(Core)
+        core.store, core.victim, core.verifying = store, Victim(), set()
+        api.app.state.core = core
+        api.app.dependency_overrides[api.core] = lambda: core
+        transport = httpx.ASGITransport(app=api.app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://127.0.0.1:9021") as client:
+            pending = asyncio.create_task(client.post("/agent/verify", headers={"authorization": "Bearer " + tokens[verifier]}, json=request))
+            await asyncio.wait_for(started.wait(), 1)
+            usage_id = store.reserve_usage(run["id"], 5, "settled-before-authority-loss")
+            store.settle_usage(usage_id, {"total_tokens": 3}, 0.01)
+            before = list(store.usage_records(run["id"]))
+            if loss == "paused":
+                store.pause(verifier, True)
+            elif loss == "reregistered":
+                store.register(verifier)
+            elif loss == "reset":
+                store.reset()
+            else:
+                store.set_muted(True)
+                store.set_muted(False)
+            release.set()
+            response = await pending
+>           assert response.status_code in {400, 403}
+E           assert 409 in {400, 403}
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/test_product_authority.py:229: AssertionError
+____ test_http_verify_rechecks_authority_after_probe_started[reregistered] _____
+
+tmp_path = PosixPath('/private/var/folders/9k/v2vrmd_53jj3gjk3chdvqhz40000gn/T/pytest-of-xiejiachen/pytest-307/test_http_verify_rechecks_auth1')
+loss = 'reregistered'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("loss", ["paused", "reregistered", "reset", "transport"])
+    async def test_http_verify_rechecks_authority_after_probe_started(tmp_path, loss):
+        from s9 import api
+    
+        store, run, verifier, _, _, request, tokens = _fixture(tmp_path, with_token=True)
+        started, release = asyncio.Event(), asyncio.Event()
+        calls = 0
+        class Victim:
+            async def probe(self, **kwargs):
+                nonlocal calls
+                calls += 1
+                started.set()
+                await release.wait()
+                return {"passed": True, "tested_revision": store.current_config()["revision"],
+                        "checks": [{"name": name, "passed": True} for name in REQUIRED_CHECKS]}
+        core = Core.__new__(Core)
+        core.store, core.victim, core.verifying = store, Victim(), set()
+        api.app.state.core = core
+        api.app.dependency_overrides[api.core] = lambda: core
+        transport = httpx.ASGITransport(app=api.app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://127.0.0.1:9021") as client:
+            pending = asyncio.create_task(client.post("/agent/verify", headers={"authorization": "Bearer " + tokens[verifier]}, json=request))
+            await asyncio.wait_for(started.wait(), 1)
+            usage_id = store.reserve_usage(run["id"], 5, "settled-before-authority-loss")
+            store.settle_usage(usage_id, {"total_tokens": 3}, 0.01)
+            before = list(store.usage_records(run["id"]))
+            if loss == "paused":
+                store.pause(verifier, True)
+            elif loss == "reregistered":
+                store.register(verifier)
+            elif loss == "reset":
+                store.reset()
+            else:
+                store.set_muted(True)
+                store.set_muted(False)
+            release.set()
+            response = await pending
+>           assert response.status_code in {400, 403}
+E           assert 409 in {400, 403}
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/test_product_authority.py:229: AssertionError
+________ test_http_verify_rechecks_authority_after_probe_started[reset] ________
+
+tmp_path = PosixPath('/private/var/folders/9k/v2vrmd_53jj3gjk3chdvqhz40000gn/T/pytest-of-xiejiachen/pytest-307/test_http_verify_rechecks_auth2')
+loss = 'reset'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("loss", ["paused", "reregistered", "reset", "transport"])
+    async def test_http_verify_rechecks_authority_after_probe_started(tmp_path, loss):
+        from s9 import api
+    
+        store, run, verifier, _, _, request, tokens = _fixture(tmp_path, with_token=True)
+        started, release = asyncio.Event(), asyncio.Event()
+        calls = 0
+        class Victim:
+            async def probe(self, **kwargs):
+                nonlocal calls
+                calls += 1
+                started.set()
+                await release.wait()
+                return {"passed": True, "tested_revision": store.current_config()["revision"],
+                        "checks": [{"name": name, "passed": True} for name in REQUIRED_CHECKS]}
+        core = Core.__new__(Core)
+        core.store, core.victim, core.verifying = store, Victim(), set()
+        api.app.state.core = core
+        api.app.dependency_overrides[api.core] = lambda: core
+        transport = httpx.ASGITransport(app=api.app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://127.0.0.1:9021") as client:
+            pending = asyncio.create_task(client.post("/agent/verify", headers={"authorization": "Bearer " + tokens[verifier]}, json=request))
+            await asyncio.wait_for(started.wait(), 1)
+            usage_id = store.reserve_usage(run["id"], 5, "settled-before-authority-loss")
+            store.settle_usage(usage_id, {"total_tokens": 3}, 0.01)
+            before = list(store.usage_records(run["id"]))
+            if loss == "paused":
+                store.pause(verifier, True)
+            elif loss == "reregistered":
+                store.register(verifier)
+            elif loss == "reset":
+                store.reset()
+            else:
+                store.set_muted(True)
+                store.set_muted(False)
+            release.set()
+            response = await pending
+>           assert response.status_code in {400, 403}
+E           assert 409 in {400, 403}
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/test_product_authority.py:229: AssertionError
+______ test_http_verify_rechecks_authority_after_probe_started[transport] ______
+
+tmp_path = PosixPath('/private/var/folders/9k/v2vrmd_53jj3gjk3chdvqhz40000gn/T/pytest-of-xiejiachen/pytest-307/test_http_verify_rechecks_auth3')
+loss = 'transport'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("loss", ["paused", "reregistered", "reset", "transport"])
+    async def test_http_verify_rechecks_authority_after_probe_started(tmp_path, loss):
+        from s9 import api
+    
+        store, run, verifier, _, _, request, tokens = _fixture(tmp_path, with_token=True)
+        started, release = asyncio.Event(), asyncio.Event()
+        calls = 0
+        class Victim:
+            async def probe(self, **kwargs):
+                nonlocal calls
+                calls += 1
+                started.set()
+                await release.wait()
+                return {"passed": True, "tested_revision": store.current_config()["revision"],
+                        "checks": [{"name": name, "passed": True} for name in REQUIRED_CHECKS]}
+        core = Core.__new__(Core)
+        core.store, core.victim, core.verifying = store, Victim(), set()
+        api.app.state.core = core
+        api.app.dependency_overrides[api.core] = lambda: core
+        transport = httpx.ASGITransport(app=api.app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://127.0.0.1:9021") as client:
+            pending = asyncio.create_task(client.post("/agent/verify", headers={"authorization": "Bearer " + tokens[verifier]}, json=request))
+            await asyncio.wait_for(started.wait(), 1)
+            usage_id = store.reserve_usage(run["id"], 5, "settled-before-authority-loss")
+            store.settle_usage(usage_id, {"total_tokens": 3}, 0.01)
+            before = list(store.usage_records(run["id"]))
+            if loss == "paused":
+                store.pause(verifier, True)
+            elif loss == "reregistered":
+                store.register(verifier)
+            elif loss == "reset":
+                store.reset()
+            else:
+                store.set_muted(True)
+                store.set_muted(False)
+            release.set()
+            response = await pending
+>           assert response.status_code in {400, 403}
+E           assert 409 in {400, 403}
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/test_product_authority.py:229: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_product_authority.py::test_http_verify_contract_fences_before_probe_and_allows_valid_terminal_commit
+FAILED tests/test_product_authority.py::test_http_verify_rechecks_authority_after_probe_started[paused]
+FAILED tests/test_product_authority.py::test_http_verify_rechecks_authority_after_probe_started[reregistered]
+FAILED tests/test_product_authority.py::test_http_verify_rechecks_authority_after_probe_started[reset]
+FAILED tests/test_product_authority.py::test_http_verify_rechecks_authority_after_probe_started[transport]
+5 failed, 15 passed in 2.16s

@@ -2,7 +2,9 @@
 
 Section9 是一个固定小智业务 fixture 上的本地 Agent 故障响应实验室，模型推理依赖远程 API。它把真实模型请求、受控故障注入、角色协作、审批与独立验证连接成一条可复核的闭环。业务状态由 SQLite WAL 与事件记录保存；Langfuse 只负责遥测诊断，不能替代控制面、验收或审计记录。
 
-![Section9 Agent 办公室](artifacts/office-reuse/final-layout/office-1440.png)
+![Section9 协作空间预览](artifacts/product-ux/20260922/preview-after-1280.png)
+
+当前产品界面及交互预览见 [UI 整理记录](docs/PRODUCT_UX_POLISH.md)。上图是独立预览；[预览源码与启动方式](frontend/public/preview/README.md)已包含在仓库中。实际运行版仍由后端事件驱动。
 
 办公室复用 Star-Office-UI 固定版本的完整房间、桌椅与角色素材，真实状态接入 Section9。点击房间里的角色查看本轮任务与消息。2026-09-22 改版实测和复用边界见 [办公室验收记录](docs/OFFICE_DELIVERY.md)。
 
@@ -19,7 +21,7 @@ Section9 是一个固定小智业务 fixture 上的本地 Agent 故障响应实�
 - 本地 Langfuse：<http://127.0.0.1:9030>
 - Collector OTLP/HTTP：<http://127.0.0.1:9431/v1/traces>
 
-运行前需要在受保护位置配置远程模型 key。启动脚本会获取并校验固定版本的角色素材；LimeZu 原始图集不在此仓库再分发，详见素材归因。普通角色不读取操作台 SSE、全量日志、当前场景真值或其他角色的私有推理。Jev 当前 disabled；EvoMap Hub 发布与远端检索尚未实现，不是登录后即可启用；推理使用远程 EvoMap Luna API，并非本地或断网推理。
+业务运行前需要在受保护位置配置远程模型 key；已安装的服务可以在空 key 下读取本地历史。安装脚本会获取并校验固定版本的角色素材；LimeZu 原始图集不在此仓库再分发，详见素材归因。普通角色不读取操作台 SSE、全量日志、当前场景真值或其他角色的私有推理。Jev 当前 disabled；EvoMap Hub 发布与远端检索尚未实现，不是登录后即可启用；推理使用远程 EvoMap Luna API，并非本地或断网推理。
 
 ## 双屏 Showcase
 
@@ -37,16 +39,16 @@ Section9 是一个固定小智业务 fixture 上的本地 Agent 故障响应实�
 
 ## 启动与停止
 
-新克隆需要 Python/uv、Node.js/npm 和运行中的 Docker Desktop。先执行 `python3 scripts/init-local-config.py`，再在本机 `.env` 填入自己的 `EVOMAP_MODEL_API_KEY`。初始化仅创建缺少的文件，保留已有配置；密码随机生成并以 0600 保存。详细说明见 [本地配置](docs/LOCAL_SETUP.md)。模型推理使用远程 EvoMap API。
+新克隆需要 Python/uv 和 Node.js/npm；观测栈需要 Docker Desktop。先执行 `./scripts/install.sh`，再在本机 `.env` 填入自己的 `EVOMAP_MODEL_API_KEY`。初始化仅创建缺少的文件，保留已有配置；密码随机生成并以 0600 保存。详细说明见 [本地配置](docs/LOCAL_SETUP.md)。模型推理使用远程 EvoMap API。
 
 ```sh
-cd /Users/xiejiachen/Documents/ChatGPT/rebuild/section9
+cd section9
 ./scripts/start.sh
 ./scripts/reset.sh
 ./scripts/stop.sh
 ```
 
-`start.sh` 会同步锁定依赖、构建前端、启动本地 Langfuse/Collector，再启动 9019 服务。观测栈的单独生命周期可用 `scripts/infra-start.sh`、`scripts/infra-status.sh`、`scripts/infra-stop.sh`；停止不会删除观测卷。evaluation 单独启动：
+`install.sh` 负责锁定依赖、构建和可选素材下载；`start.sh` 只启动已安装的应用，不联网安装。`python3 scripts/doctor.py --json` 做只读体检；`python3 scripts/readiness.py --business` 才发起付费业务探针。观测栈用 `scripts/infra-start.sh` 显式启动；`stop.sh` 停止本项目应用与观测 Compose 并保留卷，`stop.sh --app-only` 只停应用。evaluation 单独启动：
 
 ```sh
 ./.venv/bin/python scripts/environments.py start
@@ -71,6 +73,8 @@ Evaluation 使用独立的 `data/evaluation`、9024 API 和 9026 worker 进程�
 
 ## 当前整改与验收
 
+2026-09-22 独立审查后的阶段一在 `codex/local-product-readiness` 实施，范围为验收授权、重启结算、禁言决策、运行入口、控制作用域和完整日志导出。当前验证与未完成边界见 [阶段一记录](docs/LOCAL_PRODUCT_STAGE1.md)。下列旧验收报告均绑定各自源码身份，不代表新版本已通过。独立新 Mac 冷安装仍待测。
+
 本轮修复跨事故 lease、迟到消息/计划、错误模型 JSON、reset 在途取消、业务答案与成本验收、启动身份、计分屏未知用量及版本分组。最新实测、失败记录和复现入口见 [审查整改报告](docs/AUDIT_REMEDIATION.md)。计分屏默认只显示当前实现版本；缺少完整源码绑定的旧记录单列为 legacy。
 
 一条验收命令：`./scripts/acceptance.sh`。它会真实调用远程模型、操作浏览器、短暂停止/恢复本项目 Collector，并保留一轮故意 reset 的 evaluation 失败与未知 usage。该安全实验不是性能样本；不会从统计中删除。四类正常故障中任何一轮失败、来源不一致或双路遥测不匹配，命令均返回非零。
@@ -80,7 +84,7 @@ Evaluation 使用独立的 `data/evaluation`、9024 API 和 9026 worker 进程�
 整改前历史 evaluation 共 36 次：`single` 8/8、`muted` 7/8、`swarm` 12/12（每格 3 次）、`memory` 8/8，合计 35 pass、1 个 muted/composite 失败。失败和 unknown usage 均保留在原始 run 文件中；小样本不能推出任何条件优势。`memory_jev` 因 Jev 未启用保持待测，不能用 `single_memory` 替代。evaluation 使用 frozen seed snapshot，结果写回独立 evaluation-results；真实 demo memory 记录单独看待，不能与 frozen evaluation 混算。
 
 ```sh
-cd /Users/xiejiachen/Documents/ChatGPT/rebuild/section9
+cd section9
 ./scripts/acceptance.sh
 ./scripts/reset.sh
 ```

@@ -1,8 +1,8 @@
 import asyncio
 import json
 
-from fastapi import APIRouter, Header, Request
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Header, Query, Request
+from fastapi.responses import Response, StreamingResponse
 
 from s9.pairs.contracts import Arm, CreatePair, EmptyRequest, StartPair
 
@@ -57,10 +57,34 @@ async def snapshot(pair_id: str, arm: Arm, request: Request):
 
 
 @router.get('/{pair_id}/logbook')
-async def logbook(pair_id: str, request: Request, arm: Arm | None = None, after: int = 0):
+async def logbook(pair_id: str, request: Request, arm: Arm | None = None,
+                  after: int = Query(default=0, ge=0), limit: int = Query(default=200, ge=1, le=1000),
+                  watermark: int | None = Query(default=None, ge=0)):
     c = coordinator(request)
     c.refresh(pair_id)
-    return {'items': c.journal.read(pair_id, arm, max(0, after)), 'as_of_sequence': c.journal.cursor(pair_id)}
+    # The UI's logbook is an arm view; retaining swarm as the compatibility
+    # default avoids mixing the two independent run histories when `arm` is
+    # omitted by older clients.
+    selected_arm = arm or 'swarm'
+    actual_watermark = c.journal.watermark(pair_id, selected_arm)
+    # Clients may carry the returned watermark into the next request to keep
+    # a multi-page history cut stable while new events are being ingested.
+    bound = actual_watermark if watermark is None else min(int(watermark), actual_watermark)
+    rows = c.journal.read_page(pair_id, selected_arm, after, limit, bound)
+    range_start = int(rows[0]['sequence']) if rows else int(after)
+    range_end = int(rows[-1]['sequence']) if rows else int(after)
+    has_more = bool(rows and range_end < bound)
+    return {'items': rows, 'as_of_sequence': range_end, 'range_start': range_start,
+            'range_end': range_end, 'next_after': range_end, 'has_more': has_more,
+            'watermark': bound}
+
+
+@router.get('/{pair_id}/export.zip')
+async def export_pair(pair_id: str, request: Request):
+    payload, filename = coordinator(request).export_zip(pair_id)
+    return Response(payload, media_type='application/zip',
+                    headers={'Content-Disposition': f'attachment; filename="{filename}"',
+                             'Cache-Control': 'no-store'})
 
 
 @router.get('/{pair_id}/events')

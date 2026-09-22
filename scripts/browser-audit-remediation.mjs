@@ -64,7 +64,7 @@ try {
 
   await page.goto(BASE, { waitUntil: 'domcontentloaded' })
   await page.waitForSelector('input[aria-label="客服消息"]', { timeout: 20000 })
-  const resetButton = page.getByRole('button', { name: '重置实验室' })
+  const resetButton = page.getByRole('button', { name: '重新开始本轮' })
   const chatInput = page.locator('input[aria-label="客服消息"]').first()
 
   // Chat cancellation: use the real UI, wait until the backend reports active work, then reset.
@@ -114,7 +114,7 @@ try {
   check('UI enters muted mode', await mutedToggle.count() === 1)
   let injectRequest
   const injectResponsePromise = page.waitForResponse(response => response.url().endsWith('/api/inject') && response.request().method() === 'POST', { timeout: 20000 }).catch(() => null)
-  await page.getByRole('button', { name: '复合故障' }).click()
+  await page.getByRole('button', { name: '多项情况同时发生' }).click()
   injectRequest = report.requests.slice().reverse().find(row => row.url.endsWith('/api/inject') && row.method === 'POST')
   const injectResponse = await injectResponsePromise
   check('muted UI injection sends condition=muted', injectRequest?.postData?.includes('"condition":"muted"'), { post_data: injectRequest?.postData, status: injectResponse?.status() })
@@ -129,7 +129,7 @@ try {
   await waitFor(async () => !(await stateFrom(context.request))?.incident, 20000)
 
   // The UI must reject memory + muted before making an injection request; the backend must reject it too.
-  const memoryButton = page.locator('.control-line').filter({hasText:'下轮 Playbook'}).getByRole('button')
+  const memoryButton = page.locator('.control-line').filter({hasText:'处置经验'}).getByRole('button')
   if (!(await stateFrom(context.request))?.memory_enabled) {
     await memoryButton.click()
     if (!await waitFor(async()=> (await stateFrom(context.request))?.memory_enabled && await page.getByRole('button', {name:'记忆复用', exact:true}).count(), 15000)) throw new Error('memory toggle did not settle')
@@ -143,7 +143,7 @@ try {
   check('memory and muted are both enabled', bothEnabled)
   const runsBeforeReject = await getJson(context.request, '/api/runs')
   const blockedRequestCount = report.requests.filter(row => row.url.endsWith('/api/inject') && row.method === 'POST').length
-  await page.getByRole('button', { name: '复合故障' }).click()
+  await page.getByRole('button', { name: '多项情况同时发生' }).click()
   await page.getByText(/记忆复用与禁言不能同时注入/).waitFor({state:'visible',timeout:5000})
   const runsAfterReject = await getJson(context.request, '/api/runs')
   const blockedRequestCountAfter = report.requests.filter(row => row.url.endsWith('/api/inject') && row.method === 'POST').length
@@ -155,7 +155,7 @@ try {
   await waitFor(async () => !(await stateFrom(context.request))?.incident, 15000)
 
   // Versioned scoreboard: current and legacy are read from the real API; no fixture rows are invented.
-  await page.getByRole('button', { name: '五行计分' }).click()
+  await page.getByRole('button', { name: '验收评分' }).click()
   await page.waitForSelector('#score-version', { timeout: 15000 })
   const currentScore = await getJson(context.request, '/api/scoreboard')
   check('current scoreboard identifies selected/current version', currentScore.status === 200 && currentScore.body?.selected_version === currentScore.body?.current_version, { selected: currentScore.body?.selected_version, current: currentScore.body?.current_version })
@@ -182,7 +182,7 @@ try {
   }
 
   await page.screenshot({path:path.join(out, 'scoreboard-unknown-usage.png'), fullPage:true})
-  await page.getByRole('button', {name:'办公室', exact:true}).click()
+  await page.getByRole('button', {name:'实时监护', exact:true}).click()
   for (const [width, height] of [[1280, 800], [1440, 1000]]) {
     await page.setViewportSize({ width, height })
     await page.screenshot({ path: path.join(out, `layout-${width}x${height}.png`), fullPage: true })

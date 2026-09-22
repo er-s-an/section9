@@ -1,0 +1,74 @@
+{
+  "checks": [
+    {
+      "name": "config",
+      "status": "pass",
+      "detail": "local dotenv files present",
+      "action": "run ./scripts/install.sh"
+    },
+    {
+      "name": "model_key",
+      "status": "pass",
+      "detail": "configured",
+      "action": "set EVOMAP_MODEL_API_KEY in .env (value is never printed)"
+    },
+    {
+      "name": "numeric_config",
+      "status": "pass",
+      "detail": "numeric settings are valid"
+    },
+    {
+      "name": "port",
+      "status": "warn",
+      "detail": "operator=occupied; agent=occupied",
+      "action": "stop this checkout or choose free S9_PORT"
+    },
+    {
+      "name": "config:S9_MODEL",
+      "status": "pass",
+      "detail": "set"
+    },
+    {
+      "name": "config:S9_MODEL_URL",
+      "status": "pass",
+      "detail": "set"
+    },
+    {
+      "name": "config:S9_ENVIRONMENT",
+      "status": "pass",
+      "detail": "set"
+    },
+    {
+      "name": "config:S9_DATA_DIR",
+      "status": "pass",
+      "detail": "set"
+    },
+    {
+      "name": "python",
+      "status": "pass",
+      "detail": "virtualenv available",
+      "action": "run ./scripts/install.sh"
+    },
+    {
+      "name": "javascript_runtime",
+      "status": "pass",
+      "detail": "frontend build available",
+      "action": "run ./scripts/install.sh"
+    },
+    {
+      "name": "docker",
+      "status": "pass",
+      "detail": "daemon reachable; memory=11GiB; cpu=10"
+    },
+    {
+      "name": "service",
+      "status": "pass",
+      "detail": "HTTP /api/health is running"
+    }
+  ],
+  "ready": "service_alive",
+  "health": {
+    "status": "running",
+    "identity_present": true
+  }
+}

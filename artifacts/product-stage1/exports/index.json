@@ -1,0 +1,210 @@
+{
+  "kind": "real_pair_exports",
+  "source_report": "artifacts/showcase-cases/1790082184097163000/report.json",
+  "cases": [
+    {
+      "scenario": "prompt",
+      "pair_id": "pair_c94a9c38455348d6",
+      "archive": "artifacts/product-stage1/exports/pair_c94a9c38455348d6.zip",
+      "sha256": "9eca154dcb362c7936deaaa1fa3c37213c2dab1acfe806f641bab1627fedc4fb",
+      "bytes": 87832,
+      "hashes_verified": 10,
+      "counts": {
+        "baseline": {
+          "event_pages": 1,
+          "events": 75,
+          "range_end": 2338,
+          "range_start": 2193,
+          "usage_records": 6,
+          "watermark": 2338
+        },
+        "swarm": {
+          "event_pages": 1,
+          "events": 102,
+          "range_end": 3155,
+          "range_start": 2192,
+          "usage_records": 7,
+          "watermark": 3155
+        }
+      },
+      "source_identity": {
+        "acceptance_contract_hash": "87dd84e07468acbc8f0238d0c9281a3c78b7ecfcbdbedd02f0498068cdd7737b",
+        "backend_source_hash": "08c32d09aa0ef66cd5e4ef0979fa7ccd4c61f53d00f5643ccfaca65cde353e15",
+        "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+        "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+        "dirty": true,
+        "dirty_diff_sha256": "0094275ff475e66b75461a06d0b27f1c00e946b3f970f352cfa1fed6af44bf5f",
+        "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+        "frontend_build_hash": "9dd570607d0d1982a3c1eccf7e1e862ac74b5982471bcf74d26e889cdb00cb33",
+        "git_commit": "eb79f972ed4aa3e85859a031750794054c09f487"
+      },
+      "outcomes": {
+        "swarm": {
+          "status": "resolved",
+          "elapsed_s": 39.035,
+          "known_tokens": 5890,
+          "unknown_count": 0
+        },
+        "baseline": {
+          "status": "resolved",
+          "elapsed_s": 26.107,
+          "known_tokens": 4463,
+          "unknown_count": 0
+        }
+      }
+    },
+    {
+      "scenario": "cost",
+      "pair_id": "pair_ff221776dbe043cf",
+      "archive": "artifacts/product-stage1/exports/pair_ff221776dbe043cf.zip",
+      "sha256": "7e6a97cb1a1df520368da11b6ab30c7a0a566a0f677faadd9455c436ee9700a0",
+      "bytes": 91129,
+      "hashes_verified": 10,
+      "counts": {
+        "baseline": {
+          "event_pages": 1,
+          "events": 81,
+          "range_end": 2541,
+          "range_start": 2369,
+          "usage_records": 6,
+          "watermark": 2541
+        },
+        "swarm": {
+          "event_pages": 1,
+          "events": 113,
+          "range_end": 2585,
+          "range_start": 2368,
+          "usage_records": 8,
+          "watermark": 2585
+        }
+      },
+      "source_identity": {
+        "acceptance_contract_hash": "87dd84e07468acbc8f0238d0c9281a3c78b7ecfcbdbedd02f0498068cdd7737b",
+        "backend_source_hash": "08c32d09aa0ef66cd5e4ef0979fa7ccd4c61f53d00f5643ccfaca65cde353e15",
+        "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+        "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+        "dirty": true,
+        "dirty_diff_sha256": "0094275ff475e66b75461a06d0b27f1c00e946b3f970f352cfa1fed6af44bf5f",
+        "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+        "frontend_build_hash": "9dd570607d0d1982a3c1eccf7e1e862ac74b5982471bcf74d26e889cdb00cb33",
+        "git_commit": "eb79f972ed4aa3e85859a031750794054c09f487"
+      },
+      "outcomes": {
+        "swarm": {
+          "status": "resolved",
+          "elapsed_s": 107.103,
+          "known_tokens": 13670,
+          "unknown_count": 0
+        },
+        "baseline": {
+          "status": "failed",
+          "elapsed_s": 100.998,
+          "known_tokens": 11244,
+          "unknown_count": 0
+        }
+      }
+    },
+    {
+      "scenario": "loop",
+      "pair_id": "pair_a18c91360f4d4884",
+      "archive": "artifacts/product-stage1/exports/pair_a18c91360f4d4884.zip",
+      "sha256": "30671ac6c545e686cab2a1b1df03524d7d48fce262a0f34c8db5e1f297640d8f",
+      "bytes": 98272,
+      "hashes_verified": 10,
+      "counts": {
+        "baseline": {
+          "event_pages": 1,
+          "events": 123,
+          "range_end": 2813,
+          "range_start": 2554,
+          "usage_records": 7,
+          "watermark": 2813
+        },
+        "swarm": {
+          "event_pages": 1,
+          "events": 161,
+          "range_end": 3157,
+          "range_start": 2553,
+          "usage_records": 9,
+          "watermark": 3157
+        }
+      },
+      "source_identity": {
+        "acceptance_contract_hash": "87dd84e07468acbc8f0238d0c9281a3c78b7ecfcbdbedd02f0498068cdd7737b",
+        "backend_source_hash": "08c32d09aa0ef66cd5e4ef0979fa7ccd4c61f53d00f5643ccfaca65cde353e15",
+        "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+        "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+        "dirty": true,
+        "dirty_diff_sha256": "0094275ff475e66b75461a06d0b27f1c00e946b3f970f352cfa1fed6af44bf5f",
+        "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+        "frontend_build_hash": "9dd570607d0d1982a3c1eccf7e1e862ac74b5982471bcf74d26e889cdb00cb33",
+        "git_commit": "eb79f972ed4aa3e85859a031750794054c09f487"
+      },
+      "outcomes": {
+        "swarm": {
+          "status": "resolved",
+          "elapsed_s": 54.548,
+          "known_tokens": 7478,
+          "unknown_count": 0
+        },
+        "baseline": {
+          "status": "resolved",
+          "elapsed_s": 41.231,
+          "known_tokens": 5008,
+          "unknown_count": 0
+        }
+      }
+    },
+    {
+      "scenario": "composite",
+      "pair_id": "pair_879bcee3fa084a59",
+      "archive": "artifacts/product-stage1/exports/pair_879bcee3fa084a59.zip",
+      "sha256": "2c8b3936fa0d6364aba03a78158a14126765ca4dc170c5cf7c7c2580aa9953b3",
+      "bytes": 103776,
+      "hashes_verified": 10,
+      "counts": {
+        "baseline": {
+          "event_pages": 1,
+          "events": 136,
+          "range_end": 3124,
+          "range_start": 2839,
+          "usage_records": 8,
+          "watermark": 3124
+        },
+        "swarm": {
+          "event_pages": 1,
+          "events": 175,
+          "range_end": 3154,
+          "range_start": 2838,
+          "usage_records": 10,
+          "watermark": 3154
+        }
+      },
+      "source_identity": {
+        "acceptance_contract_hash": "87dd84e07468acbc8f0238d0c9281a3c78b7ecfcbdbedd02f0498068cdd7737b",
+        "backend_source_hash": "08c32d09aa0ef66cd5e4ef0979fa7ccd4c61f53d00f5643ccfaca65cde353e15",
+        "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+        "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+        "dirty": true,
+        "dirty_diff_sha256": "0094275ff475e66b75461a06d0b27f1c00e946b3f970f352cfa1fed6af44bf5f",
+        "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+        "frontend_build_hash": "9dd570607d0d1982a3c1eccf7e1e862ac74b5982471bcf74d26e889cdb00cb33",
+        "git_commit": "eb79f972ed4aa3e85859a031750794054c09f487"
+      },
+      "outcomes": {
+        "swarm": {
+          "status": "resolved",
+          "elapsed_s": 102.814,
+          "known_tokens": 9187,
+          "unknown_count": 0
+        },
+        "baseline": {
+          "status": "resolved",
+          "elapsed_s": 94.401,
+          "known_tokens": 6128,
+          "unknown_count": 0
+        }
+      }
+    }
+  ]
+}

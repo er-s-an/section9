@@ -49,14 +49,16 @@ try {
   assert.match(await page.getByTestId('agent-inspector').innerText(), /诊断员/);
   report.checks.push({ name: 'real assets, distributed roles and keyboard inspector', passed: true });
 
-  await page.getByRole('button', { name: '暂停 A', exact: true }).click();
+  if(await page.locator('.team-details').getAttribute('open')===null)await page.locator('.team-details > summary').click();
+  await page.getByRole('button', { name: '暂停修复员', exact: true }).click();
   await wait(async () => await agent('fixer-a').getAttribute('data-status') === 'paused', 'actual paused agent');
   assert.equal((await state()).agents.find(item => item.id === 'fixer-a').status, 'paused');
   await agent('fixer-a').click();
   await page.screenshot({ path: path.join(out, '03-paused-agent.png'), fullPage: true });
-  await page.getByRole('button', { name: '恢复 A', exact: true }).click();
+  if(await page.locator('.team-details').getAttribute('open')===null)await page.locator('.team-details > summary').click();
+  await page.getByRole('button', { name: '恢复修复员', exact: true }).click();
   await wait(async () => await agent('fixer-a').getAttribute('data-status') !== 'paused', 'agent resumed');
-  const communication = page.locator('.control-line').filter({ hasText: '消息层' }).getByRole('button');
+  const communication = page.locator('.control-line').filter({ hasText: '协作通信' }).getByRole('button');
   await communication.click();
   await wait(async () => (await state()).muted, 'real communication muted');
   await wait(async () => /禁言/.test(await page.getByTestId('office-room').innerText()), 'muted state rendered');
@@ -64,7 +66,7 @@ try {
   await wait(async () => !(await state()).muted, 'communication restored');
   report.checks.push({ name: 'pause, resume and communication mapped from authority state', passed: true });
 
-  await page.getByRole('button', { name: '复合故障', exact: true }).click();
+  await page.getByRole('button', { name: '多项情况同时发生', exact: true }).click();
   ownsRun = true;
   const incident = await wait(async () => (await state()).incident, 'actual injected incident');
   const active = await wait(async () => {
@@ -87,7 +89,7 @@ try {
   report.checks.push({ name: 'real model composite run restored and independent business verification passed', passed: true });
 
   const generation = (await state()).generation;
-  await page.getByRole('button', { name: '重置实验室', exact: true }).click();
+  await page.getByRole('button', { name: '重新开始本轮', exact: true }).click();
   await wait(async () => (await state()).generation !== generation, 'reset generation');
   await wait(async () => await page.locator('.top-meta').innerText().then(text => text.includes('GEN ' + (Number(generation) + 1))), 'new generation rendered');
   ownsRun = false;

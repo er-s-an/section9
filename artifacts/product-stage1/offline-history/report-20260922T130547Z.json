@@ -1,0 +1,53 @@
+{
+  "proof": "same_mac_copied_history_no_key",
+  "ports": {
+    "http": 9055,
+    "agent": 9057
+  },
+  "source_db": "data/section9.sqlite",
+  "remote_provider_called": false,
+  "offline_inference_supported": false,
+  "sandbox": "macOS Seatbelt loopback-only",
+  "isolated_data": "data/product-offline-history-20260922T130547Z",
+  "identity": {
+    "checkout": "/Users/xiejiachen/Documents/ChatGPT/rebuild/section9",
+    "git_commit": "eb79f972ed4aa3e85859a031750794054c09f487",
+    "dirty": true,
+    "dirty_diff_sha256": "e9414a2aac92ee21057fb27033c003b251acfaec201c3085a9ddee418f8fd5a4",
+    "backend_source_hash": "08c32d09aa0ef66cd5e4ef0979fa7ccd4c61f53d00f5643ccfaca65cde353e15",
+    "frontend_build_hash": "9dd570607d0d1982a3c1eccf7e1e862ac74b5982471bcf74d26e889cdb00cb33",
+    "dependency_lock_hash": "23c053f7c44608012923799d7475088e6944f6c755eedaee69e4e11719e1ee24",
+    "fixture_hash": "4c5b0b75f618cc55d0cfda3e623faa13b64d6a4d1b8ae8dc11b04e18e50b5526",
+    "acceptance_contract_hash": "87dd84e07468acbc8f0238d0c9281a3c78b7ecfcbdbedd02f0498068cdd7737b"
+  },
+  "health": {
+    "http": 200,
+    "identity_present": true
+  },
+  "history": {
+    "http": 200,
+    "count": 45,
+    "terminal_count": 31,
+    "old_run_readable": true,
+    "old_run_id_present": true
+  },
+  "state": {
+    "http": 200,
+    "model_status": "unconfigured",
+    "remote_inference": true
+  },
+  "model_attempt": {
+    "http": 200,
+    "error_code": "MODEL_ERROR",
+    "model_unconfigured": true,
+    "usage_records_before": 248,
+    "usage_records_after": 248,
+    "reserved_before": 0,
+    "reserved_after": 0
+  },
+  "historical_records_readable": true,
+  "model_degraded": true,
+  "notes": "Same-Mac copied-history proof only; fresh Mac and offline inference remain unverified.",
+  "passed": true,
+  "server_exit": -15
+}

@@ -139,6 +139,7 @@ class ModelClient:
                                 'summary': '共享模型槽位已准入'}, run_id=run_id, producer=producer)
                 self._ensure_generation(generation, cancel_key)
                 start_ns = time.time_ns()
+                self.store.mark_usage_sent(usage_id)
                 provider_started = True
                 self.store.emit('model.provider_started', {**base, 'usage_id': usage_id, 'summary': '远程模型请求已发起'}, run_id=run_id, producer=producer)
                 response = await self.client.post(config.MODEL_URL, headers={'Authorization': 'Bearer ' + config.MODEL_KEY},

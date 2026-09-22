@@ -138,7 +138,8 @@ async def test_boot_interrupts_running_pair_and_settles_unknown_usage(coordinato
     await coordinator.start(pair["pair_id"], pair["spec_hash"])
     for arm in ("swarm", "baseline"):
         runtime = coordinator.runtime(pair, arm)
-        runtime.store.reserve_usage(pair[arm + "_run_id"], 100, "fake")
+        usage_id = runtime.store.reserve_usage(pair[arm + "_run_id"], 100, "fake")
+        runtime.store.mark_usage_sent(usage_id)
         assert runtime.store.usage_records(pair[arm + "_run_id"])[0]["status"] == "reserved"
     restarted = PairCoordinator(coordinator.root, object(), FakeTelemetry(), capture_identity())
     await restarted.boot()
