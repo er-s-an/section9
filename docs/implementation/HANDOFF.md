@@ -5,12 +5,12 @@
 ## 1. 先看什么
 
 - [主线与复用边界](DEMO_MAINLINE.md)
-- [本次真实验收、失败与限制](DEMO_ACCEPTANCE.md)
+- [本轮受控处置验收、失败与限制](RESOLVE_ACCEPTANCE.md)；[前序调查验收](DEMO_ACCEPTANCE.md)
 - [EvoMap 原生能力实证](EVOMAP_VALIDATION.md)
 - 完整规划在 `docs/parity/source/` 的 MD/JSON。目标不是完成证明。
 - 原有 `/api/product` 发布/恢复流程的复跑说明在 [PRODUCT_EXTERNAL_APP_DEMO.md](../PRODUCT_EXTERNAL_APP_DEMO.md)。不要和新主线拼成一次事故。
 
-本轮交付为 **自由业务任务 → 应用 Langfuse → 原生会话协作调查 → 审核/退回新版本 → 同证据 single/swarm**。M2 的完整通用动态规划/工具循环仍未交付，生产执行与恢复也不属于这个演示的完成项。
+本轮交付为 **自由业务任务 → 应用 Langfuse → 原生会话协作调查 → 建议审核 → 固定预案独立授权 → 实际配置执行 → 原任务独立验证 → 同案恢复 → 经验审核复用**。保留同证据 single/swarm。已验证的是本机客服路由保护预案；不是任意代码自动修复或生产级平台，完整通用动态规划仍未交付。
 
 ## UI 素材更新
 
@@ -21,6 +21,8 @@
 - 仓库：`/Users/xiejiachen/Documents/ChatGPT/rebuild/section9`
 - 分支：`codex/local-product-readiness`。远端 `https://github.com/er-s-an/section9`；用 `git log -1` 和 `git rev-parse origin/codex/local-product-readiness` 查看交付提交。
 - 主页面：<http://127.0.0.1:9160/demo>
+- 最终修复版同题与实际协作：<http://127.0.0.1:9160/demo?task=business_c1b4f54cde0d1221416b335b>。可点击“新任务”自行输入；不要把历史失败当成当前任务。
+- 交付验证：410 项后端测试通过、前端构建通过、16/16 真实压力用例通过；两个模型故障场景仅有模拟验证。详细失败历史与版本见验收文档。
 - 本轮控制面数据库：`.runtime/demo-mainline/product.sqlite`
 - 业务应用：`127.0.0.1:9150`，由本轮控制面按需启动、确认进程归属；业务 DB `.runtime/demo-mainline/demo-target/business.sqlite`。
 - Langfuse：`127.0.0.1:9030`。真实应用 trace 由业务侧 SDK 上报。
@@ -50,9 +52,10 @@ git clone https://github.com/Pragatheswar-72/support-agent .runtime/external-pro
 git -C .runtime/external-projects/support-agent checkout --detach 860a29ff80f6e9b866e4cf1098c042e0da425f24
 .venv/bin/python scripts/provision_support_agent_adapter.py
 .venv/bin/python scripts/instrument_support_agent.py
+.venv/bin/python scripts/install_support_agent_business_policy.py --record
 ```
 
-`provision` 仅在 adapted checkout 不存在时运行。`instrument` 会复用 adapted checkout、安装固定 Langfuse 4.15.4、跑原应用测试并记录本地 adapter commit；不同机器 commit 可不同，以本机 manifest 为准。本机当前 `5d9e86e8ae2f90122d6bfecb3f1ec38c32047a79`。不要手工改 checkout 后仍沿用旧版本绑定。
+`provision` 仅在 adapted checkout 不存在时运行。`instrument` 会复用 adapted checkout、安装固定 Langfuse 4.15.4、跑原应用测试并记录本地 adapter commit；不同机器 commit 可不同，以本机 manifest 为准。本轮首个完整处置证据绑定 `ce385a3dc5b570a04bc5964ba39493341371e355`；随后压力修正版为 `d425ba76ed2a36f1fb963206e064918be26f8ed4`；最终否定语义修正版 adapter 为 `65895f284aec54b05a07ad3ff6c901f12b38b7a2`。运行中的最新 adapter 以 manifest、`/api/v1/demo/status` 及 `/health` 三者匹配为准，不能把不同版本混写。不要手工改 checkout 后仍沿用旧版本绑定。
 
 3. 模型：`.env` 中 `EVOMAP_MODEL_API_KEY`，可选 `S9_MODEL`/`S9_MODEL_URL`。Langfuse：`infra/.env` 中 `LANGFUSE_INIT_PROJECT_PUBLIC_KEY`/`LANGFUSE_INIT_PROJECT_SECRET_KEY`；服务会读取这些名称并把需要的凭据传给业务应用。
 4. EvoMap 三个 native node 凭据在仓库外 `~/.config/section9/evomap-nodes.json`，目录 0700/文件 0600。同机直接复用；新机通过安全渠道配置授权身份，或明确注册新身份：`.venv/bin/python scripts/register_evomap_nodes.py --register`。不带参数只报是否配置。注册脚本尚未单独在空身份机器验收；HTTP 200 也可能拒绝注册，脚本检查 acknowledged，不要循环注册。模型 key 与 node secret 是两种不同凭据。
@@ -66,7 +69,7 @@ git -C .runtime/external-projects/support-agent checkout --detach 860a29ff80f6e9
 2. **业务结束前**应出现实际步骤；完成后展开“调用依据”，核对参数、结果、上下文。确认 Langfuse 不是 Section9 自造旁路 trace。
 3. 可勾选证据，然后发起协作核查。观察调查员、复核员、协调员的不同产出；点击办公室人物/角色查看详情。等待原生 session 回读，不能把接口报错时的本地结果当作远端成功。
 4. 用真实审核意见退回一次，再按意见重新调查；确认新版本和原版意见都保留，再决定认可。**认可只读建议不授权自动改业务。**
-5. 运行单助手对比。相同证据、模型、每 run 100000 token 预算；比较证据质量、缺事实处理、错误断言、耗时和全部消耗。不要宣称 swarm 必胜。
+5. 运行单助手对比。相同证据、模型和当前 run 预算（新版默认 250000，历史 run 保留原 100000，不混作同条件比较）；比较证据质量、缺事实处理、错误断言、耗时和全部消耗。不要宣称 swarm 必胜。
 6. 换一个任务，在调查中展开“演练成员离线与接力”，暂停调查员。进行中的晚到结果会被拒绝；页面可能先显示中断，点击继续调查，确认实际其他 native 成员接手。此故障组不能用于和无故障 single 直接排名性能。
 7. 刷新/返回/选择历史，检查版本、证据与任务保留。确认断线时有提示，业务不被自动重发。
 
@@ -78,6 +81,25 @@ git -C .runtime/external-projects/support-agent checkout --detach 860a29ff80f6e9
 ```
 
 保留每次报告，包括失败。脚本不会自动重试业务；接力选项只允许一次显式调查恢复。`--task <id>` 复查已有任务时不证明本次看到了业务执行中的事件，也不等于重新跑模型。审核版本的浏览器步骤需要另做。
+
+### 受控处理如何演示
+
+1. 先看真实单助手/蜂群对比 `business_aa070d29caac38c25308f189`：自由输入触发漏答，蜂群定位否定语义候选，单助手保留根因不确定；耗时和消耗均显示。该历史任务绑定修复前版本，不能当作当前应用仍有相同故障。再看已完成事故 `business_50851b2259c57f2ab233ad7d`，核对初始转交、调查的 `needs_data`、独立授权、实际执行和四项业务验证；不要说模型已经自动修复任意代码。
+2. 正常环境保持保护策略开启。新输入可以是粗口投诉、缺订单号、多意图查询、伪装管理员、要求直接退款等；期望有依据地查询、澄清或拒绝，不能强求每条都产生事故。
+3. 固定预案仅适用 legacy 路由造成的可验证缺陷。已经 guarded 的任务不会出现可执行的同一预案；其他问题继续调查或明确缺少处理方案。
+4. 要重演完整配置迁移，使用隔离演示数据目录和确认空闲的受控服务，不要偷偷把当前已修复环境改坏。主机只能有一个占用 9150 的 demo；先正常停止自己拥有的主线服务，再启动独立目录。未在新目录实跑前不能宣称复跑通过。
+5. 具体操作依次为选择预案、填写独立授权、实施、检查路由和业务查询、审阅经验。未知结果先核对；回退需明确点击，只恢复旧策略，不能据此说业务已恢复。
+6. 保存的经验是同应用、同版本历史参考；源码升级和回退会使它不再匹配，历史证据仍保留。
+
+压力验证命令（只读示例业务，真实模型和应用观测）：
+
+```sh
+.venv/bin/python scripts/verify_demo_adversarial.py --live --no-auto-investigate \
+  --base-url http://127.0.0.1:9160 \
+  --business-db .runtime/demo-mainline/demo-target/business.sqlite
+```
+
+脚本判定工具和数据库不变量；队友还要读真实回答，检查漏答、政策适用性和语义准确性。不要与网页同时发业务任务，运行时互斥会拒绝冲突。
 
 ## 5. 故障与回退
 
@@ -95,7 +117,7 @@ git -C .runtime/external-projects/support-agent checkout --detach 860a29ff80f6e9
 
 1. **独立产品验证**：换题、多案盲评、验证新机启动，输出真实失败。现有代码直接复用。
 2. **协作效果**：补缺证据主动检索、经验证动态计划、成员能力选择；接 EvoMap 已有原语，别另造身份/消息服务。验收以可追溯的新增证据和质量改进为准。
-3. **旧新桥接**：把旧批准/执行/对账/恢复适配到 v1；映射明确 ID，回归证明一致才退役旧写入口。
+3. **旧新桥接**：本轮固定配置预案已桥接；后续扩展其它旧 runbook 与历史 ID 映射，回归证明一致才退役旧写入口。
 4. **运行稳健性**：持久任务队列、多进程互斥、真正多用户权限、trace 补采与权限最小化。现在是单进程本机操作台，异步锁不等于分布式调度。
 
 可拆给队友的独立任务：A 盲评与真实用例；B 旧执行适配映射；C 新机部署复跑；D UI 可用性与办公室状态。各自不新建业务权威表，变更共享契约先在主线上对齐。

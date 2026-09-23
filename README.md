@@ -2,9 +2,9 @@
 
 ## 当前演示入口（2026-09-24）
 
-打开 **[Section9 主线工作台](http://127.0.0.1:9160/demo)**：自由业务任务 → 应用侧 Langfuse → 原生 EvoMap 会话协作核查 → 人工审核/退回 → 同证据 single/swarm。复用原业务应用、v1 对象、前端和办公室组件。
+打开 **[Section9 主线工作台](http://127.0.0.1:9160/demo)**：自由业务任务 → 应用侧 Langfuse → 原生 EvoMap 协作核查 → 建议审核 → 固定预案独立授权 → 实际配置执行 → 同案业务验证 → 审核经验；保留同证据 single/swarm 对照。复用原业务应用、v1 对象、前端和办公室组件。
 
-先读 **[接力交接](docs/implementation/HANDOFF.md)**、[主线边界](docs/implementation/DEMO_MAINLINE.md) 和 [真实验收摘要](docs/implementation/DEMO_ACCEPTANCE.md)。本轮 337 项后端测试通过，真实 native 会话/接力及审核版本闭环已验证；single 对照更快、更省，尚不能宣称 swarm 质量胜出。这里只完成到调查建议审核，完整产品/生产执行仍未完成。
+先读 **[接力交接](docs/implementation/HANDOFF.md)**、[主线边界](docs/implementation/DEMO_MAINLINE.md) 和 [受控处置验收](docs/implementation/RESOLVE_ACCEPTANCE.md)。已真实走通本机客服路由保护的同一事故闭环；配置预案由操作者选择，不是任意代码自动修复。完整平台、生产部署和蜂群的普遍质量优势仍未验收。
 
 下面小智/Pair/旧产品路径保留各自历史。旧文中“远端会话未验收”的结论限当时快照，当前 E2 session transport 状态以上述验收为准，Hub/PDRI 仍未验收。
 

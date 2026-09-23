@@ -1,6 +1,6 @@
 # Section9 当前可复跑演示指南
 
-> **2026-09-24 更新：** 当前统一演示入口是 `/demo`（9160）。先看 [接力交接](implementation/HANDOFF.md)、[主线](implementation/DEMO_MAINLINE.md) 与 [去敏真实验收](implementation/DEMO_ACCEPTANCE.md)。原生 EvoMap session 协作、成员接力、应用 Langfuse 和建议版本审核已实跑；尚无 swarm 质量优势证明。下文保留旧路径当时的验收和限制，不能将其中的恢复/发布拼入新主线，也不能沿用旧 native 阻塞状态覆盖本次验证。
+> **2026-09-24 更新：** 当前统一演示入口是 `/demo`（9160）。先看 [接力交接](implementation/HANDOFF.md)、[主线](implementation/DEMO_MAINLINE.md) 与 [受控处置验收](implementation/RESOLVE_ACCEPTANCE.md)。原生 EvoMap session 协作、成员接力、应用 Langfuse、建议版本审核及本机固定配置预案的同案执行/验证/恢复已实跑；已有一例同证据定位差异，尚无普遍质量优势证明。下文保留旧路径当时的验收和限制，不能将其中的恢复/发布拼入新主线，也不能沿用旧 native 阻塞状态覆盖本次验证。
 
 
 

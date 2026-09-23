@@ -1,0 +1,307 @@
+diff --git a/api.py b/api.py
+index 22ad8e3..087ea47 100644
+--- a/api.py
++++ b/api.py
+@@ -9,6 +9,7 @@ another service. Endpoints:
+ """
+ 
+ import logging
++import os
+ import time
+ import uuid
+ 
+@@ -19,6 +20,7 @@ from src.logging_config import configure_logging
+ from src.memory import ConversationMemory
+ from src.orchestrator import run_orchestrator
+ from src.section9_observability import request_trace
++from src.section9_business_policy import initial_policy_decision, policy_mode
+ 
+ configure_logging()
+ logger = logging.getLogger("support_agent.api")
+@@ -60,10 +62,15 @@ class ChatResponse(BaseModel):
+     reply: str
+     agent: str
+     trace: list[ToolCall]
+-    usage: Usage
++    usage: Usage | None
+     cached: bool = False
+     langfuse_trace_id: str | None = None
+     telemetry_status: str = "unconfigured"
++    support_policy: str
++    handoff_state: str
++    policy_decision: dict
++    usage_unknown: bool = False
++    error_type: str | None = None
+ 
+ 
+ @app.middleware("http")
+@@ -87,7 +94,8 @@ async def log_requests(request: Request, call_next):
+ 
+ @app.get("/health")
+ def health():
+-    return {"status": "ok"}
++    return {"status": "ok", "support_policy": policy_mode(),
++            "source_commit": os.environ.get("SUPPORT_AGENT_SOURCE_COMMIT", "unknown")}
+ 
+ 
+ @app.post("/chat", response_model=ChatResponse)
+@@ -111,8 +119,13 @@ def chat(req: ChatRequest):
+             reply=result["reply"],
+             agent=result["agent"],
+             trace=result["trace"],
+-            usage=Usage(**(result.get("usage") or {})),
++            usage=None if result.get("usage_unknown") else Usage(**(result.get("usage") or {})),
+             cached=result.get("cached", False),
++            support_policy=policy_mode(),
++            handoff_state=result.get("handoff_state", "not_connected"),
++            policy_decision=result.get("policy_decision") or initial_policy_decision(),
++            usage_unknown=result.get("usage_unknown", False),
++            error_type=result.get("error_type"),
+         )
+         observation["output"] = response.model_dump()
+     response.telemetry_status = observation["status"]
+diff --git a/src/agents/base.py b/src/agents/base.py
+index 500573e..aa84cc3 100644
+--- a/src/agents/base.py
++++ b/src/agents/base.py
+@@ -1,6 +1,7 @@
+ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
+ 
+ from src.llm import extract_usage, get_llm
++from src.section9_business_policy import allowed_agent_tools, blocked_tool_result
+ 
+ _EMPTY_USAGE = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0}
+ 
+@@ -37,8 +38,9 @@ def run_tool_agent(
+     max_rounds: int = 2,
+ ) -> dict:
+     """Generic tool-calling loop shared by every specialist agent."""
+-    tools_by_name = {t.name: t for t in agent_tools}
+-    llm = get_llm().bind_tools(agent_tools)
++    safe_tools = allowed_agent_tools(agent_tools)
++    tools_by_name = {t.name: t for t in safe_tools}
++    llm = get_llm().bind_tools(safe_tools)
+ 
+     messages: list = [SystemMessage(content=system_prompt)]
+     messages += history or []
+@@ -62,8 +64,12 @@ def run_tool_agent(
+         seen_calls.add(call_signature)
+ 
+         for call in ai_msg.tool_calls:
+-            tool_fn = tools_by_name[call["name"]]
+-            result = tool_fn.invoke(call["args"])
++            tool_name = call["name"]
++            result = blocked_tool_result(tool_name)
++            if result is None:
++                tool_fn = tools_by_name.get(tool_name)
++                result = tool_fn.invoke(call["args"]) if tool_fn is not None else {
++                    "blocked": True, "reason": "The requested tool is not available in this support flow."}
+             trace.append({"agent": agent_name, "tool": call["name"], "args": call["args"], "result": result})
+             messages.append(ToolMessage(content=str(result), tool_call_id=call["id"]))
+         ai_msg = llm.invoke(messages)
+diff --git a/src/orchestrator.py b/src/orchestrator.py
+index 23ae563..35bbeaa 100644
+--- a/src/orchestrator.py
++++ b/src/orchestrator.py
+@@ -8,10 +8,13 @@ from src.agents.faq_agent import run_faq_agent
+ from src.agents.order_agent import run_order_agent
+ from src.agents.payment_agent import run_payment_agent
+ from src.agents.refund_agent import run_refund_agent
+-from src.errors import call_with_retry
+ from src.llm import extract_usage, get_llm
+ from src.logging_config import configure_logging
+-from src.tools import escalate_to_human
++from src.section9_business_policy import (
++    classify_guarded_request, handoff_result, initial_policy_decision,
++    policy_reply, run_combined_read, clarification_reply, add_demo_data_disclaimer,
++    policy_mode, unverified_lookup_reply,
++)
+ 
+ configure_logging()
+ logger = logging.getLogger("support_agent.orchestrator")
+@@ -39,6 +42,8 @@ class SupportState(TypedDict):
+     agent: str
+     usage: dict
+     cached: bool
++    policy_decision: dict
++    handoff_state: str
+ 
+ 
+ def parse_route(text: str) -> str:
+@@ -47,17 +52,22 @@ def parse_route(text: str) -> str:
+ 
+ 
+ def route_node(state: SupportState) -> dict:
++    plan = classify_guarded_request(state["user_message"])
++    if plan is not None:
++        return {"route": plan["route"], "policy_decision": plan["policy_decision"], "usage": {}}
+     llm = get_llm()
+     result = llm.invoke(ROUTER_PROMPT.format(user_message=state["user_message"]))
+     route = parse_route(as_text(result.content))
+-    return {"route": route, "usage": extract_usage(result)}
++    policy_decision = initial_policy_decision()
++    policy_decision["decision"] = "legacy_route" if policy_decision["mode"] == "legacy" else "readonly_query"
++    return {"route": route, "usage": extract_usage(result), "policy_decision": policy_decision}
+ 
+ 
+ def _make_agent_node(agent_name: str, run_fn):
+     def node(state: SupportState) -> dict:
+         result = run_fn(state["user_message"], state.get("history"))
+         return {
+-            "reply": result["reply"],
++            "reply": (unverified_lookup_reply(state["user_message"]) if not result.get("trace") and agent_name in {"order", "refund", "payment"} else add_demo_data_disclaimer(result["reply"], result.get("trace", []))),
+             "trace": result["trace"],
+             "agent": agent_name,
+             "usage": sum_usage(state.get("usage", {}), result.get("usage", {})),
+@@ -67,16 +77,33 @@ def _make_agent_node(agent_name: str, run_fn):
+     return node
+ 
+ 
++def clarify_node(state: SupportState) -> dict:
++    decision = state["policy_decision"]
++    return {"reply": clarification_reply(decision), "trace": [], "agent": "policy",
++            "usage": state.get("usage", {})}
++
++
++def policy_node(state: SupportState) -> dict:
++    decision = state["policy_decision"]
++    return {"reply": policy_reply(decision), "trace": [], "agent": "policy",
++            "usage": state.get("usage", {})}
++
++
++def multi_read_node(state: SupportState) -> dict:
++    result = run_combined_read(state["policy_decision"]["order_ids"][0], state["user_message"], state.get("history"))
++    result["usage"] = sum_usage(state.get("usage", {}), result.get("usage", {}))
++    return result
++
++
+ def escalate_node(state: SupportState) -> dict:
+-    result = escalate_to_human(
+-        reason="Could not classify or resolve the request automatically",
+-        context=state["user_message"],
+-    )
++    requested = state.get("policy_decision", {}).get("decision") == "human_requested"
++    result = handoff_result(requested=requested)
+     return {
+         "reply": result["message"],
+-        "trace": [{"agent": "escalate", "tool": "escalate_to_human", "args": {}, "result": result}],
++        "trace": [{"agent": "handoff", "tool": "handoff_status", "args": {}, "result": result}],
+         "agent": "escalate",
+         "usage": state.get("usage", {}),
++        "handoff_state": "requested_not_connected" if requested else "not_connected",
+     }
+ 
+ 
+@@ -88,14 +115,17 @@ def build_graph():
+     graph.add_node("payment", _make_agent_node("payment", run_payment_agent))
+     graph.add_node("faq", _make_agent_node("faq", run_faq_agent))
+     graph.add_node("escalate", escalate_node)
++    graph.add_node("clarify", clarify_node)
++    graph.add_node("policy", policy_node)
++    graph.add_node("multi_read", multi_read_node)
+ 
+     graph.add_edge(START, "route")
+     graph.add_conditional_edges(
+         "route",
+         lambda state: state["route"],
+-        {"ORDER": "order", "REFUND": "refund", "PAYMENT": "payment", "FAQ": "faq", "ESCALATE": "escalate"},
++        {"ORDER": "order", "REFUND": "refund", "PAYMENT": "payment", "FAQ": "faq", "ESCALATE": "escalate", "CLARIFY": "clarify", "POLICY": "policy", "MULTI_READ": "multi_read"},
+     )
+-    for node in ("order", "refund", "payment", "faq", "escalate"):
++    for node in ("order", "refund", "payment", "faq", "escalate", "clarify", "policy", "multi_read"):
+         graph.add_edge(node, END)
+ 
+     return graph.compile()
+@@ -106,20 +136,22 @@ _GRAPH = build_graph()
+ 
+ def run_orchestrator(user_message: str, history: list | None = None) -> dict:
+     from src.section9_observability import graph_config
+-    result, escalation = call_with_retry(
+-        lambda: _GRAPH.invoke({"user_message": user_message, "history": history or [], "trace": []}, config=graph_config()),
+-        max_attempts=1,
+-        escalate_reason="Agent pipeline failed (e.g. rate limit or API error)",
+-        escalate_context=user_message,
+-    )
+-    if escalation is not None:
+-        result = {
+-            "reply": escalation["message"],
+-            "trace": [{"agent": "escalate", "tool": "escalate_to_human", "args": {}, "result": escalation}],
+-            "agent": "escalate",
+-            "route": "ESCALATE",
+-            "usage": {},
+-        }
++    try:
++        result = _GRAPH.invoke({"user_message": user_message, "history": history or [],
++                                "trace": [], "policy_decision": initial_policy_decision()},
++                               config=graph_config())
++    except Exception as exc:  # No live handoff exists; retain failure provenance.
++        result = {"reply": "自动处理暂时失败，当前演示未连接真人客服队列，也未创建工单。",
++                  "trace": [{"agent": "handoff", "tool": "handoff_status", "args": {},
++                             "result": handoff_result()}],
++                  "agent": "policy", "route": "ESCALATE",
++                  "handoff_state": "not_connected", "usage_unknown": True,
++                  "error_type": type(exc).__name__,
++                  "policy_decision": {"mode": policy_mode(), "decision": "pipeline_error",
++                                      "reason": "Graph execution failed; no live queue or ticket exists.",
++                                      "intents": [], "order_ids": [], "read_only": True}}
++    result.setdefault("handoff_state", "not_connected")
++
+ 
+     logger.info(
+         "agent_decision",
+@@ -130,6 +162,7 @@ def run_orchestrator(user_message: str, history: list | None = None) -> dict:
+                 "agent": result.get("agent"),
+                 "tools_called": [t["tool"] for t in result.get("trace", [])],
+                 "usage": result.get("usage"),
++                "policy_decision": result.get("policy_decision"),
+             }
+         },
+     )
+diff --git a/tests/test_api.py b/tests/test_api.py
+index f8c15c3..c0503c7 100644
+--- a/tests/test_api.py
++++ b/tests/test_api.py
+@@ -1,6 +1,9 @@
++import os
++
+ from fastapi.testclient import TestClient
+ 
+ import api
++from src.section9_business_policy import policy_mode
+ 
+ client = TestClient(api.app)
+ 
+@@ -23,7 +26,12 @@ FAKE_RESULT = {
+ def test_health():
+     response = client.get("/health")
+     assert response.status_code == 200
+-    assert response.json() == {"status": "ok"}
++    body = response.json()
++    assert body == {
++        "status": "ok",
++        "support_policy": policy_mode(),
++        "source_commit": os.environ.get("SUPPORT_AGENT_SOURCE_COMMIT", "unknown"),
++    }
+ 
+ 
+ def test_chat_returns_agent_reply_and_trace(monkeypatch):
+diff --git a/tests/test_routing.py b/tests/test_routing.py
+index 479418b..a8b3e28 100644
+--- a/tests/test_routing.py
++++ b/tests/test_routing.py
+@@ -52,7 +52,13 @@ def test_orchestrator_routes_to_correct_agent(monkeypatch, user_message, fake_ro
+     result = graph.invoke({"user_message": user_message, "history": [], "trace": []})
+ 
+     assert result["agent"] == expected_agent
+-    if expected_agent != "escalate":
++    if expected_agent in {"order", "refund", "payment"}:
++        assert result["reply"].startswith("I could not verify this request using the order tools")
++        assert result["trace"] == []
++    elif expected_agent == "faq":
+         assert result["reply"] == "stub reply"
+     else:
+-        assert result["reply"]  # escalate_to_human's real message
++        assert "not connected" in result["reply"].lower()
++        assert result["trace"][0]["tool"] == "handoff_status"
++        assert result["trace"][0]["result"]["state"] == "not_connected"
++        assert result["trace"][0]["result"]["ticket_created"] is False

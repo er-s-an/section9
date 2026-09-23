@@ -21,6 +21,7 @@ from s9.connectors.langfuse import LangfuseConnector
 from s9.product.registry import ProductError
 from s9.product.external_runtime import ExternalRuntime
 from s9.product.task_runtime import InvestigationTaskRuntime
+from s9.product.demo_triage import classify_handoff
 from s9.product.v1_contracts import BudgetPolicy, ProposalVersion, ProposalState
 from integrations.support_agent.observability import redact
 
@@ -40,8 +41,10 @@ class DemoWorkflow:
         self.pending = set()
         self.analysis_locks = {}
         self.investigation_gate = asyncio.Lock()
-        self.workspace = self.registry.create_workspace('Section9', workspace_id='section9-demo',
-            budget=BudgetPolicy(token_limit=100000, validation_reserve_tokens=0, max_concurrency=2),
+        self.target_gate = asyncio.Lock()
+        self.workspace = self.registry.get_workspace('section9-demo') or self.registry.create_workspace(
+            'Section9', workspace_id='section9-demo',
+            budget=BudgetPolicy(token_limit=250000, validation_reserve_tokens=0, max_concurrency=2),
             idempotency_key='demo-workspace-v1')
         self.application = self.registry.create_application(self.workspace['id'], '客服助手', idempotency_key='demo-app-v1')
         self.wid, self.aid, self.env = self.workspace['id'], self.application['id'], 'local-test'
@@ -55,6 +58,8 @@ class DemoWorkflow:
         root = (config.DATA / 'demo-target').resolve()
         self.runtime = ExternalRuntime(product.repo, product.runtime_commit, 9150,
             root, root / 'application.log', root / 'business.sqlite')
+        from s9.product.demo_resolution import DemoResolution
+        self.resolution = DemoResolution(self)
         for job in self.jobs():
             if job['state'] in {'running', 'starting'}:
                 job.update(state='interrupted', error='服务已重启。执行结果需要检查，请勿重复提交有副作用的任务。')
@@ -83,6 +88,12 @@ class DemoWorkflow:
             job['investigations'][mode] = self.registry.get_investigation_run_detail(self.wid, self.aid, self.env, run_id)
         native_id = job.get('runs', {}).get('swarm')
         job['collaboration'] = self.native.binding(self.wid, native_id) if native_id else None
+        if job.get('incident_id'):
+            job['incident'] = self.registry.get_incident(self.wid, self.aid, self.env, job['incident_id'])
+        job['capabilities'] = {
+            'target_version_current': job.get('source_commit') == self.runtime.expected_commit,
+            'investigation_allowed': (job.get('incident') or {}).get('state', 'open') in {'open', 'investigating', 'needs_input'},
+        }
         return job
 
     def spawn(self, coro):
@@ -96,7 +107,7 @@ class DemoWorkflow:
         await asyncio.gather(*self.pending, return_exceptions=True)
         await asyncio.to_thread(self.runtime.stop)
 
-    async def start(self, message, key):
+    async def start(self, message, key, auto_investigate=True):
         if not message.strip():
             raise ProductError('EMPTY_TASK', '请输入要完成的任务', 422)
         job_id = 'business_' + hashlib.sha256(key.encode()).hexdigest()[:24]
@@ -107,43 +118,74 @@ class DemoWorkflow:
             return previous
         if any(j['state'] in {'running', 'starting'} for j in self.jobs()):
             raise ProductError('BUSINESS_TASK_ACTIVE', '当前任务仍在执行，请等待结果', 409)
+        if self.target_gate.locked():
+            raise ProductError('TARGET_BUSY', '应用正在处理或验证，请稍后再提交任务', 409)
         job = {'id': job_id, 'message': message, 'state': 'starting', 'created_at': now(), 'events': [],
                'findings': [], 'observations': [], 'runs': {}, 'analysis_state': 'idle', 'source_commit': self.runtime.expected_commit,
-               'environment': self.env, 'observation_state': 'connecting', 'reply': None, 'proposal': None}
-        reference = self.product.repo / 'src/tools.py'
-        if reference.exists():
-            text = reference.read_text()
-            job['application_reference'] = {'path': 'src/tools.py', 'source_commit': self.runtime.expected_commit,
-                'sha256': hashlib.sha256(text.encode()).hexdigest(), 'content': text[:16000], 'truncated': len(text)>16000}
+               'environment': self.env, 'observation_state': 'connecting', 'reply': None, 'proposal': None,
+               'auto_investigate': bool(auto_investigate)}
+        job['target_configuration'] = self.resolution.target_config()
+        references = []
+        # Freeze each file separately below the per-string redaction bound.
+        # A compact manifest avoids duplicating source text in model context.
+        for path, limit in [('src/orchestrator.py', 16000), ('src/tools.py', 16000),
+                            ('src/section9_business_policy.py', 16000)]:
+            reference = self.product.repo / path
+            if reference.is_file():
+                content = reference.read_text()
+                references.append({'path': path, 'sha256': hashlib.sha256(content.encode()).hexdigest(),
+                                   'content': content[:limit], 'truncated': len(content) > limit})
+        if references:
+            job['application_reference'] = {'path': ', '.join(r['path'] for r in references),
+                'source_commit': self.runtime.expected_commit, 'sha256': digest(references),
+                'content': 'Frozen source files are available under files/<index>/content. Read a bounded window using read_evidence.\n' + '\n'.join(
+                    f"{i}: {r['path']} ({len(r['content'])} characters, truncated={r['truncated']})" for i, r in enumerate(references)),
+                'files': references,
+                'truncated': any(r['truncated'] for r in references)}
         self.save(job)
         self.spawn(self._business(job))
         return job
 
     async def _business(self, job):
+        async with self.target_gate:
+            await self._business_locked(job)
+
+    async def ensure_target(self):
+        """Start only this workflow's owned target using durable configuration."""
+        if not self.product.adapter_metadata.get('observability_sha256'):
+            raise ProductError('TARGET_INSTRUMENTATION_MISSING', '请先安装应用观测适配器', 503)
+        if not self.runtime.status().get('owned'):
+            with socket.socket() as port_check:
+                try:
+                    port_check.bind(('127.0.0.1', self.runtime.port))
+                except OSError as exc:
+                    raise ProductError('TARGET_PORT_BUSY', '业务端口已被其他服务占用，请检查后重试', 503) from exc
+        await asyncio.to_thread(self.runtime.start, model_env=self.resolution.model_env())
+        async with httpx.AsyncClient(timeout=4, trust_env=False) as client:
+            for _ in range(40):
+                try:
+                    response = await client.get(f'http://127.0.0.1:{self.runtime.port}/health')
+                    if response.status_code == 200:
+                        body = response.json()
+                        if not self.runtime.status().get('owned'):
+                            raise ProductError('TARGET_OWNERSHIP_LOST', '无法确认业务进程归属', 503)
+                        if (body.get('support_policy') != self.resolution.target_config()['policy']
+                                or body.get('source_commit') != self.runtime.expected_commit):
+                            raise ProductError('TARGET_CONFIGURATION_MISMATCH', '应用实际版本或策略与记录不一致，请先核对连接', 409)
+                        return body
+                except httpx.RequestError:
+                    pass
+                await asyncio.sleep(.25)
+        raise ProductError('TARGET_NOT_READY', '客服助手尚未就绪，请重试', 503)
+
+    async def _business_locked(self, job):
         request_task = None
         try:
-            if not self.product.adapter_metadata.get('observability_sha256'):
-                raise ProductError('TARGET_INSTRUMENTATION_MISSING', '请先安装应用观测适配器', 503)
-            if not self.runtime.status().get('owned'):
-                with socket.socket() as port_check:
-                    try:
-                        port_check.bind(('127.0.0.1', self.runtime.port))
-                    except OSError as exc:
-                        raise ProductError('TARGET_PORT_BUSY', '业务端口已被其他服务占用，请检查后重试', 503) from exc
-            await asyncio.to_thread(self.runtime.start, model_env=self.product._model_env())
+            health = await self.ensure_target()
+            if health['support_policy'] != job['target_configuration']['policy']:
+                raise ProductError('TARGET_CONFIGURATION_MISMATCH', '任务创建后策略已变化，请重新确认任务', 409)
             base = 'http://127.0.0.1:9150'
             async with httpx.AsyncClient(timeout=150, trust_env=False) as client:
-                for _ in range(40):
-                    try:
-                        if (await client.get(base + '/health')).status_code == 200:
-                            if not self.runtime.status().get('owned'):
-                                raise ProductError('TARGET_OWNERSHIP_LOST', '无法确认业务进程归属，请检查应用连接', 503)
-                            break
-                    except httpx.RequestError:
-                        pass
-                    await asyncio.sleep(.25)
-                else:
-                    raise ProductError('TARGET_NOT_READY', '客服助手尚未就绪，请重试', 503)
                 job['state'] = 'running'
                 self.save(job)
                 request_task = asyncio.create_task(client.post(base + '/chat', json={'message': job['message'], 'session_id': job['id']}))
@@ -171,7 +213,7 @@ class DemoWorkflow:
                 self.inspect(job)
                 self.save(job)
             await self.read_trace(job)
-            if job['findings']:
+            if job.get('auto_investigate', True) and any(f.get('auto_investigate', True) for f in job['findings']):
                 await self._analysis(job['id'], 'swarm')
         except asyncio.CancelledError:
             if request_task and not request_task.done():
@@ -200,10 +242,14 @@ class DemoWorkflow:
                 key = 'error:' + event['observation_id']
                 findings[key] = {'key': key, 'summary': event['name'] + ' 执行出错，原因待核实', 'event_id': event['id'], 'at': event['at']}
         if job.get('elapsed_s', 0) > 30 and job['state'] == 'running':
-            findings.setdefault('slow', {'key': 'slow', 'summary': '任务已超过 30 秒，需检查等待原因', 'at': now()})
+            findings.setdefault('slow', {'key': 'slow', 'summary': '任务曾超过 30 秒，可按需检查等待原因', 'at': now(),
+                                         'auto_investigate': False})
         result = job.get('business_result') or {}
-        if result.get('agent') == 'escalate':
-            findings.setdefault('escalated', {'key': 'escalated', 'summary': '业务助手转交人工，需检查未能完成的原因', 'at': now()})
+        triage = classify_handoff(job.get('message', ''), result)
+        job['triage'] = triage
+        if triage['auto_investigate']:
+            findings.setdefault(triage['state'], {'key': triage['state'], 'summary': triage['summary'],
+                                                 'at': now(), 'auto_investigate': True})
         job['findings'] = list(findings.values())
 
     async def read_trace(self, job):
@@ -236,7 +282,9 @@ class DemoWorkflow:
             raise ProductError('INVESTIGATION_ACTIVE', '当前调查仍在进行', 409)
         if mode in job['runs']:
             existing = self.registry.get_investigation_run_detail(self.wid, self.aid, self.env, job['runs'][mode])
-            if existing['task_graph']['state'] == 'complete' and (mode == 'single' or job.get('proposal')):
+            current_workspace = self.registry.get_workspace(self.wid)
+            same_policy = int(existing['run']['policy_revision']) == int(current_workspace['policy_revision'])
+            if same_policy and existing['task_graph']['state'] == 'complete' and (mode == 'single' or job.get('proposal')):
                 return job
         if 'incident_id' not in job:
             known = {o['id'] for o in job['observations']}
@@ -260,10 +308,13 @@ class DemoWorkflow:
             attempt_started_at = now()
             try:
                 if 'incident_id' not in job:
+                    from s9.product.demo_lessons import relevant_lessons
+                    job['reused_lessons'] = relevant_lessons(self, job)
                     context = {'business_task': job['message'], 'business_result': job.get('business_result'),
                                'findings': job['findings'], 'trace_id': job.get('trace_id'),
                                'observations': [o for o in job['observations'] if o['id'] in job.get('selected_evidence_ids', [x['id'] for x in job['observations']])], 'environment': self.env,
-                               'source_commit': job['source_commit'], 'coverage': job['observation_state']}
+                               'source_commit': job['source_commit'], 'coverage': job['observation_state'],
+                               'reviewed_historical_references': job['reused_lessons']}
                     # Keep the same bounded context for both arms, including truncation disclosure.
                     context = redact(context)
                     if len(json.dumps(context).encode()) > 70000:
@@ -289,13 +340,59 @@ class DemoWorkflow:
                         [{'signal_id': item['id'], 'expected_revision': item['revision']} for item in signals], idempotency_key='incident-' + job['id'])
                     job['incident_id'] = incident['id']
                 incident = self.registry.get_incident(self.wid, self.aid, self.env, job['incident_id'])
+                workspace = self.registry.get_workspace(self.wid)
+                current_policy_revision = int(workspace['policy_revision'])
+                prior_run_id = job.get('runs', {}).get(mode)
+                prior_detail = (self.registry.get_investigation_run_detail(
+                    self.wid, self.aid, self.env, prior_run_id) if prior_run_id else None)
+                replace_for_policy = bool(prior_detail and int(prior_detail['run']['policy_revision']) != current_policy_revision)
+                if replace_for_policy:
+                    prior_run = prior_detail['run']
+                    # The explicit Continue action is the only path that can replace this run.
+                    # Finish the old registry record through its supported manual-result contract;
+                    # its immutable snapshot, task attempts, and model-usage rows remain intact.
+                    if prior_run['state'] == 'running':
+                        self.registry.finish_manual_investigation_run(
+                            self.wid, self.aid, self.env, prior_run_id, 'needs_data',
+                            f"Policy revision changed from {prior_run['policy_revision']} to {current_policy_revision}; "
+                            'this old run is retained as incomplete history and was not retried under the new policy.',
+                            expected_revision=prior_run['revision'],
+                            idempotency_key=f"policy-change-{prior_run_id}-{prior_run['policy_revision']}-{current_policy_revision}")
+                    usage = prior_detail.get('model_usage') or []
+                    known_tokens = sum(int(row['actual_tokens']) for row in usage if row.get('actual_tokens') is not None)
+                    history_entry = {
+                        'mode': mode, 'run_id': prior_run_id,
+                        'policy_revision': int(prior_run['policy_revision']),
+                        'token_limit': int(prior_run['token_limit']),
+                        'state': 'blocked_policy_changed',
+                        'result_type': 'needs_data',
+                        'known_total_tokens': known_tokens,
+                        'usage_unknown_count': sum(row.get('actual_tokens') is None for row in usage),
+                        'model_usage': usage,
+                        'comparison': job.get('comparison', {}).get(mode),
+                        'replaced_at': now(),
+                    }
+                    job.setdefault('run_history', {}).setdefault(mode, []).append(history_entry)
+                    job.setdefault('comparison_history', {}).setdefault(mode, []).append({
+                        **(job.get('comparison', {}).get(mode) or {}),
+                        'run_id': prior_run_id,
+                        'policy_revision': int(prior_run['policy_revision']),
+                        'token_limit': int(prior_run['token_limit']),
+                        'known_total_tokens': known_tokens,
+                        'usage_unknown_count': history_entry['usage_unknown_count'],
+                    })
+                    # finish_manual may advance the incident revision/state; use a fresh snapshot.
+                    incident = self.registry.get_incident(self.wid, self.aid, self.env, job['incident_id'])
                 for existing_id in job['runs'].values():
+                    if replace_for_policy and existing_id == prior_run_id:
+                        continue
                     old = self.registry.get_investigation_run_detail(self.wid, self.aid, self.env, existing_id)
-                    if old['task_graph']['state'] == 'complete':
+                    if old and old.get('task_graph') and old['task_graph']['state'] == 'complete':
                         self.registry.complete_investigation_task_graph(self.wid, self.aid, self.env, existing_id)
-                if mode not in job['runs']:
+                if mode not in job['runs'] or replace_for_policy:
                     run = self.registry.create_investigation_run(self.wid, self.aid, self.env, job['incident_id'],
-                        expected_incident_revision=incident['revision'], idempotency_key='run-' + mode + job['id'] + '-' + str(job.get('proposal_version', 1)), execution_mode=mode)
+                        expected_incident_revision=incident['revision'],
+                        idempotency_key='run-' + mode + '-' + job['id'] + '-policy-' + str(current_policy_revision) + '-proposal-' + str(job.get('proposal_version', 1)), execution_mode=mode)
                     job['runs'][mode] = run['run']['id']
                     self.save(job)
                 run_id = job['runs'][mode]
@@ -309,9 +406,15 @@ class DemoWorkflow:
                     collaboration=self.native if mode == 'swarm' else None, feedback=job.get('review_feedback'))
                 result = await runtime.execute(self.wid, self.aid, self.env, run_id)
                 job = self.get(job_id)
+                fresh_detail = self.registry.get_investigation_run_detail(self.wid, self.aid, self.env, run_id)
+                usage = fresh_detail.get('model_usage') or []
                 job.setdefault('comparison', {})[mode] = {'state': result['execution']['state'],
                     'elapsed_s': round(time.monotonic() - started, 1), 'evidence_sha256': job['evidence_sha256'],
-                    'token_limit': self.workspace['budget']['token_limit'], 'model': config.MODEL}
+                    'run_id': run_id, 'policy_revision': int(fresh_detail['run']['policy_revision']),
+                    'token_limit': int(fresh_detail['run']['token_limit']),
+                    'known_total_tokens': sum(int(row['actual_tokens']) for row in usage if row.get('actual_tokens') is not None),
+                    'usage_unknown_count': sum(row.get('actual_tokens') is None for row in usage),
+                    'model': config.MODEL}
                 self.save(job)
                 if result['execution']['state'] != 'complete':
                     raise ProductError('INVESTIGATION_INCOMPLETE', '调查暂时中断，进度和用量已保留。可以继续调查。', 502)

@@ -1889,6 +1889,10 @@ class ProductRegistry:
                 idempotency_key=idempotency_key, payload=payload, response=incident_record)
         return incident_record
 
+    def advance_demo_resolution(self, workspace_id, application_id, environment_id, incident_id, plan_id):
+        from s9.product.demo_incident import advance
+        return advance(self, workspace_id, application_id, environment_id, incident_id, plan_id)
+
     def transition_incident(
         self,
         workspace_id: str,

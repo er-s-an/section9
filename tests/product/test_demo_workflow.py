@@ -6,6 +6,7 @@ import pytest
 
 from s9.product.demo import DemoWorkflow, digest
 from s9.product.registry import ProductError, ProductRegistry
+from s9.product.v1_contracts import BudgetPolicy
 
 
 def workflow(tmp_path, monkeypatch):
@@ -114,5 +115,76 @@ def test_full_analysis_reuses_v1_sources_and_freezes_selected_context(tmp_path,m
         assert service.get(j['id'])['proposal']['sha256']==done['proposal']['sha256']
         assert service.get(j['id'])['review']['decision']=='approved'
         assert service.registry.get_incident(service.wid,service.aid,service.env,done['incident_id'])['state'] != 'resolved'
+        await service.client.aclose()
+    asyncio.run(run())
+
+
+def test_explicit_continue_retires_old_policy_run_and_preserves_usage_history(tmp_path,monkeypatch):
+    import s9.product.demo as demo
+    service=workflow(tmp_path,monkeypatch)
+    class IncompleteRuntime:
+        def __init__(self, registry, client, **kwargs): self.registry=registry
+        async def execute(self,w,a,e,r):
+            detail=self.registry.get_investigation_run_detail(w,a,e,r)
+            return {'detail':detail,'execution':{'state':'failed'}}
+    monkeypatch.setattr(demo,'InvestigationTaskRuntime',IncompleteRuntime)
+
+    async def run():
+        current=service.registry.get_workspace(service.wid)
+        service.registry.update_workspace_budget(service.wid,
+            BudgetPolicy(token_limit=100_000,validation_reserve_tokens=0,max_concurrency=2),
+            expected_revision=current['revision'],idempotency_key='test-policy-rev-1')
+        job=await service.start('核查订单退款','policy-change-test')
+        job.update(state='completed',observation_state='verified',business_result={'reply':'请提供订单号'},
+            observations=[{'id':'evidence-1','name':'support-agent.chat'}],selected_evidence_ids=['evidence-1'])
+        service.save(job)
+        await service._analysis(job['id'],'single')
+        first=service.get(job['id'])
+        old_id=first['runs']['single']
+        old=service.registry.get_investigation_run_detail(service.wid,service.aid,service.env,old_id)
+        assert old['run']['policy_revision']==2
+        assert old['run']['token_limit']==100_000
+
+        # Simulate spend already recorded by the old run; a policy update must not erase it.
+        task=next(t for t in old['task_graph']['tasks'] if t['role']=='investigator')
+        claim=service.registry.claim_investigation_task(service.wid,service.aid,service.env,old_id,
+            task['id'],'test-worker',[task['capability']],expected_revision=task['revision'],
+            lease_seconds=60,idempotency_key='policy-test-claim')
+        service.registry.reserve_investigation_model_usage(service.wid,service.aid,service.env,old_id,
+            task['id'],'test-worker',claim['epoch'],request_id='policy-test-usage',provider='test',model='test',
+            prompt_sha256='a'*64,reserved_tokens=1000)
+        service.registry.authorize_investigation_model_dispatch(service.wid,service.aid,service.env,old_id,
+            task['id'],'test-worker',claim['epoch'],request_id='policy-test-usage')
+        service.registry.settle_investigation_model_usage(service.wid,service.aid,request_id='policy-test-usage',
+            actual_tokens=700,provider_called=True,error_code='MODEL_EMPTY')
+
+        current=service.registry.get_workspace(service.wid)
+        service.registry.update_workspace_budget(service.wid,
+            BudgetPolicy(token_limit=250_000,validation_reserve_tokens=0,max_concurrency=2),
+            expected_revision=current['revision'],idempotency_key='test-policy-rev-2')
+        assert service.registry.get_workspace(service.wid)['policy_revision']==3
+        assert service.registry.get_investigation_run_detail(service.wid,service.aid,service.env,old_id)['run']['policy_revision']==2
+        # This call represents the user's explicit Continue click. There is no background resume.
+        service.spawn=lambda coro: service.pending.add(asyncio.create_task(coro))
+        await service.analyze(job['id'],'single')
+        await asyncio.gather(*list(service.pending))
+        continued=service.get(job['id'])
+        new_id=continued['runs']['single']
+        assert new_id != old_id
+        assert continued['incident_id']==first['incident_id']
+        old_after=service.registry.get_investigation_run_detail(service.wid,service.aid,service.env,old_id)
+        new=service.registry.get_investigation_run_detail(service.wid,service.aid,service.env,new_id)
+        assert old_after['run']['state']=='inconclusive'
+        assert old_after['run']['policy_revision']==2 and old_after['run']['token_limit']==100_000
+        assert old_after['model_usage'][0]['actual_tokens']==700
+        assert new['run']['policy_revision']==3 and new['run']['token_limit']==250_000
+        history=continued['run_history']['single']
+        assert history[0]['run_id']==old_id
+        assert history[0]['known_total_tokens']==700
+        assert history[0]['model_usage'][0]['actual_tokens']==700
+        assert continued['comparison']['single']['run_id']==new_id
+        assert continued['comparison']['single']['policy_revision']==3
+        assert continued['comparison']['single']['token_limit']==250_000
+        assert continued['analysis_attempts'][-1]['run_id']==new_id
         await service.client.aclose()
     asyncio.run(run())

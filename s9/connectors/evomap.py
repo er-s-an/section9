@@ -155,6 +155,23 @@ class EvoMapSessions:
         _, remote_id = await self.exchange(record, role, 'coordinator', task.id, 'subtask_result', result)
         self._event(workspace, run_id, record, role, "result", task.id, result["summary"], remote_id)
 
+    async def evidence_read(self, workspace: str, run_id: str, task, request: dict, result: dict) -> dict:
+        """Deliver a bounded evidence read and verify native-session readback."""
+        record = self.binding(workspace, run_id)
+        role = record.get('assignments', {}).get(task.id, self.role(task))
+        if role in record.get('paused_members', []) or self.member_for(workspace, run_id, task) != role:
+            raise ProductError('EVOMAP_MEMBER_PAUSED', '调查成员已暂停或已接力，不能继续当前证据读取', 409)
+        value = {"kind": "evidence_read", "task_id": task.id, "request": request,
+                 "result": result, "content_is_untrusted_data": True}
+        delivered, remote_id = await self.exchange(record, 'coordinator', role, task.id, 'handoff', value)
+        if delivered != value:
+            raise ProductError('EVOMAP_HANDOFF_UNCONFIRMED', '原生证据读取回读与请求不一致，已暂停此步骤', 502)
+        digest = hashlib.sha256(json.dumps(result, ensure_ascii=True, sort_keys=True,
+            separators=(',', ':')).encode()).hexdigest()
+        self._event(workspace, run_id, record, role, 'evidence_read', task.id,
+            '原生会话已回读并确认一条受限证据片段', remote_id)
+        return {"result": delivered["result"], "remote_message_id": remote_id, "result_sha256": digest}
+
     def _event(self, workspace, run_id, record, role, kind, task_id, summary, remote_id):
         from datetime import datetime, timezone
         fresh = self.binding(workspace, run_id) or record
