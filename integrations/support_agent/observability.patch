@@ -1,0 +1,73 @@
+--- a/api.py
++++ b/api.py
+@@ -18,6 +18,7 @@
+ from src.logging_config import configure_logging
+ from src.memory import ConversationMemory
+ from src.orchestrator import run_orchestrator
++from src.section9_observability import request_trace
+ 
+ configure_logging()
+ logger = logging.getLogger("support_agent.api")
+@@ -61,6 +62,8 @@
+     trace: list[ToolCall]
+     usage: Usage
+     cached: bool = False
++    langfuse_trace_id: str | None = None
++    telemetry_status: str = "unconfigured"
+ 
+ 
+ @app.middleware("http")
+@@ -92,20 +95,25 @@
+     session_id = req.session_id or uuid.uuid4().hex
+     memory = _sessions.setdefault(session_id, ConversationMemory())
+ 
+-    augmented_message = memory.context_note() + req.message
+-    try:
+-        result = run_orchestrator(augmented_message, history=memory.turns)
+-    except Exception as exc:  # pragma: no cover - orchestrator already retries + escalates internally
+-        raise HTTPException(status_code=502, detail=str(exc)) from exc
++    with request_trace(req.message, session_id) as observation:
++        augmented_message = memory.context_note() + req.message
++        try:
++            result = run_orchestrator(augmented_message, history=memory.turns)
++        except Exception as exc:  # pragma: no cover - orchestrator already retries + escalates internally
++            raise HTTPException(status_code=502, detail=str(exc)) from exc
+ 
+-    memory.add_turn(req.message, result["reply"])
+-    memory.update_last_order_id(result["trace"])
++        memory.add_turn(req.message, result["reply"])
++        memory.update_last_order_id(result["trace"])
+ 
+-    return ChatResponse(
+-        session_id=session_id,
+-        reply=result["reply"],
+-        agent=result["agent"],
+-        trace=result["trace"],
+-        usage=Usage(**(result.get("usage") or {})),
+-        cached=result.get("cached", False),
+-    )
++        response = ChatResponse(
++            session_id=session_id,
++            langfuse_trace_id=observation["trace_id"],
++            reply=result["reply"],
++            agent=result["agent"],
++            trace=result["trace"],
++            usage=Usage(**(result.get("usage") or {})),
++            cached=result.get("cached", False),
++        )
++        observation["output"] = response.model_dump()
++    response.telemetry_status = observation["status"]
++    return response
+--- a/src/orchestrator.py
++++ b/src/orchestrator.py
+@@ -105,8 +105,9 @@
+ 
+ 
+ def run_orchestrator(user_message: str, history: list | None = None) -> dict:
++    from src.section9_observability import graph_config
+     result, escalation = call_with_retry(
+-        lambda: _GRAPH.invoke({"user_message": user_message, "history": history or [], "trace": []}),
++        lambda: _GRAPH.invoke({"user_message": user_message, "history": history or [], "trace": []}, config=graph_config()),
+         max_attempts=1,
+         escalate_reason="Agent pipeline failed (e.g. rate limit or API error)",
+         escalate_context=user_message,

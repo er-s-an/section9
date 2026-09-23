@@ -3976,6 +3976,34 @@ class ProductRegistry:
                 idempotency_key=idempotency_key, payload=payload, response=record)
         return record
 
+    def complete_investigation_task_graph(self, workspace_id, application_id, environment_id, run_id):
+        """Finish model analysis without asserting a verified root cause or recovery."""
+        with self.tx() as db:
+            row = db.execute('SELECT data FROM investigation_runs WHERE id=? AND workspace_id=? AND application_id=? AND environment_id=?',
+                             (run_id, workspace_id, application_id, environment_id)).fetchone()
+            if row is None:
+                raise ProductError('INVESTIGATION_RUN_NOT_FOUND', '调查不存在', 404)
+            record = json.loads(row['data'])
+            if record['state'] != 'running':
+                return record
+            graph = db.execute('SELECT * FROM investigation_task_graphs WHERE run_id=?', (run_id,)).fetchone()
+            if graph is None or graph['state'] != 'complete':
+                raise ProductError('TASK_GRAPH_INCOMPLETE', '调查任务尚未全部完成', 409)
+            tasks = self._task_graph_detail_in_tx(db, graph)['tasks']
+            final = next(t['result'] for t in tasks if t['role'] == 'synthesizer')
+            state, result_type = {'root_cause_candidate': ('succeeded', 'proposal_ready'),
+                'needs_data': ('inconclusive', 'needs_data'), 'abstain': ('abstained', 'none')}[final['conclusion']]
+            record.update(state=state, result_type=result_type, revision=record['revision'] + 1,
+                          updated_at=_now(), completed_at=_now())
+            record = InvestigationRun.model_validate_json(json.dumps(record)).model_dump(mode='json')
+            db.execute('UPDATE investigation_runs SET revision=?,state=?,data=?,updated_at=? WHERE id=?',
+                       (record['revision'], state, _encode(record), record['updated_at'], run_id))
+            self._workspace_event(db, workspace_id=workspace_id, application_id=application_id,
+                resource_type='investigation_run', resource_id=run_id,
+                event_type='investigation_run.analysis_completed', record=record,
+                event_metadata={'conclusion': final['conclusion'], 'independent_recovery_verified': False})
+        return record
+
     def finish_manual_investigation_run(
         self, workspace_id: str, application_id: str, environment_id: str, run_id: str,
         result_type: str, reason: str, *, expected_revision: int, idempotency_key: str,

@@ -1,4 +1,25 @@
-# EvoMap integration boundary and verification record
+# EvoMap 当前验证：2026-09-24
+
+用户后续明确授权优先接通原生 EvoMap 并真实模型验证。以下结果更新 09-23 的阻塞状态；旧记录保留作为历史，不能再当作当前能力结论。
+
+| 层次 | 当前证据与边界 |
+| --- | --- |
+| E0 模型推理 | 真实业务及治理调查多次完成，已知/未知用量保留 |
+| E1 GEP assets | 原有固定 SDK 本地验证复用；本次未新增远端发布 |
+| E2 原生协作 | 三个独立认证 node；create/join/message/context 实际成功；接收方回读完整分块并校验哈希；结果也需远端回读后才能结束本地任务；暂停/晚到拒绝/其他成员接管实跑通过 |
+| E3 Hub 经验 | 未验收远端经验检索、发布、撤销，不计完成 |
+
+最小复现及真实 session/run ID 见 [DEMO_ACCEPTANCE.md](DEMO_ACCEPTANCE.md)。源码 `s9/connectors/evomap.py`，用例 `tests/connectors/test_evomap_sessions.py`。私密 node secrets 存仓库外，接口只输出 node ID。
+
+任务图、角色模型执行、预算/租约与人审仍由 Section9 管理；此实现没有使用 EvoMap 托管 PDRI、原生市场任务结算或公共动态成员发现。native task board 的读/新增有探测，状态更新未确认；session submit 需要有效 result_asset_id，本次没有为了凑成功而发布公共资产。HTTP 200 的 hello 仍需检查 acknowledged；大上下文真实 413 后改为内容寻址分块，缺片失败关闭。
+
+本轮保留来源：https://evomap.ai/llms.txt 。协议为滚动接口，应以运行响应核验，不能从文档存在直接推断产品已实现。
+
+---
+
+## 历史快照：2026-09-23（后续已部分解除阻塞）
+
+### 当时的 integration boundary
 
 Checked: 2026-09-23 (public official documentation; no EvoMap account call was made)
 

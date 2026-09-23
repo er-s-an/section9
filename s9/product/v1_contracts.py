@@ -158,10 +158,19 @@ class Signal(Revisioned):
     occurred_at: str
     observed_at: str
     summary: str = Field(min_length=1, max_length=4000)
+    source_context: dict[str, Any] | None = None
     status: Literal["new", "clustered", "suppressed", "dismissed"] = "new"
 
     _occurred_at = field_validator("occurred_at")(_timestamp)
     _observed_at = field_validator("observed_at")(_timestamp)
+
+    @field_validator("source_context")
+    @classmethod
+    def bounded_context(cls, value):
+        import json
+        if value is not None and len(json.dumps(value, ensure_ascii=False).encode()) > 100_000:
+            raise ValueError("source context exceeds 100 KB")
+        return value
 
 
 class IncidentState(StrEnum):

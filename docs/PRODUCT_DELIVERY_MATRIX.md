@@ -1,5 +1,9 @@
 # Section9 外部应用产品交付矩阵
 
+> **2026-09-24 更新：** 当前统一演示入口是 `/demo`（9160）。先看 [接力交接](implementation/HANDOFF.md)、[主线](implementation/DEMO_MAINLINE.md) 与 [去敏真实验收](implementation/DEMO_ACCEPTANCE.md)。原生 EvoMap session 协作、成员接力、应用 Langfuse 和建议版本审核已实跑；尚无 swarm 质量优势证明。下文保留旧路径当时的验收和限制，不能将其中的恢复/发布拼入新主线，也不能沿用旧 native 阻塞状态覆盖本次验证。
+
+
+
 记录日期：2026-09-23。范围是本机 macOS Apple Silicon 的 Section9 本地测试环境、首个外部候选 `support-agent`、Langfuse 只读 trace 与本地协作；不是公网服务、生产修复或官方 EvoMap 远端会话声明。
 
 状态含义：**PASS** 只表示对应列出的范围有本轮证据；**PARTIAL** 表示已验证子集且仍有差距；**BLOCKED** 等待外部授权/设备/平台能力；**NOT_RUN** 表示没有执行。替身测试、保存的旧记录和当前真实服务分别注明，不能互相替代。

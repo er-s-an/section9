@@ -47,6 +47,8 @@ async def lifespan(app):
     app.state.product_task_runtime = InvestigationTaskRuntime(
         app.state.core.product.registry, app.state.core.model.client,
     )
+    from s9.product.demo import DemoWorkflow
+    app.state.demo = DemoWorkflow(app.state.core.product, app.state.core.model.client)
     app.state.pairs = PairCoordinator(config.DATA / 'showcase', app.state.gateway, app.state.core.telemetry, app.state.core.identity)
     await app.state.pairs.boot()
     # The same authority, a separate restricted ingress. No second database,
@@ -61,6 +63,7 @@ async def lifespan(app):
     app.state.signal_sync_scheduler = SignalSyncScheduler(app.state.core.product.registry)
     signal_sync_task = asyncio.create_task(app.state.signal_sync_scheduler.run_forever())
     yield
+    await app.state.demo.close()
     app.state.signal_sync_scheduler.stop()
     signal_sync_task.cancel()
     try:
@@ -76,6 +79,8 @@ async def lifespan(app):
 
 app = FastAPI(title="Section9 local laboratory", lifespan=lifespan)
 app.include_router(product_v1_router)
+from s9.product.demo_api import router as demo_router
+app.include_router(demo_router)
 from s9.pairs.api import router as pair_router  # noqa: E402
 app.include_router(pair_router)
 
@@ -695,6 +700,7 @@ if dist.exists():
         app.mount("/vendor", StaticFiles(directory=dist / "vendor"), name="vendor")
 
 
+@app.get("/demo")
 @app.get("/")
 @app.get("/showcase/swarm")
 @app.get("/showcase/baseline")

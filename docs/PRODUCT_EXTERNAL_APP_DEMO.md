@@ -1,5 +1,9 @@
 # 外部 Agent 产品工作区：启动与复跑
 
+> **2026-09-24 更新：** 当前统一演示入口是 `/demo`（9160）。先看 [接力交接](implementation/HANDOFF.md)、[主线](implementation/DEMO_MAINLINE.md) 与 [去敏真实验收](implementation/DEMO_ACCEPTANCE.md)。原生 EvoMap session 协作、成员接力、应用 Langfuse 和建议版本审核已实跑；尚无 swarm 质量优势证明。下文保留旧路径当时的验收和限制，不能将其中的恢复/发布拼入新主线，也不能沿用旧 native 阻塞状态覆盖本次验证。
+
+
+
 本指南对应本机 Section9 + `support-agent` 本地测试环境。它使用配置中的真实模型服务，执行订单/退款的只读业务请求；每次完整验收最多预留 16,000 provider tokens（订单、退款、恢复各最多预留 5,000），未知 usage 会阻止后续探针并判失败。不是生产环境，不会触发真实退款或付款。
 
 ## 打开与操作

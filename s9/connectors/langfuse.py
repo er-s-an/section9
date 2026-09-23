@@ -62,9 +62,11 @@ class LangfuseConnector:
 
     async def observations(self, *, from_start_time: str | None = None, trace_id: str | None = None,
                            to_start_time: str | None = None, cursor: str | None = None,
-                           limit: int = 100) -> dict[str, Any]:
+                           limit: int = 100, include_context: bool = False) -> dict[str, Any]:
         if self._client is None:
             raise RuntimeError("use connector as an async context manager")
+        if include_context and not trace_id:
+            raise ValueError("Context requires one explicitly selected trace")
         if not (self.config.public_key and self.config.secret_key):
             return {"status_code": None, "status": "unknown", "rows": [], "watermark": None,
                     "availability": "credentials_missing", "detail": "Langfuse project credentials are not configured"}
@@ -88,6 +90,8 @@ class LangfuseConnector:
         }
         if trace_id:
             params["traceId"] = trace_id
+        if include_context:
+            params["fields"] += ",io,model"
         if cursor:
             params["cursor"] = cursor
         response = await self._client.get(
@@ -100,7 +104,7 @@ class LangfuseConnector:
         except ValueError:
             payload = {}
         raw_rows = payload.get("data", []) if isinstance(payload, dict) else []
-        rows = [self._row(row) for row in raw_rows if isinstance(row, dict)]
+        rows = [self._row(row, include_context=include_context) for row in raw_rows if isinstance(row, dict)]
         timestamps = [row["timestamp"] for row in rows if row.get("timestamp")]
         api_meta = payload.get("meta", {}) if isinstance(payload, dict) else {}
         next_cursor = api_meta.get("cursor") if isinstance(api_meta, dict) else None
@@ -120,13 +124,21 @@ class LangfuseConnector:
                     "complete": not bool(next_cursor), "next_cursor": next_cursor},
                 "meta": api_meta}
 
-    def _row(self, row: dict[str, Any]) -> dict[str, Any]:
+    def _row(self, row: dict[str, Any], *, include_context: bool = False) -> dict[str, Any]:
         metadata = row.get("metadata") if isinstance(row.get("metadata"), dict) else {}
-        safe_metadata = {key: metadata[key] for key in ("project_id", "environment_id", "incident_id", "source_commit", "external_trace") if key in metadata}
-        return {"id": row.get("id"), "project_id": row.get("projectId") or row.get("project_id"),
+        safe_metadata = {key: metadata[key] for key in ("project_id", "environment_id", "incident_id", "source_commit", "external_trace", "telemetry_origin", "native_candidate_sdk") if key in metadata}
+        result = {"id": row.get("id"), "project_id": row.get("projectId") or row.get("project_id"),
                 "trace_id": row.get("traceId") or row.get("trace_id"),
                 "name": row.get("name"), "timestamp": row.get("startTime") or row.get("createdAt"),
                 "type": row.get("type"), "metadata": safe_metadata}
+        if include_context:
+            from integrations.support_agent.observability import redact
+
+            result.update(parent_observation_id=row.get("parentObservationId"), end_time=row.get("endTime"),
+                          level=row.get("level"), model=row.get("model"),
+                          input=redact(row.get("input")), output=redact(row.get("output")),
+                          usage=redact(row.get("usageDetails") or row.get("usage") or {}))
+        return result
 
 
 def current_watermark() -> str:

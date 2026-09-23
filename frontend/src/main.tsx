@@ -15,6 +15,7 @@ import './product-finish.css'
 import { ShowcasePage, PairConsole } from './ShowcasePage'
 import { ProductConsole } from './ProductConsole'
 import { WorkspaceSetup } from './WorkspaceSetup'
+import DemoWorkspace from './DemoWorkspace'
 import { getVisibleFocusableElements } from './focus'
 import './ux-refresh.css'
 import './request-outcome.css'
@@ -74,6 +75,7 @@ const playbookTitle=(x:any)=>({seed_quality_prompt:'恢复客服回答',seed_cos
 const tabFromLocation=(): 'office'|'runs'|'playbooks'|'score'|'product'=>{const value=new URLSearchParams(window.location.search).get('view');return value==='runs'||value==='playbooks'||value==='score'||value==='product'?value:'office'}
 const routeForTab=(tab:'office'|'runs'|'playbooks'|'score'|'product')=>tab==='office'?'overview':tab
 function App(){
+ if(window.location.pathname.startsWith('/demo')) return <DemoWorkspace />
  if(window.location.pathname.startsWith('/showcase')) return <ShowcasePage />
  const [state,setState]=useState<State>(emptyState),[offline,setOffline]=useState(false),[error,setError]=useState(''),[tab,setTab]=useState<'office'|'runs'|'playbooks'|'score'|'product'>('office'),[chat,setChat]=useState(''),[messages,setMessages]=useState<{from:string;text:string;time:string}[]>([]),[busy,setBusy]=useState<string|null>(null),[liveEvents,setLiveEvents]=useState<EventItem[]>([])
  const chatEpoch=useRef(0),chatAbort=useRef<AbortController|null>(null)

@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import os
 import shutil
 import time
 from datetime import datetime, timedelta, timezone
@@ -118,6 +119,14 @@ class ProductService:
         }
         if config.MODEL_KEY:
             result["SECTION9_MODEL_API_KEY"] = config.MODEL_KEY
+        if self.adapter_metadata.get("observability_sha256"):
+            result.update({
+                "LANGFUSE_BASE_URL": os.getenv("S9_LANGFUSE_URL", "http://127.0.0.1:9030"),
+                "LANGFUSE_PUBLIC_KEY": os.getenv("LANGFUSE_INIT_PROJECT_PUBLIC_KEY", ""),
+                "LANGFUSE_SECRET_KEY": os.getenv("LANGFUSE_INIT_PROJECT_SECRET_KEY", ""),
+                "SUPPORT_AGENT_ENVIRONMENT": self.environment_id,
+                "SUPPORT_AGENT_SOURCE_COMMIT": self.runtime_commit,
+            })
         return result
 
     def _configuration_sha256(self) -> str:
@@ -365,6 +374,11 @@ class ProductService:
             status = "ready" if ok and truth else "unknown"
             detail = ("业务真值与允许的只读工具 trace 均满足" if status == "ready"
                       else "HTTP 或声明的业务真值/只读工具 trace 未取得；不把响应存在当作恢复")
+            application_trace_id = body.get("langfuse_trace_id") if isinstance(body, dict) else None
+            # Accept only the application SDK's opaque trace identifier, never a URL.
+            import re
+            if not isinstance(application_trace_id, str) or not re.fullmatch(r"[0-9a-f]{32}", application_trace_id):
+                application_trace_id = None
             external_trace_id = None
             if self.telemetry:
                 external_trace_id = self.telemetry.record(
@@ -379,6 +393,9 @@ class ProductService:
                 )
             if external_trace_id:
                 response = {**response, "section9_trace_id": external_trace_id}
+            # The observer's request receipt is distinct from target internals.
+            external_trace_id = application_trace_id or external_trace_id
+            native_candidate_sdk = False
             ref = self._evidence(incident, "business_trace", response, status, "/chat")
             langfuse_ref = None
             langfuse_read: dict[str, Any] = {"status": "unknown", "rows": []}
@@ -392,11 +409,22 @@ class ProductService:
                         # is therefore retryable for this exact trace, but it
                         # never becomes ready unless a row is observed.
                         for attempt in range(4):
-                            langfuse_read = await langfuse.observations(trace_id=external_trace_id, limit=100)
+                            langfuse_read = await langfuse.observations(trace_id=external_trace_id, limit=100,
+                                                                     include_context=bool(application_trace_id))
                             if langfuse_read.get("rows") or langfuse_read.get("status_code") in {401, 403}:
                                 break
                             if attempt < 3:
                                 await asyncio.sleep(2)
+                    if application_trace_id:
+                        # Never substitute Section9 telemetry or a different application.
+                        rows = langfuse_read.get("rows", [])
+                        scoped = [r for r in rows if r.get("trace_id") == application_trace_id
+                                  and r.get("metadata", {}).get("project_id") == self.project_id
+                                  and r.get("metadata", {}).get("environment_id") == self.environment_id
+                                  and r.get("metadata", {}).get("source_commit") == source.commit
+                                  and r.get("metadata", {}).get("telemetry_origin") == "application"]
+                        langfuse_read["rows"] = scoped
+                        native_candidate_sdk = bool(scoped)
                     lang_status = "ready" if langfuse_read.get("status_code") == 200 and langfuse_read.get("rows") else "unknown"
                     langfuse_ref = self._evidence(incident, "langfuse_call_tree", {
                         "trace_id": external_trace_id, "status": lang_status,
@@ -405,7 +433,8 @@ class ProductService:
                     incident["langfuse"] = {"status": lang_status, "trace_id": external_trace_id,
                                             "observation_count": len(langfuse_read.get("rows", [])),
                                             "watermark": langfuse_read.get("watermark"),
-                                            "native_candidate_sdk": False}
+                                            "native_candidate_sdk": native_candidate_sdk,
+                                            "telemetry_origin": "application" if native_candidate_sdk else "observer_sidecar" if not application_trace_id else "unverified_application"}
                 except Exception as exc:
                     incident["langfuse"] = {"status": "unknown", "trace_id": external_trace_id,
                                             "error": type(exc).__name__, "native_candidate_sdk": False}
@@ -415,9 +444,10 @@ class ProductService:
                     }, "unknown", "/api/public/v2/observations")
             lang_status = incident.get("langfuse", {}).get("status", "unknown")
             self._capability("langfuse", lang_status,
-                              "sidecar 已按 trace 取得观察记录" if lang_status == "ready" else
+                              "被治理应用 SDK 已按 trace 取得内部调用与上下文" if native_candidate_sdk else
+                              "仅取得观察者 sidecar 记录；尚未验证应用内部调用" if lang_status == "ready" else
                               "sidecar 可访问但当前 trace 未取得观察记录；保持 unknown",
-                              technical={"trace_id": external_trace_id, "native_candidate_sdk": False,
+                              technical={"trace_id": external_trace_id, "native_candidate_sdk": native_candidate_sdk,
                                          "observation_count": len(langfuse_read.get("rows", []))})
             probe = ProbeResult(project_id=self.project_id, environment_id=self.environment_id, incident_id=incident["id"],
                                 probe_id=sample_name, capability_id="cap_business_probe", probed_at=_now(), status=status,

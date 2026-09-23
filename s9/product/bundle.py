@@ -12,7 +12,7 @@ _USAGE_METRIC_KEYS = {
     "token_budget", "total_tokens", "prompt_tokens", "completion_tokens", "input_tokens",
     "output_tokens", "reasoning_tokens", "usage_tokens", "reserved_tokens", "unknown_reserved_tokens",
     "budget_tokens", "known_tokens", "known_total_tokens", "per_probe_reservation_tokens",
-    "token_limit", "validation_reserve_tokens",
+    "token_limit", "validation_reserve_tokens", "budget_token_limit", "actual_tokens",
 }
 _REDACTED = "[REDACTED]"
 

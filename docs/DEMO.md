@@ -1,5 +1,9 @@
 # Section9 当前可复跑演示指南
 
+> **2026-09-24 更新：** 当前统一演示入口是 `/demo`（9160）。先看 [接力交接](implementation/HANDOFF.md)、[主线](implementation/DEMO_MAINLINE.md) 与 [去敏真实验收](implementation/DEMO_ACCEPTANCE.md)。原生 EvoMap session 协作、成员接力、应用 Langfuse 和建议版本审核已实跑；尚无 swarm 质量优势证明。下文保留旧路径当时的验收和限制，不能将其中的恢复/发布拼入新主线，也不能沿用旧 native 阻塞状态覆盖本次验证。
+
+
+
 Section9 的最终展示主线是“真实 AI 应用事故 → 蜂群交换证据与反证 → 受控修复 → 独立业务验收 → 强单 Agent 对照”，脚本和开发门槛见[最终展示规划](SHOWCASE_PLAN.md)。本页只记录**当前本机版本可实际复跑**的路径，不能将规划中的复合外部事故、代码补丁或官方远端 EvoMap 协作说成已经完成。
 
 当前有两条独立证据路径：固定小智示例应用的故障实验与 Pair 对照；`support-agent` 外部候选的本地测试产品工作区。两者不能拼成一次没有实际发生的完整事故。控制端、有限工具、事件库和观测栈在本机；推理依赖远程 EvoMap API。完整现状和失败见[产品交付矩阵](PRODUCT_DELIVERY_MATRIX.md)。

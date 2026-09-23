@@ -156,6 +156,9 @@ async def read_langfuse_observations(
             cursor=cursor,
             limit=limit,
         )
+    # The public connector exposes status_code; the product import contract uses
+    # http_status. Keep this translation here so real reads match the mocks.
+    result = {**result, "http_status": result.get("status_code")}
     rows = result.get("rows", []) if isinstance(result.get("rows"), list) else []
     returned_projects = {str(row.get("project_id")) for row in rows if row.get("project_id")}
     if returned_projects and returned_projects != {target_project}:
