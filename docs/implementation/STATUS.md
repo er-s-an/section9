@@ -6,9 +6,9 @@ Updated: 2026-09-24 (Asia/Shanghai)
 
 - Repository: `/Users/xiejiachen/Documents/ChatGPT/rebuild/section9`
 - Branch: `codex/local-product-readiness`
-- HEAD: `ad504386ecfe54f113bd257229698fbe48e3314f` (unchanged during this work)
-- The checkout was dirty before this work. Existing UI, docs, and product code changes remain in place; no reset, clean, blanket staging, or broad commit was done.
-- No GitHub push, PR, deployment, external account access, credential use, external write, or paid model request was performed. New paid-provider requests: **0**.
+- Published implementation commit: `84fb5a9` on `codex/local-product-readiness` (pushed to `origin`; no PR or deployment was created).
+- The checkout was dirty before this work. Scoped product source, tests, design assets, and implementation docs were reviewed and committed; the generated Playwright result directory remains local. No reset or clean was run.
+- No external account access, credential use, external write, or paid model request was performed. New paid-provider requests: **0**.
 - The two previously observed local services were not stopped or restarted. The new Workspace schema therefore has not been applied to their live databases; tests use isolated temporary databases.
 
 ## Milestone state

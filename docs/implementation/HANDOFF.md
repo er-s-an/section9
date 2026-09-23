@@ -5,8 +5,8 @@ Updated: 2026-09-24
 ## Checkout and working-tree state
 
 - Repository: `/Users/xiejiachen/Documents/ChatGPT/rebuild/section9`
-- Branch/HEAD: `codex/local-product-readiness` / `ad504386ecfe54f113bd257229698fbe48e3314f`
-- The checkout was already dirty. Existing user edits and new uncommitted work coexist. No reset, clean, blanket stage, commit, push, PR, or deployment was done.
+- Branch: `codex/local-product-readiness`; implementation commit `84fb5a9` was pushed to `origin` after the full local suite passed. No PR or deployment was created.
+- The checkout began dirty. Product source, tests, design assets, and implementation docs were reviewed and committed in scope; generated Playwright result files remain local. No reset or clean was run.
 - Two pre-existing local services were left running. The new migration has only been applied to test databases; it has not been run against their live databases.
 
 ## Current implementation boundary
