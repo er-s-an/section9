@@ -11,6 +11,9 @@ frontend/dist/
 .runtime/
 data/
 artifacts/raw/
+
+# Large local run bundles, database snapshots, and raw acceptance outputs stay out of the repo.
+/artifacts/
 .DS_Store
 
 # LimeZu character sheets are acquired locally; do not redistribute raw assets.
