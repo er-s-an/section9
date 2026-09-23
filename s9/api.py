@@ -5,11 +5,14 @@ import gzip
 import io
 import json
 import time
+import uuid
 import uvicorn
 from contextlib import asynccontextmanager, nullcontext
 from typing import Literal
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.exception_handlers import request_validation_exception_handler
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import Field
@@ -20,6 +23,12 @@ from s9.contracts import (AgentStatusRequest, ChatRequest, ClaimRequest, Execute
 from s9.core import Core
 from s9.product.lifecycle import ProductBackup
 from s9.product.registry import ProductError
+from s9.product.v1_api import (
+    product_error_response,
+    router as product_v1_router,
+    validation_error_response,
+    v1_error_response,
+)
 from s9.store import ACTIVE, Rejected, Store, now
 
 
@@ -28,11 +37,16 @@ async def lifespan(app):
     from s9.model import ModelClient
     from s9.model_scheduler import ProviderGateway
     from s9.pairs.coordinator import PairCoordinator
+    from s9.product.signal_monitor import SignalSyncScheduler
+    from s9.product.task_runtime import InvestigationTaskRuntime
     app.state.core = Core()
     app.state.gateway = ProviderGateway()
     await app.state.core.model.close()
     app.state.core.model = ModelClient(app.state.core.store, app.state.core.telemetry, gateway=app.state.gateway)
     app.state.core.victim.model = app.state.core.model
+    app.state.product_task_runtime = InvestigationTaskRuntime(
+        app.state.core.product.registry, app.state.core.model.client,
+    )
     app.state.pairs = PairCoordinator(config.DATA / 'showcase', app.state.gateway, app.state.core.telemetry, app.state.core.identity)
     await app.state.pairs.boot()
     # The same authority, a separate restricted ingress. No second database,
@@ -44,7 +58,15 @@ async def lifespan(app):
     agent_server.capture_signals = nullcontext
     agent_task = asyncio.create_task(agent_server.serve())
     await app.state.core.start()
+    app.state.signal_sync_scheduler = SignalSyncScheduler(app.state.core.product.registry)
+    signal_sync_task = asyncio.create_task(app.state.signal_sync_scheduler.run_forever())
     yield
+    app.state.signal_sync_scheduler.stop()
+    signal_sync_task.cancel()
+    try:
+        await signal_sync_task
+    except asyncio.CancelledError:
+        pass
     await app.state.pairs.close()
     await app.state.core.stop()
     await app.state.gateway.close()
@@ -53,6 +75,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title="Section9 local laboratory", lifespan=lifespan)
+app.include_router(product_v1_router)
 from s9.pairs.api import router as pair_router  # noqa: E402
 app.include_router(pair_router)
 
@@ -85,11 +108,22 @@ async def rejected(request, exc):
 
 @app.exception_handler(ProductError)
 async def product_error(request, exc):
+    if request.url.path.startswith("/api/v1/"):
+        return product_error_response(request, exc)
     return JSONResponse({"error": {"code": exc.code, "message": exc.message}}, status_code=exc.status)
+
+
+@app.exception_handler(RequestValidationError)
+async def request_validation_error(request, exc):
+    if request.url.path.startswith("/api/v1/"):
+        return validation_error_response(request, exc)
+    return await request_validation_exception_handler(request, exc)
 
 
 @app.middleware("http")
 async def boundaries(request: Request, call_next):
+    if request.url.path.startswith("/api/v1/"):
+        request.state.request_id = uuid.uuid4().hex
     server_port = (request.scope.get("server") or (None, None))[1]
     if server_port == config.PORT + 2 and not request.url.path.startswith("/agent/"):
         return JSONResponse({"error": {"code": "ROLE_FORBIDDEN", "message": "工作进程端口不提供控制台、日志或文件访问"}}, status_code=403)
@@ -99,11 +133,20 @@ async def boundaries(request: Request, call_next):
     # A role credential is never accepted on operator data/control routes.
     if request.url.path.startswith("/api/") and "telemetry" not in request.url.path:
         if request.headers.get("authorization"):
+            if request.url.path.startswith("/api/v1/"):
+                return v1_error_response(request, code="ROLE_FORBIDDEN",
+                    message="Agent 身份不能访问操作者控制台", status_code=403)
             return JSONResponse({"error": {"code": "ROLE_FORBIDDEN", "message": "Agent 身份不能访问操作者控制台"}}, status_code=403)
         origin = request.headers.get("origin")
         if origin and origin not in {f"http://127.0.0.1:{config.PORT}", f"http://localhost:{config.PORT}"}:
+            if request.url.path.startswith("/api/v1/"):
+                return v1_error_response(request, code="ORIGIN_FORBIDDEN",
+                    message="只接受本地控制台来源", status_code=403)
             return JSONResponse({"error": {"code": "ORIGIN_FORBIDDEN", "message": "只接受本地控制台来源"}}, status_code=403)
-    return await call_next(request)
+    response = await call_next(request)
+    if request.url.path.startswith("/api/v1/"):
+        response.headers["X-Request-ID"] = request.state.request_id
+    return response
 
 
 def agent(request: Request, c: Core = Depends(core)):
@@ -532,10 +575,22 @@ async def model(item: ModelRequest, a=Depends(agent), c: Core = Depends(core)):
         task = next((t for t in claimed if t["holder"] == a["id"] and t["status"] == "claimed"), None)
         if not task:
             raise Rejected("LEASE_REQUIRED", "推理前须自主认领有效任务", 403)
-        c.store._valid_task(db, c.store.get(db, "agents", a["id"]), task,
-                            c.store.get(db, "runs", item.run_id), task["epoch"])
+        current_agent = c.store.get(db, "agents", a["id"])
+        run = c.store.get(db, "runs", item.run_id)
+        c.store._valid_task(db, current_agent, task, run, task["epoch"])
+        authority = {
+            "agent_id": current_agent["id"], "instance_id": current_agent["instance_id"],
+            "role": current_agent["role"], "task_id": task["id"], "task_epoch": task["epoch"],
+            "run_id": run["id"], "generation": task["generation"],
+            "policy_revision": str(c.store.meta(db, "autonomy_revision")),
+            "transport_epoch": str(c.store.meta(db, "transport_epoch")),
+            "config_revision": str(c.store.current_config(db)["revision"]),
+            "contract_hash": run["contract_hash"],
+        }
     try:
-        result = await c.model.complete(item.messages, run_id=item.run_id, purpose=item.purpose, max_tokens=item.max_tokens, generation=task["generation"])
+        result = await c.model.complete(item.messages, run_id=item.run_id, purpose=item.purpose,
+                                        max_tokens=item.max_tokens, generation=task["generation"],
+                                        authority=authority)
         try:
             with c.store.tx() as db:
                 current_agent = c.store.get(db, "agents", a["id"])

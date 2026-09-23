@@ -1,7 +1,7 @@
 import asyncio
 import json
 
-from fastapi import APIRouter, Header, Query, Request
+from fastapi import APIRouter, Header, HTTPException, Query, Request
 from fastapi.responses import Response, StreamingResponse
 
 from s9.pairs.contracts import Arm, CreatePair, EmptyRequest, StartPair
@@ -59,7 +59,9 @@ async def snapshot(pair_id: str, arm: Arm, request: Request):
 @router.get('/{pair_id}/logbook')
 async def logbook(pair_id: str, request: Request, arm: Arm | None = None,
                   after: int = Query(default=0, ge=0), limit: int = Query(default=200, ge=1, le=1000),
-                  watermark: int | None = Query(default=None, ge=0)):
+                  watermark: int | None = Query(default=None, ge=0),
+                  before: int | None = Query(default=None, ge=0),
+                  since: int | None = Query(default=None, ge=0)):
     c = coordinator(request)
     c.refresh(pair_id)
     # The UI's logbook is an arm view; retaining swarm as the compatibility
@@ -70,13 +72,35 @@ async def logbook(pair_id: str, request: Request, arm: Arm | None = None,
     # Clients may carry the returned watermark into the next request to keep
     # a multi-page history cut stable while new events are being ingested.
     bound = actual_watermark if watermark is None else min(int(watermark), actual_watermark)
-    rows = c.journal.read_page(pair_id, selected_arm, after, limit, bound)
-    range_start = int(rows[0]['sequence']) if rows else int(after)
-    range_end = int(rows[-1]['sequence']) if rows else int(after)
-    has_more = bool(rows and range_end < bound)
+    if before is not None:
+        rows = c.journal.read_before(pair_id, selected_arm, before, limit, bound)
+        range_start = int(rows[0]['sequence']) if rows else int(before)
+        range_end = int(rows[-1]['sequence']) if rows else int(before)
+        has_more = bool(rows and c.journal.has_before(pair_id, selected_arm, range_start, bound))
+    else:
+        rows = c.journal.read_page(pair_id, selected_arm, after, limit, bound)
+        range_start = int(rows[0]['sequence']) if rows else int(after)
+        range_end = int(rows[-1]['sequence']) if rows else int(after)
+        has_more = bool(rows and range_end < bound)
+    unread = c.journal.count_after(pair_id, selected_arm, since, bound) if since is not None else None
     return {'items': rows, 'as_of_sequence': range_end, 'range_start': range_start,
             'range_end': range_end, 'next_after': range_end, 'has_more': has_more,
-            'watermark': bound}
+            'next_before': range_start, 'watermark': bound, 'unread_count': unread}
+
+
+@router.get('/{pair_id}/events/by-id')
+async def events_by_id(pair_id: str, request: Request, arm: Arm,
+                       event_id: list[str] = Query(default=[]), run_id: str | None = None):
+    if len(event_id) > 500:
+        raise HTTPException(status_code=422, detail='at most 500 event_id values may be read at once')
+    c = coordinator(request)
+    pair = c.refresh(pair_id)
+    expected_run_id = pair[arm + '_run_id']
+    if run_id is not None and run_id != expected_run_id:
+        raise HTTPException(status_code=404, detail='Pair run not found')
+    items = c.journal.read_by_ids(pair_id, arm, expected_run_id, event_id)
+    found = {item['event_id'] for item in items}
+    return {'items': items, 'missing_event_ids': list(dict.fromkeys(item for item in event_id if item not in found))}
 
 
 @router.get('/{pair_id}/export.zip')

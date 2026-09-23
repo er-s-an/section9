@@ -8,6 +8,7 @@ from .http_app import (
     SourceBinding,
 )
 from .langfuse import LangfuseConfig, LangfuseConnector
+from .github import GitHubConfig, GitHubReadConnector
 
 __all__ = [
     "BusinessProbe",
@@ -17,4 +18,6 @@ __all__ = [
     "SourceBinding",
     "LangfuseConfig",
     "LangfuseConnector",
+    "GitHubConfig",
+    "GitHubReadConnector",
 ]

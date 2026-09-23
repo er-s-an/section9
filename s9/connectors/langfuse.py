@@ -9,7 +9,7 @@ without claiming that the candidate itself has Langfuse support.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import os
 from typing import Any
 
@@ -43,7 +43,8 @@ class LangfuseConnector:
 
     async def __aenter__(self) -> "LangfuseConnector":
         if self._client is None:
-            self._client = httpx.AsyncClient(timeout=self.config.timeout_seconds, trust_env=False)
+            self._client = httpx.AsyncClient(timeout=self.config.timeout_seconds, trust_env=False,
+                                             follow_redirects=False)
         return self
 
     async def __aexit__(self, *_: object) -> None:
@@ -60,17 +61,35 @@ class LangfuseConnector:
                 "credentials_present": bool(self.config.public_key and self.config.secret_key)}
 
     async def observations(self, *, from_start_time: str | None = None, trace_id: str | None = None,
+                           to_start_time: str | None = None, cursor: str | None = None,
                            limit: int = 100) -> dict[str, Any]:
         if self._client is None:
             raise RuntimeError("use connector as an async context manager")
         if not (self.config.public_key and self.config.secret_key):
             return {"status_code": None, "status": "unknown", "rows": [], "watermark": None,
-                    "detail": "Langfuse project credentials are not configured"}
-        params: dict[str, str | int] = {"limit": min(max(limit, 1), 100), "fields": "core,basic,metadata,time"}
-        if from_start_time:
-            params["fromStartTime"] = from_start_time
+                    "availability": "credentials_missing", "detail": "Langfuse project credentials are not configured"}
+        upper = to_start_time or datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+        lower = from_start_time or (datetime.fromisoformat(upper.replace("Z", "+00:00")) - timedelta(hours=1))\
+            .isoformat(timespec="milliseconds").replace("+00:00", "Z")
+        try:
+            lower_dt = datetime.fromisoformat(lower.replace("Z", "+00:00"))
+            upper_dt = datetime.fromisoformat(upper.replace("Z", "+00:00"))
+        except ValueError:
+            return {"status_code": None, "status": "unknown", "rows": [], "watermark": None,
+                    "availability": "invalid_window", "detail": "Langfuse time bounds must be RFC3339 timestamps"}
+        if lower_dt.tzinfo is None or upper_dt.tzinfo is None or lower_dt >= upper_dt:
+            return {"status_code": None, "status": "unknown", "rows": [], "watermark": None,
+                    "availability": "invalid_window", "detail": "Langfuse time bounds must be an ordered timezone-aware interval"}
+        params: dict[str, str | int] = {
+            "limit": min(max(limit, 1), 1000),
+            "fields": "core,basic,metadata,time,usage,trace_context",
+            "fromStartTime": lower,
+            "toStartTime": upper,
+        }
         if trace_id:
             params["traceId"] = trace_id
+        if cursor:
+            params["cursor"] = cursor
         response = await self._client.get(
             self.config.base_url.rstrip("/") + "/api/public/v2/observations",
             params=params,
@@ -83,14 +102,29 @@ class LangfuseConnector:
         raw_rows = payload.get("data", []) if isinstance(payload, dict) else []
         rows = [self._row(row) for row in raw_rows if isinstance(row, dict)]
         timestamps = [row["timestamp"] for row in rows if row.get("timestamp")]
+        api_meta = payload.get("meta", {}) if isinstance(payload, dict) else {}
+        next_cursor = api_meta.get("cursor") if isinstance(api_meta, dict) else None
+        if response.status_code == 401 or response.status_code == 403:
+            availability = "permission_denied"
+        elif response.status_code == 429:
+            availability = "rate_limited"
+        elif response.status_code >= 500:
+            availability = "unavailable"
+        elif response.status_code != 200:
+            availability = "request_rejected"
+        else:
+            availability = "data" if rows else "empty"
         return {"status_code": response.status_code, "status": "ready" if response.status_code == 200 else "degraded",
                 "rows": rows, "watermark": max(timestamps) if timestamps else None,
-                "meta": payload.get("meta", {}) if isinstance(payload, dict) else {}}
+                "availability": availability, "coverage": {"from_start_time": lower, "to_start_time": upper,
+                    "complete": not bool(next_cursor), "next_cursor": next_cursor},
+                "meta": api_meta}
 
     def _row(self, row: dict[str, Any]) -> dict[str, Any]:
         metadata = row.get("metadata") if isinstance(row.get("metadata"), dict) else {}
         safe_metadata = {key: metadata[key] for key in ("project_id", "environment_id", "incident_id", "source_commit", "external_trace") if key in metadata}
-        return {"id": row.get("id"), "trace_id": row.get("traceId") or row.get("trace_id"),
+        return {"id": row.get("id"), "project_id": row.get("projectId") or row.get("project_id"),
+                "trace_id": row.get("traceId") or row.get("trace_id"),
                 "name": row.get("name"), "timestamp": row.get("startTime") or row.get("createdAt"),
                 "type": row.get("type"), "metadata": safe_metadata}
 

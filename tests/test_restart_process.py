@@ -25,12 +25,25 @@ CHILD = textwrap.dedent(
     sys.path.insert(0, sys.argv[1])
     from s9.store import Store
     root = Path(sys.argv[2])
+    def authorize(store, run, reservation, purpose):
+        request_id = "restart-proof-" + purpose
+        context = store.capture_model_request(
+            run["id"], run["generation"], expected_scope=store.scope,
+            deadline_at=time.time() + 30,
+        )
+        usage_id = store.reserve_usage(
+            run["id"], reservation, purpose, request_id=request_id,
+            request_context=context,
+        )
+        store.authorize_usage_dispatch(
+            usage_id, request_id=request_id, request_context=context,
+        )
+        return usage_id
     scope = lambda arm, run: {"pair_id": "restart-proof", "run_id": run, "arm": arm, "spec_hash": "synthetic"}
     primary = Store(root / "primary.sqlite")
     run = primary.inject("prompt", "single", "synthetic-model-never-called", 1, 1000)
     primary.reserve_usage(run["id"], 11, "probe")
-    sent = primary.reserve_usage(run["id"], 22, "chat")
-    primary.mark_usage_sent(sent)
+    authorize(primary, run, 22, "chat")
     legacy = primary.reserve_usage(run["id"], 33, "verify")
     with primary.tx() as db:
         row = primary.get(db, "usage", legacy)
@@ -41,8 +54,7 @@ CHILD = textwrap.dedent(
     swarm.reserve_usage(swarm_run["id"], 44, "verify")
     baseline = Store(root / "baseline.sqlite", scope=scope("baseline", "baseline-run"))
     baseline_run = baseline.inject("prompt", "single", "synthetic-model-never-called", 3, 1000)
-    baseline_id = baseline.reserve_usage(baseline_run["id"], 55, "chat")
-    baseline.mark_usage_sent(baseline_id)
+    authorize(baseline, baseline_run, 55, "chat")
     # Marker is written only after all SQLite transactions above committed.
     (root / "committed.marker").write_text("committed", encoding="utf-8")
     while True:

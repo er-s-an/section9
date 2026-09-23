@@ -1,0 +1,3 @@
+.event-row.request-outcome-success strong{color:#b7dba0}
+.event-row.request-outcome-error strong{color:#ff9c88}
+.event-row.request-outcome-cancelled strong,.event-row.request-outcome-unknown strong{color:#ffc083}

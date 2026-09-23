@@ -260,6 +260,80 @@ async def test_model_rejects_lease_change_after_provider_and_keeps_usage(tmp_pat
     await client.close()
 
 
+@pytest.mark.asyncio
+async def test_model_rechecks_task_fence_before_dispatch_after_queue(tmp_path, monkeypatch):
+    import dotenv
+    monkeypatch.setattr(dotenv, "load_dotenv", lambda *args, **kwargs: None)
+    from s9 import config
+    from s9.api import model as agent_model
+    from s9.contracts import ModelRequest
+    from s9.model import ModelClient
+    from s9.model_scheduler import ProviderGateway
+
+    monkeypatch.setattr(config, "MODEL_KEY", "component-key")
+    monkeypatch.setattr(config, "MODEL_TIMEOUT", 1.0)
+    store = Store(tmp_path / "dispatch-fence.sqlite")
+    run, lease = _incident(store)
+    with store.tx() as db:
+        agent_a = store.get(db, "agents", "fixer-a")
+    gateway = ProviderGateway(capacity=1)
+    client = ModelClient(store, gateway=gateway)
+    provider_calls = 0
+    first_started, release_first = asyncio.Event(), asyncio.Event()
+
+    class Response:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return {"model": "component-model", "usage": {"total_tokens": 7},
+                    "choices": [{"message": {"content": "held result"}}]}
+
+    async def delayed_post(*args, **kwargs):
+        nonlocal provider_calls
+        provider_calls += 1
+        if provider_calls == 1:
+            first_started.set()
+            await release_first.wait()
+        return Response()
+
+    monkeypatch.setattr(client.client, "post", delayed_post)
+    held = asyncio.create_task(client.complete([{"role": "user", "content": "occupy shared slot"}],
+                                               run_id=run["id"], purpose="hold", max_tokens=64,
+                                               generation=run["generation"]))
+    await asyncio.wait_for(first_started.wait(), 1)
+    core = SimpleNamespace(store=store, model=client)
+    request_item = ModelRequest(run_id=run["id"], purpose="repair",
+                                messages=[{"role": "user", "content": "repair"}], max_tokens=64)
+    request = asyncio.create_task(agent_model(request_item, agent_a, core))
+    deadline = asyncio.get_running_loop().time() + 1
+    while len(store.usage_records(run["id"])) < 2 and asyncio.get_running_loop().time() < deadline:
+        await asyncio.sleep(.01)
+    assert len(store.usage_records(run["id"])) == 2
+
+    with store.tx() as db:
+        stale = store.get(db, "tasks", lease["task_id"])
+        stale["lease_deadline"] = 0.0
+        store.save(db, "tasks", stale)
+    store.claim("fixer-b", lease["task_id"])
+    release_first.set()
+
+    assert (await asyncio.wait_for(held, 1))["content"] == "held result"
+    with pytest.raises(Rejected) as error:
+        await asyncio.wait_for(request, 1)
+    assert error.value.code == "FENCE_STALE"
+    assert provider_calls == 1
+    records = {row["purpose"]: row for row in store.usage_records(run["id"])}
+    assert records["repair"]["provider_state"] == "not_sent"
+    assert records["repair"]["usage"]["total_tokens"] == 0
+    started_ids = {event["payload"].get("request_id") for event in store.events(run_id=run["id"])
+                   if event["event_type"] == "model.provider_started"}
+    assert records["repair"]["request_id"] not in started_ids
+    assert store.run(run["id"])["reserved_tokens"] == 0
+    await client.close()
+    await gateway.close()
+
+
 def test_message_contract_requires_authority_context_fields():
     from pydantic import ValidationError
     from s9.contracts import MessageRequest, PlanRequest

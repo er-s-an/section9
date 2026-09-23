@@ -218,12 +218,16 @@ class VictimApp:
             self._remember({"request_id": request_id, "status": "success", "usage": total_usage, "elapsed_s": elapsed})
             return response
         except asyncio.CancelledError as exc:
+            if getattr(exc, "provider_called", None) is False:
+                total_usage = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0, "token_quality": "not_sent"}
             elapsed = time.monotonic() - started
             status = "cancelled"
             self._remember({"request_id": request_id, "status": status, "reason": str(exc), "elapsed_s": elapsed})
             await self._progress("request.completed", {"request_id": request_id, "revision": str(cfg.get("revision", "1")), "usage": total_usage, "elapsed_s": elapsed, "status": status}, run_id)
             return {"request_id": request_id, "answer": "", "structured": {}, "revision": str(cfg.get("revision", "1")), "usage": total_usage, "elapsed_s": elapsed, "status": status, "error": {"code": "CANCELLED", "message": str(exc) or "cancelled"}}
         except Exception as exc:
+            if getattr(exc, "provider_called", None) is False:
+                total_usage = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0, "token_quality": "not_sent"}
             elapsed = time.monotonic() - started
             cancelled = self._cancel_reason(request_id, epoch, generation)
             status = "cancelled" if cancelled else "error"
@@ -273,7 +277,22 @@ class VictimApp:
         revision = str(self._config().get("revision", "1"))
         started = time.monotonic()
         checks: list[dict[str, Any]] = []
-        responses = await asyncio.gather(*(self.chat(q, run_id=run_id, purpose=f"probe:{suite}") for _, q, _, _ in cases))
+        # Verification is an escrowed sequence of individually budgeted calls.
+        # Launching all held-out requests together makes each speculative
+        # reservation compete with the active detector and can starve a check
+        # even when the eventual actual usage would fit the run budget.
+        responses = []
+        cancelled = False
+        for _, question, _, _ in cases:
+            if cancelled:
+                responses.append({"status": "cancelled", "answer": "", "structured": {},
+                                  "request_id": None,
+                                  "usage": {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0,
+                                            "token_quality": "not_requested"}})
+                continue
+            response = await self.chat(question, run_id=run_id, purpose=f"probe:{suite}")
+            responses.append(response)
+            cancelled = response.get("status") == "cancelled"
         requests = []
         usage: dict[str, Any] = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0, "token_quality": "provider"}
         input_values: list[Any] = []
@@ -287,7 +306,10 @@ class VictimApp:
             input_values.append((response.get("usage") or {}).get("input_tokens"))
             u = response.get("usage") or {}
             i, o, t = u.get("input_tokens"), u.get("output_tokens"), u.get("total_tokens")
-            if not all(type(x) is int and x >= 0 for x in (i, o, t)):
+            if (u.get("token_quality") in {"not_sent", "not_requested"}
+                    and all(type(x) is int and x == 0 for x in (i, o, t))):
+                pass
+            elif not all(type(x) is int and x >= 0 for x in (i, o, t)):
                 unknown_requests.append(response.get("request_id"))
             elif not (type(i) is int and type(o) is int and type(t) is int and i <= 2000 and o <= 1536 and t <= 3536 and t == i + o):
                 usage_failures.append({"request_id": response.get("request_id"), "input_tokens": i, "output_tokens": o, "total_tokens": t})
@@ -295,7 +317,7 @@ class VictimApp:
                 value = (response.get("usage") or {}).get(key)
                 if isinstance(value, int):
                     usage[key] += value
-            if (response.get("usage") or {}).get("token_quality") != "provider":
+            if ((response.get("usage") or {}).get("token_quality") not in {"provider", "not_sent", "not_requested"}):
                 usage["token_quality"] = "unknown"
         budget_ok = not usage_failures and not unknown_requests
         checks.append({"name": "cost_budget", "passed": budget_ok, "expected": "each request input<=2000, output<=1536, total<=3536 and total=input+output", "actual": {"inputs": input_values, "failures": usage_failures, "unknown_requests": unknown_requests}, "request_id": None})

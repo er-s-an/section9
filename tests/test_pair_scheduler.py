@@ -15,6 +15,12 @@ def _run(store, name="budget-test", budget=16000):
     return store.inject("prompt", "swarm", name, 7, budget)["id"]
 
 
+def _scoped_store(path, arm):
+    run_id = arm + "-run"
+    scope = {"pair_id": "p", "run_id": run_id, "arm": arm}
+    return Store(path, scope=scope)
+
+
 def _response(text="ok", tokens=3):
     return httpx.Response(200, json={"model": "test-model", "usage": {"total_tokens": tokens},
                                      "choices": [{"message": {"content": text}}]})
@@ -68,8 +74,8 @@ async def test_gateway_cancel_after_admission_does_not_leak_slot():
 async def test_pair_generation_cancel_isolated_and_baseline_usage_known(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "MODEL_KEY", "test-key")
     monkeypatch.setattr(config, "MODEL_CONCURRENCY", 2)
-    store = Store(tmp_path / "pair.sqlite")
-    swarm_store = Store(tmp_path / "swarm.sqlite")
+    store = _scoped_store(tmp_path / "pair.sqlite", "baseline")
+    swarm_store = _scoped_store(tmp_path / "swarm.sqlite", "swarm")
     baseline_run = _run(store)
     swarm_run = _run(swarm_store)
     release_swarm = asyncio.Event()
@@ -82,8 +88,8 @@ async def test_pair_generation_cancel_isolated_and_baseline_usage_known(tmp_path
 
     transport = httpx.MockTransport(handler)
     gateway = ProviderGateway(capacity=2, client=httpx.AsyncClient(transport=transport))
-    baseline = ModelClient(store, gateway=gateway, scope={"pair_id": "p", "run_id": baseline_run, "arm": "baseline"})
-    swarm = ModelClient(swarm_store, gateway=gateway, scope={"pair_id": "p", "run_id": swarm_run, "arm": "swarm"})
+    baseline = ModelClient(store, gateway=gateway, scope=store.scope)
+    swarm = ModelClient(swarm_store, gateway=gateway, scope=swarm_store.scope)
     try:
         base_task = asyncio.create_task(baseline.complete([{"role": "user", "content": "baseline"}], run_id=baseline_run, generation="1"))
         swarm_task = asyncio.create_task(swarm.complete([{"role": "user", "content": "swarm"}], run_id=swarm_run, generation="1"))
@@ -103,7 +109,7 @@ async def test_pair_generation_cancel_isolated_and_baseline_usage_known(tmp_path
 @pytest.mark.asyncio
 async def test_queued_cancel_never_calls_provider_and_settles_known_zero(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "MODEL_KEY", "test-key")
-    store = Store(tmp_path / "queued.sqlite")
+    store = _scoped_store(tmp_path / "queued.sqlite", "queued")
     run_id = _run(store)
     calls = 0
 
@@ -115,7 +121,7 @@ async def test_queued_cancel_never_calls_provider_and_settles_known_zero(tmp_pat
     gateway = ProviderGateway(capacity=1, client=httpx.AsyncClient(transport=httpx.MockTransport(handler)))
     hold = asyncio.create_task(_hold_slot(gateway))
     await asyncio.sleep(0)
-    client = ModelClient(store, gateway=gateway, scope={"pair_id": "p", "run_id": run_id, "arm": "queued"})
+    client = ModelClient(store, gateway=gateway, scope=store.scope)
     task = asyncio.create_task(client.complete([{"role": "user", "content": "queued"}], run_id=run_id, generation="1"))
     await asyncio.sleep(.05)
     await client.cancel_generation("1")
@@ -138,14 +144,14 @@ async def _hold_slot(gateway):
 @pytest.mark.asyncio
 async def test_budget_exhaustion_in_one_arm_does_not_consume_other_arm(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "MODEL_KEY", "test-key")
-    store = Store(tmp_path / "budget.sqlite")
+    store = _scoped_store(tmp_path / "budget.sqlite", "baseline")
     exhausted = _run(store, budget=100)
     gateway = ProviderGateway(capacity=2, client=httpx.AsyncClient(transport=httpx.MockTransport(lambda r: _response())))
     first = store.reserve_usage(exhausted, 100, "held")
-    healthy_store = Store(tmp_path / "healthy.sqlite")
+    healthy_store = _scoped_store(tmp_path / "healthy.sqlite", "swarm")
     healthy = _run(healthy_store, budget=1000)
-    a = ModelClient(store, gateway=gateway, scope={"pair_id": "p", "run_id": exhausted, "arm": "a"})
-    b = ModelClient(healthy_store, gateway=gateway, scope={"pair_id": "p", "run_id": healthy, "arm": "b"})
+    a = ModelClient(store, gateway=gateway, scope=store.scope)
+    b = ModelClient(healthy_store, gateway=gateway, scope=healthy_store.scope)
     try:
         with pytest.raises(Exception):
             await a.complete([{"role": "user", "content": "a"}], run_id=exhausted, max_tokens=1, generation="1")

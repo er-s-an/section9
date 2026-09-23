@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 import pytest
 
 from s9.pairs.contracts import CreatePair
@@ -138,8 +140,20 @@ async def test_boot_interrupts_running_pair_and_settles_unknown_usage(coordinato
     await coordinator.start(pair["pair_id"], pair["spec_hash"])
     for arm in ("swarm", "baseline"):
         runtime = coordinator.runtime(pair, arm)
-        usage_id = runtime.store.reserve_usage(pair[arm + "_run_id"], 100, "fake")
-        runtime.store.mark_usage_sent(usage_id)
+        run_id = pair[arm + "_run_id"]
+        run = runtime.store.run(run_id)
+        request_id = f"restart-proof-{arm}"
+        request_context = runtime.store.capture_model_request(
+            run_id, run["generation"], expected_scope=runtime.store.scope,
+            deadline_at=time.time() + 30,
+        )
+        usage_id = runtime.store.reserve_usage(
+            run_id, 100, "fake", request_id=request_id,
+            request_context=request_context,
+        )
+        runtime.store.authorize_usage_dispatch(
+            usage_id, request_id=request_id, request_context=request_context,
+        )
         assert runtime.store.usage_records(pair[arm + "_run_id"])[0]["status"] == "reserved"
     restarted = PairCoordinator(coordinator.root, object(), FakeTelemetry(), capture_identity())
     await restarted.boot()

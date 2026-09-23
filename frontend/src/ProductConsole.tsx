@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { getVisibleFocusableElements } from './focus'
 import {
   ArrowClockwise,
   CheckCircle,
@@ -140,7 +141,15 @@ export interface ProductConsoleProps {
   incidents?: IncidentRecord[] | null
   selectedProject?: ProductSelection | null
   selectedEnvironment?: ProductSelection | null
+  workspaceSetup?: ReactNode
   onAction: (action: ProductAction) => void | Promise<void>
+}
+
+type ProductSection = 'overview' | 'connections' | 'incidents' | 'execution' | 'governance' | 'workspace'
+type ProductDrawerMode = 'governance' | 'issue' | 'incident'
+const sectionFromLocation = (): ProductSection => {
+  const value = new URLSearchParams(window.location.search).get('product_section')
+  return value === 'connections' || value === 'incidents' || value === 'execution' || value === 'governance' || value === 'workspace' ? value : 'overview'
 }
 
 const STATUS_META: Record<ProductStatus, { label: string; hint: string }> = {
@@ -360,6 +369,7 @@ export function ProductConsole({
   incidents = [],
   selectedProject,
   selectedEnvironment,
+  workspaceSetup,
   onAction,
 }: ProductConsoleProps) {
   const connectionItems = connections ?? []
@@ -377,23 +387,73 @@ export function ProductConsole({
           : 'unknown'
   const issueItems = issues ?? []
   const incidentItems = incidents ?? []
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null)
-  const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null)
-  const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(null)
+  const sourceProject = snapshot?.project as (ProductSelection & { environment_id?: string }) | undefined
+  const sourceEnvironment = snapshot?.selected_environment as ProductSelection | undefined
+  const projectContext = selectedProject ?? sourceProject ?? null
+  const environmentContext = selectedEnvironment ?? sourceEnvironment ?? (sourceProject?.environment_id
+    ? { id: sourceProject.environment_id, name: sourceProject.environment_id }
+    : null)
+  const [drawerOpen, setDrawerOpen] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    return params.has('product_issue') || params.has('product_incident') || params.has('product_evidence')
+  })
+  const [drawerMode, setDrawerMode] = useState<ProductDrawerMode>(() => {
+    const params = new URLSearchParams(window.location.search)
+    return params.has('product_issue') ? 'issue' : params.has('product_incident') ? 'incident' : 'governance'
+  })
+  const [section, setSection] = useState<ProductSection>(sectionFromLocation)
+  const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(() => new URLSearchParams(window.location.search).get('product_incident'))
+  const [selectedIssueId, setSelectedIssueId] = useState<string | null>(() => new URLSearchParams(window.location.search).get('product_issue'))
+  const [selectedEvidenceId, setSelectedEvidenceId] = useState<string | null>(() => new URLSearchParams(window.location.search).get('product_evidence'))
   const [pendingAction, setPendingAction] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
+  const drawerRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const syncLocation = () => {
+      const params = new URLSearchParams(window.location.search)
+      const issueId = params.get('product_issue')
+      const incidentId = params.get('product_incident')
+      const evidenceId = params.get('product_evidence')
+      setSection(sectionFromLocation())
+      setSelectedIssueId(issueId)
+      setSelectedIncidentId(incidentId)
+      setSelectedEvidenceId(evidenceId)
+      setDrawerMode(issueId ? 'issue' : incidentId ? 'incident' : 'governance')
+      setDrawerOpen(Boolean(issueId || incidentId || evidenceId))
+    }
+    window.addEventListener('popstate', syncLocation)
+    return () => window.removeEventListener('popstate', syncLocation)
+  }, [])
+
+  const navigateSection = (next: ProductSection) => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('product_section', next)
+    window.history.pushState({ section9ProductSection: next }, '', url)
+    setSection(next)
+  }
+
+  const pushDrawerRoute = (mode: ProductDrawerMode, id?: string) => {
+    const url = new URL(window.location.href)
+    url.searchParams.delete('product_issue')
+    url.searchParams.delete('product_incident')
+    url.searchParams.delete('product_evidence')
+    if (mode === 'issue' && id) url.searchParams.set('product_issue', id)
+    else if (mode === 'incident' && id) url.searchParams.set('product_incident', id)
+    else url.searchParams.set('product_evidence', id ?? 'governance')
+    window.history.pushState({ section9ProductDetail: mode }, '', url)
+  }
 
   const currentIncident = useMemo(() => {
     if (selectedIncidentId) {
-      return incidentItems.find((incident) => incident.id === selectedIncidentId) ?? incidentItems[0] ?? null
+      return incidentItems.find((incident) => incident.id === selectedIncidentId) ?? null
     }
     return incidentItems[0] ?? null
   }, [incidentItems, selectedIncidentId])
 
   const currentIssue = useMemo(() => {
     if (selectedIssueId) {
-      return issueItems.find((issue) => issue.id === selectedIssueId) ?? issueItems[0] ?? null
+      return issueItems.find((issue) => issue.id === selectedIssueId) ?? null
     }
     return issueItems[0] ?? null
   }, [issueItems, selectedIssueId])
@@ -444,32 +504,112 @@ export function ProductConsole({
   }
 
   const openEvidence = (evidenceId?: string) => {
+    pushDrawerRoute('governance', evidenceId)
+    setDrawerMode('governance')
     setSelectedEvidenceId(evidenceId ?? null)
     setDrawerOpen(true)
     dispatchAction({ type: 'open_evidence', evidenceId }, evidenceId ? `open-evidence-${evidenceId}` : 'open-evidence')
   }
 
+  const openIssue = (issueId: string) => {
+    pushDrawerRoute('issue', issueId)
+    setSelectedIssueId(issueId)
+    setSelectedEvidenceId(null)
+    setDrawerMode('issue')
+    setDrawerOpen(true)
+    dispatchAction({ type: 'select_issue', issueId }, `select-issue-${issueId}`)
+  }
+
+  const openIncident = (incidentId: string) => {
+    pushDrawerRoute('incident', incidentId)
+    setSelectedIncidentId(incidentId)
+    setSelectedEvidenceId(null)
+    setDrawerMode('incident')
+    setDrawerOpen(true)
+    dispatchAction({ type: 'select_incident', incidentId }, `select-incident-${incidentId}`)
+  }
+
   const closeEvidence = () => {
+    if (window.history.state?.section9ProductDetail) window.history.back()
+    else {
+      const url = new URL(window.location.href)
+      url.searchParams.delete('product_issue')
+      url.searchParams.delete('product_incident')
+      url.searchParams.delete('product_evidence')
+      window.history.replaceState({}, '', url)
+    }
     setDrawerOpen(false)
     setSelectedEvidenceId(null)
+    setDrawerMode('governance')
     dispatchAction({ type: 'close_evidence' }, 'close-evidence')
   }
 
+  useEffect(() => {
+    if (!drawerOpen) return
+    const prior = document.activeElement as HTMLElement | null
+    const focusFrame = window.requestAnimationFrame(() => drawerRef.current?.querySelector<HTMLElement>('button, [href], summary, [tabindex="0"]')?.focus())
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        closeEvidence()
+        return
+      }
+      if (event.key !== 'Tab' || !drawerRef.current) return
+      const items = getVisibleFocusableElements(drawerRef.current)
+      if (items.length === 0) {
+        event.preventDefault()
+        drawerRef.current.focus()
+        return
+      }
+      const first = items[0]
+      const last = items[items.length - 1]
+      if (!drawerRef.current.contains(document.activeElement)) {
+        event.preventDefault()
+        ;(event.shiftKey ? last : first).focus()
+        return
+      }
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      window.cancelAnimationFrame(focusFrame)
+      prior?.focus()
+    }
+  }, [drawerOpen])
+
+  const drawerEvidence = drawerMode === 'issue'
+    ? currentIssue?.evidence ?? []
+    : drawerMode === 'incident'
+      ? currentIncident?.evidence ?? []
+      : allEvidence
+  const drawerTitle = drawerMode === 'issue'
+    ? '问题详情'
+    : drawerMode === 'incident'
+      ? '事故详情'
+      : '治理与证据'
+
   return (
-    <section className="product-console" aria-label="产品控制台">
+    <section className="product-console" data-section={section} aria-label="产品控制台">
       <header className="product-console__header">
         <div className="product-console__brand-block">
           <div className="product-console__brand-mark" aria-hidden="true">S9</div>
           <div>
             <p className="product-console__eyebrow">受控运营视图</p>
             <h1>产品控制台</h1>
-            <p className="product-console__header-note">只呈现当前 props 提供的真实快照与回调结果。</p>
+            <p className="product-console__header-note">状态来自实际运行数据；缺少证据时会明确显示为未知。</p>
           </div>
         </div>
         <div className="product-console__header-actions">
           <div className="product-console__selection" aria-label="当前作用域">
-            <span><strong>项目</strong>{displaySelection(selectedProject)}</span>
-            <span><strong>环境</strong>{displaySelection(selectedEnvironment)}</span>
+            <span><strong>项目</strong>{displaySelection(projectContext)}</span>
+            <span><strong>环境</strong>{displaySelection(environmentContext)}</span>
           </div>
           <button
             type="button"
@@ -482,6 +622,34 @@ export function ProductConsole({
           </button>
         </div>
       </header>
+
+      <nav className="product-console__navigation" aria-label="产品工作区分区">
+        {([
+          ['overview', '工作概览'],
+          ['connections', '连接与权限'],
+          ['workspace', '工作区配置'],
+          ['incidents', '问题与事故'],
+          ['execution', '执行与验证'],
+          ['governance', '治理与协作'],
+        ] as [ProductSection, string][]).map(([value, label]) => (
+          <a
+            href={`/?view=product&product_section=${value}`}
+            key={value}
+            aria-current={section === value ? 'page' : undefined}
+            className={section === value ? 'is-active' : ''}
+            onClick={event => {
+              if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                event.preventDefault()
+                navigateSection(value)
+              }
+            }}
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+
+      {section === 'workspace' ? workspaceSetup : null}
 
       <div className="product-console__state-row" aria-live="polite">
         <span className="product-console__state-label">快照状态</span>
@@ -598,18 +766,14 @@ export function ProductConsole({
               detail="没有问题记录可供处理。"
             />
           ) : (
-            <div className="product-console__scroll-list" role="list" aria-label="问题列表">
+            <div className="product-console__scroll-list" role="group" aria-label="问题列表">
               {issueItems.map((issue) => (
                 <button
                   type="button"
                   className={`product-console__list-row${currentIssue?.id === issue.id ? ' is-selected' : ''}`}
                   key={issue.id}
-                  onClick={() => {
-                    setSelectedIssueId(issue.id)
-                    dispatchAction({ type: 'select_issue', issueId: issue.id }, `select-issue-${issue.id}`)
-                  }}
+                  onClick={() => openIssue(issue.id)}
                   disabled={Boolean(pendingAction)}
-                  role="listitem"
                 >
                   <span className="product-console__row-icon" aria-hidden="true"><WarningCircle size={18} /></span>
                   <span className="product-console__row-copy">
@@ -647,18 +811,14 @@ export function ProductConsole({
               detail="没有可供复盘的事故摘要；这不等于系统已确认健康。"
             />
           ) : (
-            <div className="product-console__incident-list" role="list" aria-label="事故摘要列表">
-              {incidentItems.map((incident) => (
+            <div className="product-console__incident-list" role="group" aria-label="事故摘要列表">
+              {(section === 'overview' ? incidentItems.slice(0, 3) : incidentItems).map((incident) => (
                 <button
                   type="button"
                   className={`product-console__incident-card${currentIncident?.id === incident.id ? ' is-selected' : ''}`}
                   key={incident.id}
-                  onClick={() => {
-                    setSelectedIncidentId(incident.id)
-                    dispatchAction({ type: 'select_incident', incidentId: incident.id }, `select-incident-${incident.id}`)
-                  }}
+                  onClick={() => openIncident(incident.id)}
                   disabled={Boolean(pendingAction)}
-                  role="listitem"
                 >
                   <span className="product-console__incident-topline">
                     <span className="product-console__incident-id">{incident.id}</span>
@@ -674,6 +834,16 @@ export function ProductConsole({
               ))}
             </div>
           )}
+          {section === 'overview' && incidentItems.length > 3 ? (
+            <a href="/?view=product&product_section=incidents" className="product-console__see-all" onClick={event => {
+              if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                event.preventDefault()
+                navigateSection('incidents')
+              }
+            }}>
+              查看全部 {incidentItems.length} 条问题与事故 <CaretRight size={16} aria-hidden="true" />
+            </a>
+          ) : null}
         </section>
       </div>
 
@@ -736,31 +906,74 @@ export function ProductConsole({
       </footer>
 
       {drawerOpen ? (
-        <div className="product-console__drawer-layer">
-          <div className="product-console__drawer-backdrop" aria-hidden="true" />
+        <div className="product-console__drawer-layer" onMouseDown={(event) => { if (event.target === event.currentTarget) closeEvidence() }}>
+          <div className="product-console__drawer-backdrop" aria-hidden="true" onMouseDown={closeEvidence} />
           <aside
+            ref={drawerRef}
             className="product-console__drawer"
             role="dialog"
             aria-modal="true"
             aria-labelledby="product-console-drawer-title"
+            tabIndex={-1}
           >
             <header className="product-console__drawer-header">
               <div>
-                <span className="product-console__eyebrow">详情 / 证据</span>
-                <h2 id="product-console-drawer-title">治理与证据</h2>
+                <span className="product-console__eyebrow">{drawerMode === 'governance' ? '详情 / 证据' : '问题与事故记录'}</span>
+                <h2 id="product-console-drawer-title">{drawerTitle}</h2>
               </div>
               <button
                 type="button"
                 className="product-console__icon-button"
                 onClick={closeEvidence}
                 disabled={Boolean(pendingAction)}
-                aria-label="关闭治理与证据"
+                aria-label={`关闭${drawerTitle}`}
                 title="关闭"
               >
                 <X size={19} aria-hidden="true" />
               </button>
             </header>
             <div className="product-console__drawer-scroll">
+              {drawerMode === 'issue' && currentIssue ? (
+                <section className="product-console__drawer-section">
+                  <div className="product-console__drawer-section-heading"><h3>{currentIssue.title}</h3><StatusBadge status={currentIssue.status} compact /></div>
+                  <dl className="product-console__drawer-kv">
+                    <div><dt>记录 ID</dt><dd>{currentIssue.id}</dd></div>
+                    <div><dt>严重程度</dt><dd>{displayValue(currentIssue.severity, '未提供')}</dd></div>
+                    <div><dt>创建时间</dt><dd>{displayTime(currentIssue.createdAt)}</dd></div>
+                    <div><dt>更新时间</dt><dd>{displayTime(currentIssue.updatedAt)}</dd></div>
+                    <div><dt>情况摘要</dt><dd>{displayValue(currentIssue.summary, '暂无问题摘要')}</dd></div>
+                  </dl>
+                </section>
+              ) : null}
+              {drawerMode === 'issue' && !currentIssue ? (
+                <EmptyState icon={<MagnifyingGlass size={22} />} title="未找到这条问题记录" detail="当前快照中没有匹配记录；不会用其他问题替代。" />
+              ) : null}
+
+              {drawerMode === 'incident' && currentIncident ? (
+                <>
+                  <section className="product-console__drawer-section">
+                    <div className="product-console__drawer-section-heading"><h3>{displayValue(currentIncident.title, '未命名事故')}</h3><StatusBadge status={currentIncident.status} compact /></div>
+                    <dl className="product-console__drawer-kv">
+                      <div><dt>事故 ID</dt><dd>{currentIncident.id}</dd></div>
+                      <div><dt>开始时间</dt><dd>{displayTime(currentIncident.openedAt)}</dd></div>
+                      <div><dt>更新时间</dt><dd>{displayTime(currentIncident.updatedAt)}</dd></div>
+                      <div><dt>情况摘要</dt><dd>{displayValue(currentIncident.summary, '暂无事故摘要')}</dd></div>
+                    </dl>
+                  </section>
+                  <section className="product-console__drawer-section">
+                    <h3>闭环阶段</h3>
+                    <div className="product-console__workflow-list">
+                      <WorkflowCard icon={<GitBranch size={18} />} title="修复" state={currentIncident.repair} />
+                      <WorkflowCard icon={<CheckCircle size={18} />} title="验证" state={currentIncident.verification} />
+                      <WorkflowCard icon={<ShieldCheck size={18} />} title="审批" state={currentIncident.approval} />
+                    </div>
+                  </section>
+                </>
+              ) : null}
+              {drawerMode === 'incident' && !currentIncident ? (
+                <EmptyState icon={<Pulse size={22} />} title="未找到这条事故记录" detail="当前快照中没有匹配记录；不会用其他事故替代。" />
+              ) : null}
+
               {selectedEvidence ? (
                 <div className="product-console__drawer-focus">
                   <span className="product-console__eyebrow">当前证据</span>
@@ -769,7 +982,7 @@ export function ProductConsole({
                 </div>
               ) : null}
 
-              <section className="product-console__drawer-section">
+              {drawerMode === 'governance' ? <section className="product-console__drawer-section">
                 <h3>治理边界</h3>
                 <dl className="product-console__drawer-kv">
                   <div><dt>策略</dt><dd>{displayValue(governance?.policy, '未提供')}</dd></div>
@@ -778,14 +991,14 @@ export function ProductConsole({
                   <div><dt>说明</dt><dd>{displayValue(governance?.detail, '未提供')}</dd></div>
                 </dl>
                 <StatusBadge status={governance?.status} />
-              </section>
+              </section> : null}
 
               <section className="product-console__drawer-section">
                 <div className="product-console__drawer-section-heading">
                   <h3>证据记录</h3>
-                  <span>{allEvidence.length} 条</span>
+                  <span>{drawerEvidence.length} 条</span>
                 </div>
-                {allEvidence.length === 0 ? (
+                {drawerEvidence.length === 0 ? (
                   <EmptyState
                     icon={<FileText size={22} />}
                     title="暂无证据"
@@ -793,20 +1006,20 @@ export function ProductConsole({
                   />
                 ) : (
                   <div className="product-console__evidence-list">
-                    {allEvidence.map((evidence) => (
+                    {drawerEvidence.map((evidence) => (
                       <EvidenceItem key={evidence.id} evidence={evidence} />
                     ))}
                   </div>
                 )}
               </section>
 
-              <section className="product-console__drawer-section">
+              {drawerMode === 'governance' ? <section className="product-console__drawer-section">
                 <div className="product-console__drawer-section-heading">
                   <h3>当前快照原始字段</h3>
                   <span>主动展开</span>
                 </div>
                 <TechnicalDetails label="展开 snapshot 技术字段" value={snapshot} />
-              </section>
+              </section> : null}
             </div>
           </aside>
         </div>

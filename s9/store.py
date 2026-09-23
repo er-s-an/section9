@@ -704,9 +704,82 @@ class Store:
                 self._revoke_run(db, run_id, reason)
                 self.event(db, "incident.failed", {"code": reason, "summary": "运行未通过，失败和消耗已保留", "elapsed_s": run["elapsed_s"]}, run_id=run_id)
 
-    def reserve_usage(self, run_id, reservation, purpose):
+    def _validate_model_request_context(self, db, context):
+        scope = context.get("scope")
+        if not isinstance(scope, dict) or scope != self.scope or self.meta(db, "runtime_scope") != self.scope:
+            raise Rejected("SCOPE_MISMATCH", "模型请求的运行作用域已变化", 403)
+        if float(context.get("deadline_at", 0)) <= time.time():
+            raise Rejected("REQUEST_DEADLINE_EXCEEDED", "模型请求已超过准入期限", 408)
+
+        generation = str(context.get("generation", ""))
+        expected_policy = str(context.get("policy_revision", ""))
+        expected_transport = str(context.get("transport_epoch", ""))
+        expected_config = str(context.get("config_revision", ""))
+
+        run_id = context.get("run_id")
+        if self.scope.get("run_id") and run_id != self.scope["run_id"]:
+            raise Rejected("SCOPE_MISMATCH", "模型请求不属于此 Pair / arm / run 权威", 403)
+        run = self.get(db, "runs", run_id) if run_id else None
+        if run_id:
+            if not run or run["status"] not in ACTIVE:
+                raise Rejected("RUN_STALE", "模型请求所属事故已经结束")
+            self._valid_scope(run)
+            if run.get("contract_hash") != context.get("contract_hash"):
+                raise Rejected("CONTRACT_STALE", "模型请求绑定的验收合同已变化")
+        if generation != str(self.meta(db, "generation")):
+            raise Rejected("RESET_GENERATION_STALE", "模型请求属于已失效轮次")
+        if run and run["generation"] != generation:
+            raise Rejected("RESET_GENERATION_STALE", "事故属于已失效轮次")
+        if expected_policy != str(self.meta(db, "autonomy_revision")):
+            raise Rejected("POLICY_STALE", "准入策略在排队期间发生变化")
+        if expected_transport != str(self.meta(db, "transport_epoch")):
+            raise Rejected("CONTEXT_STALE", "模型请求的通信上下文已失效")
+        if expected_config != str(self.current_config(db)["revision"]):
+            raise Rejected("CONFIG_STALE", "模型请求绑定的配置版本已变化")
+
+        authority = context.get("authority") or {}
+        if authority:
+            for field in ("run_id", "generation", "policy_revision", "transport_epoch", "config_revision", "contract_hash"):
+                if field in authority and str(authority[field]) != str(context.get(field)):
+                    raise Rejected("AUTHORITY_STALE", "模型请求身份与准入快照不一致")
+            required = {"agent_id", "instance_id", "role", "task_id", "task_epoch"}
+            if required.intersection(authority) and not required.issubset(authority):
+                raise Rejected("AUTHORITY_INVALID", "模型请求缺少完整任务身份", 403)
+            if required.issubset(authority):
+                agent = self.get(db, "agents", authority["agent_id"])
+                task = self.get(db, "tasks", authority["task_id"])
+                if not agent or agent.get("instance_id") != authority["instance_id"] or agent.get("role") != authority["role"]:
+                    raise Rejected("INSTANCE_STALE", "模型请求的执行进程身份已变化")
+                if not run or not task or task.get("run_id") != run_id:
+                    raise Rejected("TASK_RUN_MISMATCH", "模型任务不属于当前事故")
+                self._valid_task(db, agent, task, run, authority["task_epoch"])
+        return run
+
+    def capture_model_request(self, run_id, generation, *, expected_scope, deadline_at, authority=None):
+        authority = dict(authority or {})
+        with self.tx() as db:
+            run = self.get(db, "runs", run_id) if run_id else None
+            context = {
+                "run_id": run_id,
+                "generation": str(generation),
+                "scope": dict(expected_scope),
+                "deadline_at": float(deadline_at),
+                "policy_revision": str(authority.get("policy_revision", self.meta(db, "autonomy_revision"))),
+                "transport_epoch": str(authority.get("transport_epoch", self.meta(db, "transport_epoch"))),
+                "config_revision": str(authority.get("config_revision", self.current_config(db)["revision"])),
+                "contract_hash": authority.get("contract_hash", run.get("contract_hash") if run else None),
+                "authority": authority,
+            }
+            self._validate_model_request_context(db, context)
+            return context
+
+    def reserve_usage(self, run_id, reservation, purpose, *, request_id=None, request_context=None):
         usage_id = uid("usage")
         with self.tx() as db:
+            if request_context is not None:
+                if request_context.get("run_id") != run_id:
+                    raise Rejected("AUTHORITY_STALE", "模型请求与预算预留的事故身份不一致")
+                self._validate_model_request_context(db, request_context)
             if run_id:
                 run = self.get(db, "runs", run_id)
                 if not run or run["status"] not in ACTIVE or run["generation"] != str(self.meta(db, "generation")):
@@ -716,19 +789,64 @@ class Store:
                 run["reserved_tokens"] += reservation
                 self.save(db, "runs", run)
             usage = {**getattr(self, "scope", {}), "id": usage_id, "run_id": run_id, "reservation": reservation, "purpose": purpose,
-                     "status": "reserved", "provider_state": "not_sent", "at": now()}
+                     "status": "reserved", "provider_state": "not_sent", "dispatch_state": "queued",
+                     "request_id": request_id, "request_context": request_context, "at": now()}
             db.execute("INSERT INTO usage VALUES(?,?,?)", (usage_id, run_id, encode(usage)))
             return usage_id
 
-    def mark_usage_sent(self, usage_id):
-        # Write ahead of the network await. A crash after this commit is
-        # conservatively unknown, even if the provider never received bytes.
+    def authorize_usage_dispatch(self, usage_id, *, request_id, request_context):
+        """Atomically recheck authority and record the dispatch linearization point."""
+        rejection = None
         with self.tx() as db:
             u = self.get(db, "usage", usage_id)
             if not u or u["status"] != "reserved":
-                raise Rejected("USAGE_STALE", "模型预算预留已失效")
-            u.update(provider_state="sent", dispatched_at=now())
-            self.save(db, "usage", u)
+                rejection = Rejected("USAGE_STALE", "模型预算预留已失效")
+            elif u.get("request_id") != request_id or u.get("request_context") != request_context:
+                rejection = Rejected("AUTHORITY_STALE", "发送请求与已预留预算的身份不一致")
+            else:
+                try:
+                    run = self._validate_model_request_context(db, request_context)
+                    if run:
+                        ledger_rows = db.execute("SELECT data FROM usage WHERE run_id=?", (run["id"],)).fetchall()
+                        open_reservations = sum(
+                            int(item.get("reservation", 0)) for row in ledger_rows
+                            if (item := json.loads(row[0])).get("status") == "reserved"
+                        )
+                        committed = int(run["usage_tokens"]) + int(run.get("unknown_reserved_tokens", 0))
+                        if open_reservations != int(run["reserved_tokens"]):
+                            raise Rejected("BUDGET_LEDGER_MISMATCH", "模型预算账本与活动预留不一致")
+                        if (run.get("budget_overrun") or committed + open_reservations > int(run["token_budget"])
+                                or u.get("provider_state") != "not_sent"):
+                            raise Rejected("TOKEN_BUDGET_EXHAUSTED", "发送前预算复核未通过", 429)
+                except Rejected as exc:
+                    rejection = exc
+
+            if rejection:
+                same_request = (u and u.get("status") == "reserved"
+                                and u.get("request_id") == request_id
+                                and u.get("request_context") == request_context)
+                if same_request:
+                    u.update(dispatch_state="rejected", dispatch_rejection=rejection.code)
+                    self.save(db, "usage", u)
+                    self.event(db, "model.dispatch_rejected", {
+                        "request_id": request_id, "usage_id": usage_id, "code": rejection.code,
+                        "provider_called": False, "summary": "最终发送准入复核拒绝此请求",
+                    }, run_id=u.get("run_id"), producer="model")
+                    self._settle_usage(db, u, {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
+                                       0, "DISPATCH_REJECTED:" + rejection.code)
+            else:
+                # This commit is the dispatch/cancel linearization point. A crash
+                # after it is conservatively unknown because the provider may
+                # have received the following network request.
+                u.update(provider_state="sent", dispatch_state="authorized", dispatched_at=now())
+                event = self.event(db, "model.dispatch_authorized", {
+                    "request_id": request_id, "usage_id": usage_id, "purpose": u["purpose"],
+                    "provider_called": False, "summary": "请求通过最终准入，下一步调用 Provider",
+                }, run_id=u.get("run_id"), producer="model")
+                u["dispatch_sequence"] = event["sequence"]
+                self.save(db, "usage", u)
+        if rejection:
+            raise rejection
 
     def recover_usage(self, run_id=None, reason="SERVER_RESTARTED"):
         counts = {"recovered": 0, "known_zero": 0, "unknown": 0}

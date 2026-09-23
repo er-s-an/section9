@@ -64,6 +64,12 @@ def test_service_accepts_matching_existing_process(monkeypatch, capsys):
     expected = identity()
     monkeypatch.setattr(service, "capture_identity", lambda: expected)
     monkeypatch.setattr(service, "listener_health", lambda: {"status": "running", "identity": dict(expected)})
+    monkeypatch.setattr(service, "_read_owned_record", lambda *args, **kwargs: (
+        {"pid": 12345, "startup_identity": expected},
+        {"pid": 12345, "command": "owned section9 process"},
+        None,
+    ))
+    monkeypatch.setattr(service, "_server_command_matches", lambda record: True)
     monkeypatch.setattr(sys, "argv", ["service.py", "start"])
     assert service.main() == 0
     assert "Already running" in capsys.readouterr().out

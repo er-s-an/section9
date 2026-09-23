@@ -23,6 +23,16 @@ def test_ingest_drains_fixed_high_water_and_pages_without_gaps(tmp_path):
     rows = journal.read('p-history', 'swarm', 0, 20000)
     assert len(rows) == 12051
     assert rows[-1]['payload']['summary'] == 'terminal'
+    earlier_page = journal.read_before('p-history', 'swarm', int(rows[-1]['sequence']), 50,
+                                       journal.watermark('p-history', 'swarm'))
+    assert [row['payload']['summary'] for row in earlier_page[:2]] == ['event-12000', 'event-12001']
+    assert journal.has_before('p-history', 'swarm', int(earlier_page[0]['sequence']),
+                              journal.watermark('p-history', 'swarm'))
+    assert journal.count_after('p-history', 'swarm', int(rows[9999]['sequence']),
+                               journal.watermark('p-history', 'swarm')) == 2051
+    selected = journal.read_by_ids('p-history', 'swarm', 'run-history',
+                                   [rows[0]['event_id'], rows[-1]['event_id'], 'missing'])
+    assert [row['event_id'] for row in selected] == [rows[0]['event_id'], rows[-1]['event_id']]
     seen = []
     after = 0
     while True:

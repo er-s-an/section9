@@ -1,0 +1,2021 @@
+schema_version: '1'
+document_date: '2026-09-23'
+repository: er-s-an/section9
+baseline_commit: a803012cdde1fa4fdffc72bcbb7099316455e9ea
+purpose: 规划范围登记，不是已完成能力清单
+full_parity_goal: true
+sources_reviewed_scope: 公开文档与固定仓库审查；不声称逐个连接器已经实测
+features:
+- id: CAP-01
+  name: 工作总览、待办、跨模块活动搜索
+  scope_and_acceptance: 以真实状态生成待办；按权限检索历史，不遗漏失败
+  planned_milestone: M1/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-02
+  name: 应用/环境/工作区
+  scope_and_acceptance: 明确隔离凭据、知识、工作项、预算和外部对象
+  planned_milestone: M1/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: implemented
+    status_basis: >-
+      Partial local Workspace/Application/Connection/ScopeBinding contracts, persistence, REST routes, and UI. Team
+      identity, production authorization, knowledge resources, cold install, and full feature acceptance remain open.
+    evidence:
+    - s9/product/registry.py
+    - s9/product/v1_api.py
+    - frontend/src/WorkspaceSetup.tsx
+    - tests/product/test_workspace_registry.py
+    - frontend/tests/e2e/workspace-setup.spec.ts
+- id: CAP-03
+  name: 连接目录与验证
+  scope_and_acceptance: 新建、测试、发现、更新、撤销、失效恢复
+  planned_milestone: M1/M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: implemented
+    status_basis: >-
+      Partial read-only checks and bounded Signal imports exist for Langfuse and GitHub. Provider tests use mocks;
+      other connectors, lifecycle operations, and real-account proof remain open.
+    evidence:
+    - s9/product/connection_checks.py
+    - s9/product/v1_api.py
+    - tests/product/test_connection_checks.py
+    - tests/product/test_v1_langfuse_import.py
+    - tests/product/test_v1_github_import.py
+- id: CAP-04
+  name: 资源清单与拓扑
+  scope_and_acceptance: 资源身份、关系、所属服务、来源与新鲜度
+  planned_milestone: M1/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-05
+  name: 聊天与多 Agent 工作侧栏
+  scope_and_acceptance: 附件、引用回复、排队追问、分支、停止、历史
+  planned_milestone: M2/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-06
+  name: 自定义 Agent 与能力
+  scope_and_acceptance: 配置版本、能力目录、工具范围、任务证据
+  planned_milestone: M2/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-07
+  name: 通用 MCP 接入及对外 MCP
+  scope_and_acceptance: 客户端和服务端分别鉴权；工具白名单与配额
+  planned_milestone: M1/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-08
+  name: Skills / 命令 / 知识库
+  scope_and_acceptance: 创建、导入、启停、场景绑定、版本、检索与撤销
+  planned_milestone: M2/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-09
+  name: Runbook 与执行历史
+  scope_and_acceptance: 具体步骤、允许/审批/拒绝、验证和回滚
+  planned_milestone: M2/M3
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-10
+  name: Workspace/Incident/Review 记忆
+  scope_and_acceptance: 来源、作用域、过期、纠正、删除、复用记录
+  planned_milestone: M2/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-11
+  name: 报表、图表、仪表盘、表格分析
+  scope_and_acceptance: 数据查询可复查、筛选、导出、结果版本
+  planned_milestone: M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-12
+  name: 幻灯片、图像生成/编辑及参考图
+  scope_and_acceptance: 独立产物服务；费用、权限、版本、来源
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-13
+  name: 分享与撤销
+  scope_and_acceptance: 显式发布、脱敏、访问范围、到期和撤销
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-14
+  name: 通知与 ChatOps
+  scope_and_acceptance: 应用内、邮件、Slack、Teams、Google Chat；去重
+  planned_milestone: M3/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-15
+  name: API、CLI、headless 与 webhook
+  scope_and_acceptance: 同一工作对象、幂等、状态查询、退出码、重放防护
+  planned_milestone: M3/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: implemented
+    status_basis: >-
+      Partial loopback REST API with idempotency receipts and status reads is implemented. CLI, headless operation,
+      webhooks, and authenticated multi-user authorization remain open.
+    evidence:
+    - s9/product/v1_api.py
+    - tests/product/test_v1_api.py
+    - tests/product/test_v1_signal_incident_api.py
+- id: CAP-16
+  name: 组织、成员、RBAC、SSO/MFA/SCIM
+  scope_and_acceptance: 服务端授权、即时撤权、审计和迁移
+  planned_milestone: M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-17
+  name: 使用量、额度、计费、BYOK
+  scope_and_acceptance: 可核对账本、月额度、提醒、限流、退款与套餐
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: CAP-18
+  name: 本地、专属云、自托管与隔离部署
+  scope_and_acceptance: 分部署配置验收，不混称离线推理
+  planned_milestone: M0/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: RES-01
+  name: Pulse/信号
+  scope_and_acceptance: webhook/poll/manual/chat 输入、去重、抑制、归并、路由、数据源健康
+  planned_milestone: M1/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: implemented
+    status_basis: >-
+      Partial bounded manual imports and explicitly enabled Langfuse/GitHub polling use persisted cursors/coverage and
+      source-version deduplication. A local rule links a new poll version only to the unique active Incident that
+      contains a recently operator-linked version of the exact same object in that source binding; ambiguity and
+      observations older than 24 hours stay in the inbox. Monitoring is locally tested with mocked providers and
+      exposes retry/coverage gaps. Real account health, alert routing, broad grouping, and suppression remain open.
+    evidence:
+    - s9/product/v1_api.py
+    - s9/product/registry.py
+    - tests/product/test_v1_langfuse_import.py
+    - tests/product/test_v1_github_import.py
+    - tests/product/test_signal_sync_monitor.py
+    - tests/product/test_signal_incident_registry.py
+    - frontend/tests/e2e/workspace-setup.spec.ts
+- id: RES-02
+  name: RCA
+  scope_and_acceptance: 多假设、并行调查、反证、因果图、证据、影响服务、时间线
+  planned_milestone: M2
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: implemented
+    status_basis: >-
+      A manual InvestigationRun freezes input and evidence and records operator-entered Hypotheses and decisions.
+      Single and Section9-owned swarm runs execute a durable deterministic task DAG through serial role-specific
+      requests to one configured model; workspace token usage is reserved and settled or retained as unknown. This is
+      locally mock-tested and does not prove independent agents. Authenticated workers, parallel execution, tool use,
+      truly independent counterexamples, dynamic RCA, and causal graphs remain open.
+    evidence:
+    - s9/product/registry.py
+    - s9/product/v1_api.py
+    - s9/product/task_runtime.py
+    - tests/product/test_v1_task_graph_api.py
+    - tests/product/test_v1_investigation_api.py
+    - frontend/tests/e2e/workspace-setup.spec.ts
+- id: RES-03
+  name: 事故管理
+  scope_and_acceptance: 认领、严重级别、合并/拆分、等待输入、再调查、结案及人工判定
+  planned_milestone: M1/M2
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: implemented
+    status_basis: >-
+      Partial revision-checked Incident creation, transitions, waiting-for-input, dismissal, manual Signal linking,
+      merge/split, local single-operator claim/release, and severity updates are implemented. Team identity/RBAC and
+      validated resolution remain open.
+    evidence:
+    - s9/product/registry.py
+    - s9/product/v1_api.py
+    - tests/product/test_signal_incident_registry.py
+    - tests/product/test_v1_signal_incident_api.py
+- id: RES-04
+  name: 处置
+  scope_and_acceptance: Runbook 匹配、方案审批、执行、验收、复查、经验
+  planned_milestone: M2/M3
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: RES-05
+  name: 洞察
+  scope_and_acceptance: 漏检/噪声、调查质量、耗时、覆盖、人工评分、失败与成本
+  planned_milestone: M3/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: REV-01
+  name: PR/MR 审查
+  scope_and_acceptance: 多 Git 平台、diff/上下文、精确评论、严重度、重新审查、修复追踪
+  planned_milestone: M3/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: REV-02
+  name: 自动修复与冲突
+  scope_and_acceptance: 补丁、后续 PR、冲突解决候选、检查状态、审批；不默认合并
+  planned_milestone: M3/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: REV-03
+  name: 发布与流水线
+  scope_and_acceptance: CI 失败分析、发布风险报告、Approve/Hold、版本绑定
+  planned_milestone: M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: REV-04
+  name: 约定与洞察
+  scope_and_acceptance: 仓库规则、工单验收标准、学习候选、覆盖与人类判定指标
+  planned_milestone: M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: OPT-01
+  name: 成本分析
+  scope_and_acceptance: 多账号/服务/标签、周期/币种、预测、异常与数据截止点
+  planned_milestone: M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: OPT-02
+  name: 优化建议
+  scope_and_acceptance: 闲置、规格、承诺折扣、存储、模型路由等有证据建议
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: OPT-03
+  name: 执行与收益
+  scope_and_acceptance: 去重节省估计、风险、批准变更、实际收益、性能守护
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: INF-01
+  name: 基础设施
+  scope_and_acceptance: 多云、Kubernetes、数据库、配置及资源关系的发现与诊断
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: INF-02
+  name: Stack/变更计划
+  scope_and_acceptance: IaC 计划、状态锁、审批、应用、漂移、回滚与验证
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: SEC-01
+  name: Cyber/安全评估
+  scope_and_acceptance: 授权目标、认证资料、深度/范围、计划或手动测试
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: SEC-02
+  name: 安全发现
+  scope_and_acceptance: 可复查证明、去重、影响、误报、整改、复测、导出
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: AUTO-01
+  name: 自动化
+  scope_and_acceptance: 定时、webhook、仓库事件、运行历史、停用、重试与预算
+  planned_milestone: M3/M4
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+- id: TEAM-01
+  name: OnCall/协作房间
+  scope_and_acceptance: 事故房间、人/Agent、交接、提及、升级与来源集成
+  planned_milestone: M4/M5
+  implementation_status: discovered
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  baseline_mapping_pending: true
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; full feature acceptance has not been completed in this M0 batch.
+connectors:
+- id: CONN-001
+  name: AWS
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/aws.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M4
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-002
+  name: Google Cloud
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/gcp.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-003
+  name: Azure
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/azure.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-004
+  name: Firebase
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/firebase.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-005
+  name: Cloudflare
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/cloudflare.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-006
+  name: Vercel
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/vercel.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-007
+  name: Netlify
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/netlify.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-008
+  name: Heroku
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/heroku.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-009
+  name: Render
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/render.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-010
+  name: DigitalOcean
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/digitalocean.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-011
+  name: Fly.io
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/flyio.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-012
+  name: GreenNode
+  family: 云与应用平台
+  source: https://docs.cloudthinker.io/guide/connections/greennode.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-013
+  name: Kubernetes
+  family: 容器与基础设施交付
+  source: https://docs.cloudthinker.io/guide/connections/kubernetes.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M4
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-014
+  name: Rancher
+  family: 容器与基础设施交付
+  source: https://docs.cloudthinker.io/guide/connections/rancher.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-015
+  name: Pulumi
+  family: 容器与基础设施交付
+  source: https://docs.cloudthinker.io/guide/connections/pulumi.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-016
+  name: HCP Terraform
+  family: 容器与基础设施交付
+  source: https://docs.cloudthinker.io/guide/connections/terraform.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-017
+  name: SSH
+  family: 容器与基础设施交付
+  source: https://docs.cloudthinker.io/guide/connections/ssh.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-018
+  name: HashiCorp Vault
+  family: 秘密、身份与服务目录
+  source: https://docs.cloudthinker.io/guide/connections/vault.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-019
+  name: Keycloak
+  family: 秘密、身份与服务目录
+  source: https://docs.cloudthinker.io/guide/connections/keycloak.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-020
+  name: Backstage
+  family: 秘密、身份与服务目录
+  source: https://docs.cloudthinker.io/guide/connections/backstage.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-021
+  name: Okta
+  family: 秘密、身份与服务目录
+  source: https://docs.cloudthinker.io/guide/connections/okta.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-022
+  name: PostgreSQL
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/postgresql.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M4
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-023
+  name: CockroachDB
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/cockroachdb.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-024
+  name: MySQL
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/mysql.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-025
+  name: MongoDB
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/mongodb.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-026
+  name: Redis
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/redis.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-027
+  name: Apache Cassandra
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/cassandra.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-028
+  name: ClickHouse
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/clickhouse.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-029
+  name: Snowflake
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/snowflake.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-030
+  name: Databricks
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/databricks.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-031
+  name: Neon
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/neon.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-032
+  name: Supabase
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/supabase.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-033
+  name: Elasticsearch
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/elasticsearch.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-034
+  name: OpenSearch
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/opensearch.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-035
+  name: InfluxDB
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/influxdb.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-036
+  name: Microsoft SQL Server
+  family: 数据库、分析与搜索
+  source: https://docs.cloudthinker.io/guide/connections/mssql.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-037
+  name: Kafka
+  family: 消息与设备数据
+  source: https://docs.cloudthinker.io/guide/connections/kafka.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-038
+  name: RabbitMQ
+  family: 消息与设备数据
+  source: https://docs.cloudthinker.io/guide/connections/rabbitmq.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-039
+  name: Flespi
+  family: 消息与设备数据
+  source: https://docs.cloudthinker.io/guide/connections/flespi.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-040
+  name: Grafana
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/grafana.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M4
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-041
+  name: Prometheus
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/prometheus.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-042
+  name: Datadog
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/datadog.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-043
+  name: New Relic
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/newrelic.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-044
+  name: Dynatrace
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/dynatrace.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-045
+  name: AppDynamics
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/appdynamics.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-046
+  name: Coralogix
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/coralogix.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-047
+  name: SigNoz
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/signoz.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-048
+  name: Honeycomb
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/honeycomb.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-049
+  name: Splunk Observability
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/splunkobservability.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-050
+  name: Sumo Logic
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/sumologic.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-051
+  name: Graylog
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/graylog.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-052
+  name: Zabbix
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/zabbix.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-053
+  name: Better Stack
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/betterstack.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-054
+  name: Rollbar
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/rollbar.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-055
+  name: Sentry
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/sentry.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-056
+  name: Langfuse
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/langfuse.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M1
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: implemented
+    status_basis: >-
+      Partial bounded observation reads and explicit imports are implemented with cursor and coverage records. Tests
+      use a mock provider; real account access and complete connector acceptance remain unverified.
+    evidence:
+    - s9/connectors/langfuse.py
+    - s9/product/connection_checks.py
+    - tests/connectors/test_langfuse.py
+    - tests/product/test_v1_langfuse_import.py
+- id: CONN-057
+  name: PostHog
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/posthog.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-058
+  name: Splunk Platform
+  family: 指标、APM 与日志
+  source: https://docs.cloudthinker.io/guide/connections/splunkplatform.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-059
+  name: GitHub
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/github.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M1
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: implemented
+    status_basis: >-
+      Partial fixed-host repository checks and bounded read-only Issue/PR imports are implemented. Tests use a mock
+      provider; real account access and complete connector acceptance remain unverified.
+    evidence:
+    - s9/connectors/github.py
+    - s9/product/connection_checks.py
+    - tests/connectors/test_github.py
+    - tests/product/test_v1_github_import.py
+- id: CONN-060
+  name: GitLab
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/gitlab.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-061
+  name: Bitbucket
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/bitbucket.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-062
+  name: Azure DevOps
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/azure-devops.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-063
+  name: Jenkins
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/jenkins.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-064
+  name: CircleCI
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/circleci.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-065
+  name: Buildkite
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/buildkite.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-066
+  name: Docker Hub
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/dockerhub.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-067
+  name: ArgoCD
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/argocd.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-068
+  name: AWX
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/awx.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-069
+  name: SonarQube
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/sonarqube.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-070
+  name: GitGuardian
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/gitguardian.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-071
+  name: Harness
+  family: 代码与流水线
+  source: https://docs.cloudthinker.io/guide/connections/harness.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-072
+  name: PagerDuty
+  family: 事故与服务管理
+  source: https://docs.cloudthinker.io/guide/connections/pagerduty.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-073
+  name: Rootly
+  family: 事故与服务管理
+  source: https://docs.cloudthinker.io/guide/connections/rootly.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-074
+  name: ServiceNow
+  family: 事故与服务管理
+  source: https://docs.cloudthinker.io/guide/connections/servicenow.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-075
+  name: Jira Service Management
+  family: 事故与服务管理
+  source: https://docs.cloudthinker.io/guide/connections/jsm.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-076
+  name: Atlassian
+  family: 工单、知识与工作管理
+  source: https://docs.cloudthinker.io/guide/connections/atlassian.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M4
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-077
+  name: Backlog
+  family: 工单、知识与工作管理
+  source: https://docs.cloudthinker.io/guide/connections/backlog.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-078
+  name: monday.com
+  family: 工单、知识与工作管理
+  source: https://docs.cloudthinker.io/guide/connections/monday.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-079
+  name: Linear
+  family: 工单、知识与工作管理
+  source: https://docs.cloudthinker.io/guide/connections/linear.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-080
+  name: Notion
+  family: 工单、知识与工作管理
+  source: https://docs.cloudthinker.io/guide/connections/notion.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-081
+  name: ClickUp
+  family: 工单、知识与工作管理
+  source: https://docs.cloudthinker.io/guide/connections/clickup.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-082
+  name: Asana
+  family: 工单、知识与工作管理
+  source: https://docs.cloudthinker.io/guide/connections/asana.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M5
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+- id: CONN-083
+  name: MCP
+  family: 扩展协议
+  source: https://docs.cloudthinker.io/guide/connections/mcp.md
+  discovery_source: https://docs.cloudthinker.io/llms.txt
+  public_status: listed_in_official_index
+  section9_product_status: discovered
+  planned_milestone: M4
+  operation_catalog_status: requires_per_operation_contract
+  verification_status: not_verified_by_this_plan
+  owner: null
+  evidence: []
+  tracking:
+    current_status: discovered
+    status_basis: Imported baseline status; connector account, permission, operation, and failure acceptance remain
+      unverified.
+supplemental_integration_tasks:
+- name: AWS CodeCommit
+  source: https://docs.cloudthinker.io/guide/code-review/provider-auth.md
+  status: discovered
+- name: Slack
+  source: https://docs.cloudthinker.io/guide/slack-integration.md
+  status: discovered
+- name: Microsoft Teams
+  source: https://docs.cloudthinker.io/guide/teams-integration.md
+  status: discovered
+- name: Google Chat
+  source: https://docs.cloudthinker.io/guide/google-chat-integration.md
+  status: discovered
+status_rules:
+  verified: 必须关联真实正常、权限、失败及恢复证据
+  blocked: 最终范围仍保留，记录外部依赖
+  not_supported: 不计完整对标完成，必须报告差异
+registry_import:
+  original_path: /Users/xiejiachen/Downloads/Section9_功能对标登记表.json
+  preserved_copy: docs/parity/source/Section9_功能对标登记表.json
+  sha256: 7edcf445c257468d7014e1b6fdeabf87cace3d6fae60c1bd4cc970e9ccf17f9a
+  source_copy_is_byte_identical: true
+  supplemental_id_policy: The 4 supplemental integration tasks have no source IDs; no IDs were generated.
+implementation_progress:
+  status_vocabulary:
+  - discovered
+  - specified
+  - implemented
+  - verified
+  - blocked
+  - not_supported
+  milestones:
+    M0:
+      status: implemented
+      release_gate_status: blocked
+      scope: R1-R5 local regressions and the cost queue correction are implemented; external paid-provider recovery
+        was not run.
+    M1:
+      status: implemented
+      release_gate_status: blocked
+      scope: Local Workspace setup, bounded Langfuse/GitHub intake, explicitly enabled scheduled monitoring, manual
+        Incident workflow, and manual InvestigationRun exist. Incident lifecycle completion, real-account proof, and
+        EvoMap native E2/E3 remain open.
+    M2:
+      status: implemented
+      release_gate_status: blocked
+      scope: Manual investigation plus a serial, budgeted Section9-owned single/swarm model task loop exist under mock
+        verification. Independent authenticated workers, true parallel swarm, model-proposed DAG, approval, execution,
+        reconciliation, and recovery validation remain open.
+    M3:
+      status: discovered
+    M4:
+      status: discovered
+    M5:
+      status: discovered
+  work_packages:
+    M0-R1:
+      status: verified
+      verification_level: local regression
+      evidence:
+      - tests/test_model_cancellation.py
+      - tests/test_cross_run_authority.py
+      - tests/test_model_budget.py
+      limit: No paid provider request was made.
+    M0-R2:
+      status: verified
+      verification_level: local browser regression with API stubs
+      evidence:
+      - frontend/tests/e2e/m0-regression.spec.ts
+      limit: External service behavior is not covered by the browser stubs.
+    M0-R3:
+      status: verified
+      verification_level: local browser regression with API stubs
+      evidence:
+      - frontend/tests/e2e/m0-regression.spec.ts
+      limit: Unknown usage and labels are tested locally; provider settlement is not.
+    M0-R4:
+      status: verified
+      verification_level: local API, history, and browser regressions
+      evidence:
+      - tests/test_pair_api.py
+      - tests/test_product_history.py
+      - frontend/tests/e2e/m0-regression.spec.ts
+      limit: Does not establish production-scale retention or deployment behavior.
+    M0-R5:
+      status: verified
+      verification_level: local process ownership regressions
+      evidence:
+      - scripts/process_ownership.py
+      - scripts/service.py
+      - scripts/environments.py
+      - s9/product/external_runtime.py
+      - tests/test_process_ownership.py
+      - tests/product/test_external_runtime_ownership.py
+      limit: No live user service was stopped or restarted.
+    M0-cost:
+      status: implemented
+      verification_level: local deterministic regression
+      evidence:
+      - s9/victim.py
+      - s9/model.py
+      - tests/test_victim_probe_budget.py
+      - tests/test_model_budget.py
+      limit: Historical failure attribution is read-only; no real-provider cost recovery run was authorized.
+    M1-contract:
+      status: implemented
+      verification_level: schema validation and contract tests
+      evidence:
+      - docs/implementation/CONTRACTS.md
+      - s9/product/v1_contracts.py
+      - tests/product/test_v1_contracts.py
+      limit: No database migration or /api/v1 route is implemented by this contract freeze.
+    M2-contract:
+      status: implemented
+      verification_level: schema validation and contract tests
+      evidence:
+      - docs/implementation/CONTRACTS.md
+      - s9/product/v1_contracts.py
+      - tests/product/test_v1_contracts.py
+      limit: Multi-step task dispatch exists locally, but no model-backed task worker or independent validation orchestration is wired.
+    M1-workspace-foundation:
+      status: verified
+      verification_level: local SQLite/API tests and browser test with API stubs
+      evidence:
+      - s9/product/registry.py
+      - s9/product/v1_api.py
+      - tests/product/test_workspace_registry.py
+      - frontend/tests/e2e/workspace-setup.spec.ts
+      limit: Single-machine operator surface only; no authenticated team roles or real-account access proof.
+    M1-read-only-intake:
+      status: verified
+      verification_level: local connector/API tests with mocked providers
+      evidence:
+      - s9/connectors/langfuse.py
+      - s9/connectors/github.py
+      - s9/product/connection_checks.py
+      - tests/product/test_v1_langfuse_import.py
+      - tests/product/test_v1_github_import.py
+      limit: No real provider credentials or external account calls were used.
+    M1-EvoMap-contract-review:
+      status: blocked
+      verification_level: current official public documentation review only
+      evidence:
+      - docs/implementation/EVOMAP_VALIDATION.md
+      limit: No authorized test node/peer is configured; no A2A identity, session, task, Hub read/write, or receipt has been exercised.
+    M1-manual-signal-correlation:
+      status: verified
+      verification_level: SQLite/API tests and browser flow with API stubs
+      evidence:
+      - s9/product/registry.py
+      - s9/product/v1_api.py
+      - frontend/src/WorkspaceSetup.tsx
+      - tests/product/test_signal_incident_registry.py
+      - tests/product/test_v1_signal_incident_api.py
+      - frontend/tests/e2e/workspace-setup.spec.ts
+      limit: Automated association is limited to exact repeated poll objects with one active Incident candidate within 24 hours; no causal inference or broader grouping is claimed.
+    M2-manual-investigation:
+      status: verified
+      verification_level: local SQLite/API tests and browser test with API stubs
+      evidence:
+      - s9/product/registry.py
+      - tests/product/test_v1_investigation_api.py
+      - frontend/tests/e2e/workspace-setup.spec.ts
+      limit: Operator judgment is not independent RCA, automated swarm, remediation, or service recovery proof.
+    M2-durable-task-control-plane:
+      status: implemented
+      verification_level: temporary SQLite and FastAPI contract regressions
+      evidence:
+      - s9/product/v1_contracts.py
+      - s9/product/registry.py
+      - s9/product/v1_api.py
+      - tests/product/test_v1_task_graph_api.py
+      - tests/product/test_v1_contracts.py
+      limit: Deterministic Section9 plan only; worker identity/capabilities are not authenticated and no independent-agent or EvoMap-native result is claimed.
+    M2-budgeted-model-task-runtime:
+      status: implemented
+      verification_level: temporary SQLite/FastAPI tests with mocked provider plus Playwright UI stubs
+      evidence:
+      - s9/product/task_runtime.py
+      - s9/product/registry.py
+      - s9/product/v1_api.py
+      - tests/product/test_v1_task_graph_api.py
+      - frontend/src/WorkspaceSetup.tsx
+      - frontend/tests/e2e/workspace-setup.spec.ts
+      limit: No real provider call; role requests are serial and use one configured model, with no tool loop or independent-agent validation.

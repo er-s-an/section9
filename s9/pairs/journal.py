@@ -78,6 +78,46 @@ class PairJournal:
             rows = db.execute(f'SELECT data FROM journal WHERE {where} ORDER BY sequence LIMIT ?', (*params, int(limit))).fetchall()
             return [json.loads(r[0]) for r in rows]
 
+    def read_before(self, pair_id, arm, before, limit=200, watermark=None):
+        """Read the page immediately before a sequence, within a fixed watermark."""
+        with self.tx() as db:
+            where = 'pair_id=? AND arm=? AND sequence<?'
+            params = [pair_id, arm, int(before)]
+            if watermark is not None:
+                where += ' AND sequence<=?'; params.append(int(watermark))
+            rows = db.execute(
+                f'SELECT data FROM journal WHERE {where} ORDER BY sequence DESC LIMIT ?',
+                (*params, int(limit)),
+            ).fetchall()
+            return [json.loads(row[0]) for row in reversed(rows)]
+
+    def has_before(self, pair_id, arm, before, watermark=None):
+        with self.tx() as db:
+            where = 'pair_id=? AND arm=? AND sequence<?'
+            params = [pair_id, arm, int(before)]
+            if watermark is not None:
+                where += ' AND sequence<=?'; params.append(int(watermark))
+            return db.execute(f'SELECT 1 FROM journal WHERE {where} LIMIT 1', params).fetchone() is not None
+
+    def read_by_ids(self, pair_id, arm, run_id, event_ids):
+        ids = list(dict.fromkeys(str(event_id) for event_id in event_ids if event_id))
+        if not ids:
+            return []
+        placeholders = ','.join('?' for _ in ids)
+        with self.tx() as db:
+            rows = db.execute(
+                f'SELECT data FROM journal WHERE pair_id=? AND arm=? AND run_id=? AND event_id IN ({placeholders}) ORDER BY sequence',
+                (pair_id, arm, run_id, *ids),
+            ).fetchall()
+            return [json.loads(row[0]) for row in rows]
+
+    def count_after(self, pair_id, arm, after, watermark):
+        with self.tx() as db:
+            return int(db.execute(
+                'SELECT COUNT(*) FROM journal WHERE pair_id=? AND arm=? AND sequence>? AND sequence<=?',
+                (pair_id, arm, int(after), int(watermark)),
+            ).fetchone()[0])
+
     def read_all(self, pair_id, arm=None, *, watermark=None, page_size=10000):
         """Read every row through one fixed journal watermark."""
         bound = self.watermark(pair_id, arm) if watermark is None else int(watermark)

@@ -1,12 +1,30 @@
 from __future__ import annotations
 
 import asyncio
+import time
 
 import pytest
 
 from s9.core import Core
 from s9.pairs.coordinator import PairCoordinator
 from s9.store import Store
+
+
+def _authorize_dispatch(store, run_id, reservation, purpose):
+    request_id = "recovery-proof-" + purpose
+    run = store.run(run_id)
+    context = store.capture_model_request(
+        run_id, run["generation"], expected_scope=store.scope,
+        deadline_at=time.time() + 30,
+    )
+    usage_id = store.reserve_usage(
+        run_id, reservation, purpose, request_id=request_id,
+        request_context=context,
+    )
+    store.authorize_usage_dispatch(
+        usage_id, request_id=request_id, request_context=context,
+    )
+    return usage_id
 
 
 def test_new_reservations_are_marked_not_sent_and_recover_as_known_zero(tmp_path):
@@ -26,8 +44,7 @@ def test_new_reservations_are_marked_not_sent_and_recover_as_known_zero(tmp_path
 def test_mark_usage_sent_before_network_is_conservatively_unknown_on_recovery(tmp_path):
     store = Store(tmp_path / "recovery.sqlite")
     run = store.inject("prompt", "swarm", "component", 1, 1000)
-    usage_id = store.reserve_usage(run["id"], 180, "chat")
-    store.mark_usage_sent(usage_id)
+    usage_id = _authorize_dispatch(store, run["id"], 180, "chat")
     assert store.usage_records(run["id"])[0]["provider_state"] == "sent"
     assert store.recover_usage(run["id"]) == {"recovered": 1, "known_zero": 0, "unknown": 1}
     record = store.usage_records(run["id"])[0]
@@ -54,8 +71,7 @@ def test_recovery_is_scoped_to_store_and_arm(tmp_path):
     swarm_run = swarm.inject("prompt", "swarm", "component", 1, 1000)
     base_run = baseline.inject("prompt", "single", "component", 1, 1000)
     swarm_id = swarm.reserve_usage(swarm_run["id"], 30, "swarm")
-    baseline_id = baseline.reserve_usage(base_run["id"], 40, "base")
-    baseline.mark_usage_sent(baseline_id)
+    baseline_id = _authorize_dispatch(baseline, base_run["id"], 40, "base")
     assert swarm.recover_usage() == {"recovered": 1, "known_zero": 1, "unknown": 0}
     assert swarm.usage_records(swarm_run["id"])[0]["unknown"] is False
     assert baseline.usage_records(base_run["id"])[0]["status"] == "reserved"
