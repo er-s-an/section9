@@ -12,6 +12,10 @@
 
 本轮交付为 **自由业务任务 → 应用 Langfuse → 原生会话协作调查 → 审核/退回新版本 → 同证据 single/swarm**。M2 的完整通用动态规划/工具循环仍未交付，生产执行与恢复也不属于这个演示的完成项。
 
+## UI 素材更新
+
+`/demo` 已复用原橙黑实验室背景、Star Office 像素角色和橙黑配色。背景统一位于 `frontend/public/vendor/section9/orange-lab-concept.png`，旧静态预览共享同一文件；演示工作台继续读取真实 API 事件。此视觉更新不改变客服路由或治理触发条件。
+
 ## 2. 在这台 Mac 上接手
 
 - 仓库：`/Users/xiejiachen/Documents/ChatGPT/rebuild/section9`
